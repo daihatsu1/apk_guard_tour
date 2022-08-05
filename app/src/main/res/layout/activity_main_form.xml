@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     Digital Patrol Guard
+  ~     activity_main_form.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.form.MainFormActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.DigitalPatrolGuard.AppBarOverlay">
+
+        <include layout="@layout/toolbar"
+            android:id="@+id/layout_toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/content_main_form" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        app:srcCompat="@android:drawable/ic_dialog_email"
+        android:contentDescription="SIMPAN" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

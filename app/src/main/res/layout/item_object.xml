@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Digital Patrol Guard
+  ~     item_checkpoint.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:elevation="@dimen/dp_0"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="10dp"
+    app:cardMaxElevation="@dimen/dp_2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/content_checkpoint_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_24"
+            android:paddingBottom="@dimen/dp_24">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="OBJECT 1"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="deskripsi object"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <View
+            android:id="@+id/statusview"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/content_checkpoint_item"
+            android:layout_alignTop="@id/content_checkpoint_item"
+            android:background="@color/primaryColor" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Digital Patrol Guard
+  ~     data_extraction_rules.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<!--
+   Sample data extraction rules file; uncomment and customize as necessary.
+   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   for details.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+        <include .../>
+        <exclude .../>
+        -->
+    </cloud-backup>
+    <!--
+    <device-transfer>
+        <include .../>
+        <exclude .../>
+    </device-transfer>
+    -->
+</data-extraction-rules>

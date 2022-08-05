@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Digital Patrol Guard
+  ~     item_zone.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:elevation="@dimen/dp_0"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="10dp"
+    app:cardMaxElevation="@dimen/dp_2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/statusview"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/content_zone_item"
+            android:background="@color/primaryColor" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:id="@+id/content_zone_item"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_8">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="ZONA 1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                android:text="HARI INI, SHIFT 1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:breakStrategy="high_quality"
+                android:gravity="center"
+                android:text="Senin, 1 Januari 2022"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

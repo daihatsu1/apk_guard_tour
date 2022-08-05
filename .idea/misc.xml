@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/circle_green.xml" value="0.3595" />
+        <entry key="app/src/main/res/drawable/dialoog_bg.xml" value="0.3585" />
+        <entry key="app/src/main/res/drawable/ic_baseline_delete_forever_24.xml" value="0.275" />
+        <entry key="app/src/main/res/drawable/ic_login_bk.xml" value="0.3595" />
+        <entry key="app/src/main/res/drawable/ic_outline_search_24.xml" value="0.2565" />
+        <entry key="app/src/main/res/drawable/ic_outline_swap_vertical_circle_24.xml" value="0.3205" />
+        <entry key="app/src/main/res/drawable/login_button_bk.xml" value="0.3595" />
+        <entry key="app/src/main/res/drawable/login_shape_bk.xml" value="0.154" />
+        <entry key="app/src/main/res/drawable/rounded_bg.xml" value="0.241" />
+        <entry key="app/src/main/res/drawable/rounded_button.xml" value="0.144" />
+        <entry key="app/src/main/res/layout-w1240dp/activity_login.xml" value="0.230859375" />
+        <entry key="app/src/main/res/layout-w936dp/activity_login.xml" value="0.26875" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.2941427960666952" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.27447916666666666" />
+        <entry key="app/src/main/res/layout/activity_main_form.xml" value="0.2941427960666952" />
+        <entry key="app/src/main/res/layout/content_main.xml" value="0.294017094017094" />
+        <entry key="app/src/main/res/layout/content_main_form.xml" value="0.2941427960666952" />
+        <entry key="app/src/main/res/layout/dialog_layout_base.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/fragment_checkpoint.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_confirm_patrol_dialog.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_first.xml" value="0.27447916666666666" />
+        <entry key="app/src/main/res/layout/fragment_list_checkpoint.xml" value="0.221889696451475" />
+        <entry key="app/src/main/res/layout/fragment_list_object.xml" value="0.221889696451475" />
+        <entry key="app/src/main/res/layout/fragment_list_zone.xml" value="0.221889696451475" />
+        <entry key="app/src/main/res/layout/fragment_reporting.xml" value="0.221889696451475" />
+        <entry key="app/src/main/res/layout/fragment_second.xml" value="0.18981481481481483" />
+        <entry key="app/src/main/res/layout/fragment_zone.xml" value="0.2941427960666952" />
+        <entry key="app/src/main/res/layout/item_checkpoint.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/item_object.xml" value="0.3443002799475688" />
+        <entry key="app/src/main/res/layout/item_patrol_schedule.xml" value="0.3572916666666667" />
+        <entry key="app/src/main/res/layout/item_photo.xml" value="0.221889696451475" />
+        <entry key="app/src/main/res/layout/item_zone.xml" value="0.2941427960666952" />
+        <entry key="app/src/main/res/layout/layout_login.xml" value="0.294017094017094" />
+        <entry key="app/src/main/res/layout/order_details_custom_dialog.xml" value="0.3572916666666667" />
+        <entry key="app/src/main/res/layout/toolbar.xml" value="0.3572916666666667" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

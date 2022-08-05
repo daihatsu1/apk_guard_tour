@@ -1,0 +1,62 @@
+<!--
+  ~     Digital Patrol Guard
+  ~     themes.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.DigitalPatrolGuard" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primaryDarkColor</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/secondaryDarkColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="AstraButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/secondaryColor</item>
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:layout_height">@dimen/btn_height</item>
+        <item name="cornerRadius">30dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+<!--    <style name="RoundedCornersDialog" parent="@style/Theme.MaterialComponents.Dialog">-->
+<!--        <item name="android:windowBackground">@color/grey_900</item>-->
+
+<!--    </style>-->
+
+    <style name="AstraButtonOutlineStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@android:color/white</item>
+        <item name="android:layout_height">@dimen/btn_height</item>
+        <!--        <item name="strokeColor">@color/secondaryColor</item>-->
+        <!--        <item name="strokeWidth">2dp</item>-->
+        <item name="android:textColor">@color/secondaryDarkColor</item>
+        <item name="textAllCaps">true</item>
+        <item name="cornerRadius">30dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AstraTextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="boxStrokeErrorColor">@color/red_500</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="backgroundColor">@color/white</item>
+    </style>
+    <!--    <style name="AstraTextInputHintStyle" parent="@android:style/TextAppearance">-->
+    <!--        <item name="android:textColor">@color/white</item>-->
+    <!--    </style>-->
+</resources>

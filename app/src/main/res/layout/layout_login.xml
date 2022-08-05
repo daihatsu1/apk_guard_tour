@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     Digital Patrol Guard
+  ~     layout_login.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="@dimen/loginViewsMargin"
+    android:layout_marginBottom="@dimen/loginViewsMargin"
+    android:background="@color/cardview_light_background"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    app:cardMaxElevation="10dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/loginViewsMargin"
+        style="@style/linearParent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:layout_marginBottom="@dimen/loginViewsMargin"
+            android:gravity="center"
+            android:text="@string/text_login"
+            android:textSize="@dimen/headerTextSize"
+            android:textStyle="bold" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/AstraTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/loginViewsMargin"
+            android:hint="@string/text_email"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/AstraTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/loginViewsMargin"
+            android:hint="@string/text_password"
+            app:endIconMode="password_toggle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                app:errorEnabled="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/login"
+            style="@style/AstraButtonStyle"
+             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:padding="@dimen/dp_16"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="Login" />
+        <Button
+            android:id="@+id/forgot_password"
+            style="@style/AstraButtonOutlineStyle"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="Lupa Password" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

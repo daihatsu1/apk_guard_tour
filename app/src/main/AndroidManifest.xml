@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     Digital Patrol Guard
+  ~     AndroidManifest.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="ai.digital.patrol">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DigitalPatrolGuard"
+        tools:targetApi="31">
+        <activity
+            android:name=".ui.form.MainFormActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main_form"
+            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" />
+<!--        <activity-->
+<!--            android:name=".ui.main.MainActivity"-->
+<!--            android:exported="false"-->
+<!--            android:label="@string/title_activity_main"-->
+<!--            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" />-->
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

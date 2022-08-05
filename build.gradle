@@ -1,0 +1,19 @@
+/*
+ *     Digital Patrol Guard
+ *     build.gradle
+ *     Created by ImamSyahrudin on 5/8/2022
+ *     Copyright © 2022 imamSyahrudin. All rights reserved.
+ *
+ *     Last modified 8/5/22, 10:32 AM
+ */
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id 'com.android.application' version '7.2.1' apply false
+    id 'com.android.library' version '7.2.1' apply false
+    id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

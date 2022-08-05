@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     Digital Patrol Guard
+  ~     content_main.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayoutCompat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jadwal Patroli"
+            android:padding="@dimen/dp_16"
+            style="@style/textTitle"
+            app:drawableStartCompat="@drawable/ic_round_calendar_today_24"
+            android:drawablePadding="@dimen/dp_8"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
+            tools:listitem="@layout/item_patrol_schedule">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+        <Button
+            android:id="@+id/button"
+            style="@style/AstraButtonStyle"
+            android:layout_width="match_parent"
+            android:drawableStart="@drawable/ic_outline_search_24"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="Lihat Temuan Hari ini" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <Button
+        android:id="@+id/start_unscheduled_patrol"
+        android:layout_width="match_parent"
+        android:layout_marginStart="32dp"
+        style="@style/AstraButtonOutlineStyle"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:text="@string/patroli_diluar_jadwal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/start_patrol"
+        style="@style/AstraButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/mulai_patroli"
+        app:layout_constraintBottom_toTopOf="@+id/start_unscheduled_patrol"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat"
+        app:layout_constraintVertical_bias="1.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

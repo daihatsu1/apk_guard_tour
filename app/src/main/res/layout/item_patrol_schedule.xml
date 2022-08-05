@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Digital Patrol Guard
+  ~     item_patrol_schedule.xml
+  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/5/22, 10:32 AM
+  -->
+
+<androidx.cardview.widget.CardView
+    android:layout_width="175dp"
+    android:layout_height="150dp"
+    style="@style/card"
+    android:minWidth="250dp"
+    android:maxWidth="500dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/army_national_guard" />
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:background="@color/red_500"
+            android:src="@drawable/ic_baseline_delete_forever_24"/>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.cardview.widget.CardView>

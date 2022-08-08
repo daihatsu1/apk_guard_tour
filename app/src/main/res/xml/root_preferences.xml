@@ -1,0 +1,39 @@
+<!--
+  ~     Digital Patrol Guard
+  ~     root_preferences.xml
+  ~     Created by ImamSyahrudin on 8/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/8/22, 12:12 AM
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="Tampilan">
+
+        <SwitchPreferenceCompat
+            app:key="view_mode"
+            app:title="Mode Malam" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Akun">
+
+        <EditTextPreference
+            app:key="password"
+            app:title="Ubah Password"
+            app:useSimpleSummaryProvider="false" />
+
+<!--        <EditTextPreference-->
+<!--            app:key="logout"-->
+<!--            app:title="Keluar"-->
+<!--            app:useSimpleSummaryProvider="false" />-->
+        <Preference
+            android:title="Keluar"
+            android:key="logout"
+            />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

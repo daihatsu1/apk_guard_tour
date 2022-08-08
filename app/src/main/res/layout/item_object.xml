@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~     Digital Patrol Guard
-  ~     item_checkpoint.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     item_object.xml
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/8/22, 1:59 AM
   -->
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,43 +16,55 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/content_checkpoint_item"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/dp_24"
-            android:paddingBottom="@dimen/dp_24">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <View
+            android:id="@+id/statusview"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="match_parent"
+            android:background="@color/red_500" />
+<!--        <LinearLayout-->
+<!--            android:layout_weight="1"-->
+<!--            android:id="@+id/content_checkpoint_item"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            >-->
 
             <TextView
+                android:id="@+id/tv_object_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/dp_24"
+                android:paddingBottom="@dimen/dp_24"
                 android:text="OBJECT 1"
                 android:textAllCaps="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:textStyle="bold" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="deskripsi object"
-                android:textAllCaps="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        <View
-            android:id="@+id/statusview"
-            android:layout_width="@dimen/dp_24"
+<!--            <TextView-->
+<!--                android:id="@+id/tv_object_desc"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:text="deskripsi object"-->
+<!--                android:textAllCaps="true"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+<!--                android:textStyle="bold" />-->
+
+<!--        </LinearLayout>-->
+        <ImageView
+            android:id="@+id/imv_status"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/content_checkpoint_item"
-            android:layout_alignTop="@id/content_checkpoint_item"
-            android:background="@color/primaryColor" />
-
-    </RelativeLayout>
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:src="@drawable/ic_round_notification_important_24"
+            />
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -1,10 +1,10 @@
 <!--
   ~     Digital Patrol Guard
   ~     strings.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/7/22, 11:43 PM
   -->
 
 <resources>
@@ -37,4 +37,20 @@
     <string name="text_password">Masukan Kata Sandi</string>
     <string name="mode_gelap">Ubah Mode Gelap</string>
     <string name="title_activity_main_form">MainFormActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>

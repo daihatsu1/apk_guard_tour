@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "38601037085",
+    "project_id": "digital-patrol-guard-tour",
+    "storage_bucket": "digital-patrol-guard-tour.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38601037085:android:74929ee7aa143557f67df4",
+        "android_client_info": {
+          "package_name": "ai.digital.patrol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38601037085-a8fg6jgulh8l6rnvpah8u0igp12cvmvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHvlg9reRHa8gE_AbwfzS9yrtag5oxmb0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38601037085-a8fg6jgulh8l6rnvpah8u0igp12cvmvn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

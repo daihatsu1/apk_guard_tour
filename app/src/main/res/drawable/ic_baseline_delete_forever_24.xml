@@ -1,10 +1,10 @@
 <!--
   ~     Digital Patrol Guard
   ~     ic_baseline_delete_forever_24.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 11:26 AM
+  ~     Last modified 8/6/22, 1:05 AM
   -->
 
 <vector android:height="24dp" android:tint="@color/white"

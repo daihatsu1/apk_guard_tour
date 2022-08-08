@@ -1,10 +1,10 @@
 <!--
   ~     Digital Patrol Guard
   ~     themes.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/6/22, 1:05 AM
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
@@ -51,7 +51,6 @@
     </style>
 
     <style name="AstraTextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeColor">@color/white</item>
         <item name="boxStrokeErrorColor">@color/red_500</item>
         <item name="hintTextColor">@color/white</item>
         <item name="backgroundColor">@color/white</item>
@@ -59,4 +58,13 @@
     <!--    <style name="AstraTextInputHintStyle" parent="@android:style/TextAppearance">-->
     <!--        <item name="android:textColor">@color/white</item>-->
     <!--    </style>-->
+
+    <style name="card" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">15dp</item>
+        <item name="cardElevation">5dp</item>
+        <item name="cardPreventCornerOverlap">true</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">@color/grey_900</item>
+    </style>
+
 </resources>

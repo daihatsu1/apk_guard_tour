@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~     Digital Patrol Guard
   ~     item_zone.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/6/22, 1:18 AM
   -->
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,18 +15,18 @@
     app:cardMaxElevation="@dimen/dp_2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <View
             android:id="@+id/statusview"
             android:layout_width="@dimen/dp_24"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/content_zone_item"
+            android:layout_height="match_parent"
             android:background="@color/primaryColor" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:id="@+id/content_zone_item"
             android:layout_height="wrap_content"
@@ -34,23 +34,26 @@
             android:padding="@dimen/dp_8">
 
             <TextView
+                android:id="@+id/tv_zone_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="ZONA 1"
+                android:text="PLANT 5 - ZONA 1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_zone_shift"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
-                android:text="HARI INI, SHIFT 1"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingBottom="@dimen/dp_2"
+                android:text="SHIFT 1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
             <TextView
+                android:id="@+id/tv_zone_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:breakStrategy="high_quality"
@@ -59,5 +62,5 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </RelativeLayout>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

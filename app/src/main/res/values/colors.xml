@@ -2,10 +2,10 @@
 <!--
   ~     Digital Patrol Guard
   ~     colors.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/7/22, 10:15 PM
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
@@ -34,14 +34,37 @@
     <color name="text_secondary">#8C000000</color>
     <color name="light_blue">#03a9f4</color>
 
+<!--    <color name="primaryColor">#3880ff</color>-->
+<!--    <color name="primaryLightColor">#7cafff</color>-->
+<!--    <color name="primaryDarkColor">#0055cb</color>-->
+<!--    <color name="secondaryColor">#4486EC</color>-->
+<!--    <color name="secondaryLightColor">#ABD0FF</color>-->
+<!--    <color name="secondaryDarkColor">#40699E</color>-->
+
+<!--    <color name="secondaryColor">#ef5350</color>-->
+<!--    <color name="secondaryLightColor">#ff867c</color>-->
+<!--    <color name="secondaryDarkColor">#b61827</color>-->
+
+<!--    <color name="primaryTextColor">#ffffff</color>-->
+<!--    <color name="secondaryTextColor">#ffebee</color>-->
+
     <color name="primaryColor">#c20000</color>
     <color name="primaryLightColor">#fd4d2e</color>
     <color name="primaryDarkColor">#890000</color>
-    <color name="secondaryColor">#ff0000</color>
-    <color name="secondaryLightColor">#ff5a36</color>
+    <color name="secondaryColor">#FF5252</color>
+    <color name="secondaryLightColor">#F44336</color>
     <color name="secondaryDarkColor">#c20000</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
+
+<!--    <color name="primaryColor">#3F51B5</color>-->
+<!--    <color name="primaryDarkColor">#303F9F</color>-->
+<!--    <color name="primaryLightColor">#C5CAE9</color>-->
+<!--    <color name="accent">#FF5252</color>-->
+<!--    <color name="primaryTextColor">#212121</color>-->
+<!--    <color name="secondaryTextColor">#757575</color>-->
+<!--    <color name="icons">#FFFFFF</color>-->
+<!--    <color name="divider">#BDBDBD</color>-->
 
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#fff</color>
 

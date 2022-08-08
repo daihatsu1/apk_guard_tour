@@ -2,10 +2,10 @@
 <!--
   ~     Digital Patrol Guard
   ~     AndroidManifest.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/8/22, 11:34 AM
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,16 +22,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalPatrolGuard"
         tools:targetApi="31">
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
+
+        <activity
+            android:name=".ui.main.SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings" />
         <activity
             android:name=".ui.form.MainFormActivity"
             android:exported="false"
             android:label="@string/title_activity_main_form"
-            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" />
-<!--        <activity-->
-<!--            android:name=".ui.main.MainActivity"-->
-<!--            android:exported="false"-->
-<!--            android:label="@string/title_activity_main"-->
-<!--            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" />-->
+            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" /> <!-- <activity -->
+        <!-- android:name=".ui.main.MainActivity" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="@string/title_activity_main" -->
+        <!-- android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" /> -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"

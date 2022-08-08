@@ -1,10 +1,10 @@
 <!--
   ~     Digital Patrol Guard
   ~     themes.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/8/22, 1:05 AM
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
@@ -16,7 +16,7 @@
         <item name="colorOnPrimary">@color/primaryTextColor</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondaryColor</item>
-        <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -35,7 +35,7 @@
 
     <style name="AstraButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/secondaryColor</item>
-        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
         <item name="textAllCaps">true</item>
         <item name="android:layout_height">@dimen/btn_height</item>
         <item name="cornerRadius">30dp</item>
@@ -76,7 +76,7 @@
         <item name="cardUseCompatPadding">true</item>
     </style>
 
-    <style name="textTitle" parent="@style/TextAppearance.MaterialComponents.Headline1">
+    <style name="textTitle" parent="@style/TextAppearance.MaterialComponents.Headline2">
         <item name="android:textColor">@color/secondaryColor</item>
         <item name="android:textSize">24sp</item>
         <item name="textAllCaps">true</item>
@@ -125,5 +125,12 @@
     <style name="dropdownTextInputTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="hintTextColor">?attr/colorOnSurface</item>
         <item name="endIconTint">?attr/colorOnSurface</item>
+
+    </style>
+
+    <style name="AstraTextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeErrorColor">@color/red_500</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="backgroundColor">@color/white</item>
     </style>
 </resources>

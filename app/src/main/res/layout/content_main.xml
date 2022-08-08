@@ -2,10 +2,10 @@
 <!--
   ~     Digital Patrol Guard
   ~     content_main.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/8/22, 1:02 AM
   -->
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -19,7 +19,7 @@
         android:id="@+id/linearLayoutCompat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,12 +29,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Jadwal Patroli"
-            android:padding="@dimen/dp_16"
+            android:padding="@dimen/dp_8"
             style="@style/textTitle"
             app:drawableStartCompat="@drawable/ic_round_calendar_today_24"
             android:drawablePadding="@dimen/dp_8"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -45,16 +46,6 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
-
-        <Button
-            android:id="@+id/button"
-            style="@style/AstraButtonStyle"
-            android:layout_width="match_parent"
-            android:drawableStart="@drawable/ic_outline_search_24"
-            android:gravity="center"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:text="Lihat Temuan Hari ini" />
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>

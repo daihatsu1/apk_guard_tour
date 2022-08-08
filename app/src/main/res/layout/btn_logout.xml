@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Digital Patrol Guard
+  ~     btn_logout.xml
+  ~     Created by ImamSyahrudin on 8/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/7/22, 11:55 PM
+  -->
+
+<Button
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/resetButton"
+    android:text="Keluar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+</Button>

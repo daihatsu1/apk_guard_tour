@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~     Digital Patrol Guard
   ~     item_patrol_schedule.xml
-  ~     Created by ImamSyahrudin on 5/8/2022
+  ~     Created by ImamSyahrudin on 8/8/2022
   ~     Copyright © 2022 imamSyahrudin. All rights reserved.
   ~
-  ~     Last modified 8/5/22, 10:32 AM
+  ~     Last modified 8/8/22, 1:05 AM
   -->
 
 <androidx.cardview.widget.CardView
-    android:layout_width="175dp"
-    android:layout_height="150dp"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
     style="@style/card"
     android:minWidth="250dp"
     android:maxWidth="500dp"
@@ -18,20 +18,37 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="@dimen/dp_24">
 
-        <ImageView
-            android:layout_weight="1"
-            android:layout_width="100dp"
+        <TextView
+            android:id="@+id/tv_schedule_day"
+            android:gravity="center"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@drawable/army_national_guard" />
-        <ImageButton
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            android:background="@color/red_500"
-            android:src="@drawable/ic_baseline_delete_forever_24"/>
+            android:text="Hari Ini"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/tv_schedule_shift"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:text="SHIFT 1" />
+
+        <TextView
+            android:id="@+id/tv_schedule_date"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="Senin, 1 Januari 2022"
+            android:breakStrategy="high_quality"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.cardview.widget.CardView>

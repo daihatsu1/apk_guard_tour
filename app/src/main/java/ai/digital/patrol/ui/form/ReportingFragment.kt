@@ -1,10 +1,10 @@
 /*
  *     Digital Patrol Guard
  *     ReportingFragment.kt
- *     Created by ImamSyahrudin on 5/8/2022
+ *     Created by ImamSyahrudin on 8/8/2022
  *     Copyright © 2022 imamSyahrudin. All rights reserved.
  *
- *     Last modified 8/5/22, 10:58 AM
+ *     Last modified 8/6/22, 1:05 AM
  */
 
 package ai.digital.patrol.ui.form

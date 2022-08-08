@@ -1,0 +1,21 @@
+<!--
+  ~     Digital Patrol Guard
+  ~     arrays.xml
+  ~     Created by ImamSyahrudin on 8/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/7/22, 11:43 PM
+  -->
+
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+</resources>

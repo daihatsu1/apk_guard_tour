@@ -1,4 +1,13 @@
-<vector android:height="24dp" android:tint="#F10010"
+<!--
+  ~     Digital Patrol Guard
+  ~     ic_baseline_camera_alt_24.xml
+  ~     Created by ImamSyahrudin on 8/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/7/22, 7:13 PM
+  -->
+
+<vector android:height="24dp" android:tint="@color/primaryColor"
     android:viewportHeight="24" android:viewportWidth="24"
     android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="@android:color/white" android:pathData="M12,12m-3.2,0a3.2,3.2 0,1 1,6.4 0a3.2,3.2 0,1 1,-6.4 0"/>

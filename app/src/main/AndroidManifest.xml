@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~     Digital Patrol Guard
-  ~     AndroidManifest.xml
-  ~     Created by ImamSyahrudin on 8/8/2022
-  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
-  ~
-  ~     Last modified 8/8/22, 11:34 AM
-  -->
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="ai.digital.patrol">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
     <application
+        android:name=".GuardTourApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -21,10 +21,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalPatrolGuard"
+        android:usesCleartextTraffic="true"
+        tools:node="merge"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.main.ListReportActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" />
+
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".ui.main.SettingsActivity"
@@ -32,23 +42,70 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".ui.form.MainFormActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_main_form"
-            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" /> <!-- <activity -->
-        <!-- android:name=".ui.main.MainActivity" -->
-        <!-- android:exported="false" -->
-        <!-- android:label="@string/title_activity_main" -->
-        <!-- android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" /> -->
+            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" >
+<!--                        <intent-filter>-->
+<!--                            <action android:name="android.intent.action.MAIN" />-->
+
+<!--                            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--                        </intent-filter>-->
+        </activity>
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="true"
             android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.nfc.action.TECH_DISCOVERED" /> -->
+            <!-- </intent-filter> -->
+            <!-- <meta-data -->
+            <!-- android:name="android.nfc.action.TECH_DISCOVERED" -->
+            <!-- android:resource="@xml/nfc_tech_filter" /> -->
+        </activity>
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+        <!--        <activity-->
+        <!--            android:name=".ui.nfc.NfcActivity"-->
+        <!--            android:exported="true"-->
+        <!--            android:label="@string/title_activity_main"-->
+        <!--            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.MAIN" />-->
+
+        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+        <!--            </intent-filter>-->
+        <!--        </activity>-->
     </application>
 
 </manifest>

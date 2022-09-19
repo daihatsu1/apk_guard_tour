@@ -9,23 +9,38 @@
 
 package ai.digital.patrol.ui.form
 
-import ai.digital.patrol.R
+import ai.digital.patrol.data.entity.Checkpoint
+import ai.digital.patrol.data.entity.Report
+import ai.digital.patrol.data.entity.Schedule
+import ai.digital.patrol.data.entity.Zone
 import ai.digital.patrol.databinding.FragmentListCheckpointBinding
-import ai.digital.patrol.model.Checkpoint
+import ai.digital.patrol.helper.*
 import ai.digital.patrol.ui.dialog.DialogCallbackListener
 import ai.digital.patrol.ui.dialog.DialogFragment
 import ai.digital.patrol.ui.dialog.DialogNFCFragment
 import ai.digital.patrol.ui.form.listener.OnCheckpointClickListener
 import ai.digital.patrol.ui.form.viewadapter.CheckpointViewAdapter
+import ai.digital.patrol.ui.main.ScheduleViewModel
+import ai.digital.patrol.worker.SyncViewModel
+import android.app.Application
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
+import java.util.*
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -34,26 +49,95 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
 
     private var _binding: FragmentListCheckpointBinding? = null
     private val checkpointViewAdapter = CheckpointViewAdapter(this)
-    private var nfcCallback: DialogCallbackListener? = null
+    val args: ListCheckpointFragmentArgs by navArgs()
+    lateinit var zone: Zone
+    private lateinit var schedule: Schedule
+    private var confirmationZoneDoneCallback: DialogCallbackListener? = null
+    private var clickBackPressed: Boolean = true
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    var checkpoint: Checkpoint? = null
+    private var onBackPressedCallback: OnBackPressedCallback? = null
+    private var disposable: Disposable? = null
+    private var dialogNfcFragment: DialogNFCFragment? = null
+
+    private val patrolDataViewModel by lazy {
+        ViewModelProvider(
+            this,
+            PatrolDataViewModel.Factory(Application())
+        )[PatrolDataViewModel::class.java]
+    }
+
+    private val scheduleViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ScheduleViewModel.Factory(Application())
+        )[ScheduleViewModel::class.java]
+    }
+    private val syncViewModel by lazy {
+        ViewModelProvider(this)[SyncViewModel::class.java]
+    }
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentListCheckpointBinding.inflate(inflater, container, false)
+        zone = args.dataZone!!
+        _binding!!.titleZone.text = buildString {
+            append("PILIH CHECKPOINT ZONA ")
+            append(zone.zone_name)
+        }
         val recyclerView = binding.recyclerCheckpoint
         recyclerView.adapter = checkpointViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
+        getSchedule()
         setListCheckpoint()
-        nfcCallback = object : DialogCallbackListener {
+        setPatrolDoneDialogFragmentListener()
+        _binding!!.fabZoneDone.setOnClickListener {
+            dialogConfirmZoneDone(zone)
+        }
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (clickBackPressed) {
+                    dialogConfirmZoneDone(zone)
+                } else {
+                    isEnabled = false
+                    activity?.onBackPressed()
+                }
+            }
+        }
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner, onBackPressedCallback as OnBackPressedCallback
+        )
+        disposable =
+            EventBus.subscribe<AppEvent>()
+                // if you want to receive the event on main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({ appEvent ->
+                    Log.d("EVENTBUS", "event received: $appEvent")
+                    if (appEvent == AppEvent.NFC_MATCHED) {
+                        if (dialogNfcFragment?.showsDialog == true){
+                            dialogNfcFragment!!.dismiss()
+                            checkpoint?.let { addReport(it) }
+                        }
+                    }
+
+                }, {
+                    Log.e("EVENTBUS", it.message.toString());
+                })
+
+        return binding.root
+
+    }
+
+    private fun dialogNfc(_checkpoint: Checkpoint) {
+        dialogNfcFragment = DialogNFCFragment.newInstance(object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
                 dialog?.dismiss()
-                findNavController().navigate(R.id.action_CheckpointFragment_to_listObjectFragment)
+                addReport(_checkpoint)
             }
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
@@ -63,31 +147,62 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
             override fun onDismissClickListener(dialog: DialogInterface) {
                 dialog.dismiss()
             }
-        }
-        return binding.root
 
-    }
+        }, _checkpoint)
+        dialogNfcFragment!!.show(parentFragmentManager, "dialogConfirmStartPatrol")
 
-    private fun dialogNfc() {
-        DialogNFCFragment.newInstance(nfcCallback!!)
-            .show(parentFragmentManager, "dialogConfirmStartPatrol")
     }
 
     private fun setListCheckpoint() {
-        val checkpoint: List<Checkpoint> = listOf<Checkpoint>(
-            Checkpoint("1", "1", "PLANT 5", "FACTORY_PRESS UTARA", "2817214131"),
-            Checkpoint("2", "1", "PLANT 5", "FACTORY_PRESS SELATAN", "2817214131"),
-            Checkpoint("3", "1", "PLANT 5", "FACTORY_ WELDING OFFICE CKD", "2817214131"),
-            Checkpoint("4", "1", "PLANT 5", "FACTORY_ASSEMBLING OFFICE LOG", "2817214131"),
-            Checkpoint("5", "1", "PLANT 5", "FACTORY_ASSEMBLING BENCHTRY", "2817214131"),
-        )
-        checkpointViewAdapter.setList(checkpoint)
+        patrolDataViewModel.getCheckpointByZone(zone.id)?.observe(viewLifecycleOwner) { it ->
+            checkpointViewAdapter.setList(it)
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        dialogNfc()
+    private fun getSchedule() {
+        scheduleViewModel.getSchedule()?.observe(viewLifecycleOwner) { it ->
+            if (it != null) {
+                schedule = it
+            }
+        }
+    }
 
+    private fun addReport(_checkpoint: Checkpoint) {
+
+        patrolDataViewModel.checkReport(_checkpoint.id)?.observe(viewLifecycleOwner) { it ->
+            var report = it
+            if (it == null) {
+                val syncToken = UUID.randomUUID().toString()
+                val npk = PreferenceHelper.appsPrefs(this.requireContext()).getString(Cons.NPK, "")
+                report = Report(
+                    sync_token = syncToken,
+                    admisecsgp_mstckp_checkpoint_id = _checkpoint.id,
+                    admisecsgp_mstshift_shift_id = schedule.shift_id!!,
+                    admisecsgp_mstusr_npk = npk,
+                    admisecsgp_mstzone_zone_id = zone.id,
+                    date_patroli = Utils.createdAt("yyyy-MM-dd"),
+                    checkin_checkpoint = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
+                    created_at = Utils.createdAt(),
+                )
+                patrolDataViewModel.checkInCheckpoint(_checkpoint.id)
+                patrolDataViewModel.insertReport(report)
+                syncViewModel.syncReportData()
+
+                addReport(_checkpoint)
+            } else {
+                val action =
+                    ListCheckpointFragmentDirections.actionCheckpointFragmentToListObjectFragment(
+                        _checkpoint, report
+                    )
+                findNavController().safeNavigate(action)
+            }
+        }
+    }
+
+    private fun NavController.safeNavigate(direction: NavDirections) {
+        currentDestination?.getAction(direction.actionId)?.run {
+            navigate(direction)
+        }
     }
 
     override fun onDestroyView() {
@@ -96,6 +211,58 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
     }
 
     override fun onItemClicked(_checkpoint: Checkpoint) {
-        dialogNfc()
+        checkpoint = _checkpoint
+        dialogNfc(_checkpoint)
+    }
+
+    private fun dialogConfirmZoneDone(zone: Zone) {
+        val title = "APAKAH ANDA YAKIN TELAH SELESAI MELAKUKAN PATROLI DI ZONA {${zone.zone_name}}?"
+        val subTitle = ""
+        val positiveText = "SELESAI ZONA"
+        val negativeText = "CEK KEMBALI"
+
+        DialogFragment.newInstance(
+            title,
+            subTitle,
+            positiveText,
+            negativeText,
+            confirmationZoneDoneCallback!!
+        ).show(parentFragmentManager, "dialogConfirmZoneDone")
+    }
+
+    private fun setPatrolDoneDialogFragmentListener() {
+        confirmationZoneDoneCallback = object : DialogCallbackListener {
+            override fun onPositiveClickListener(v: View, dialog: Dialog?) {
+                patrolDataViewModel.setZoneOnPatrolDone(zone.id)
+                clickBackPressed = false
+                activity?.onBackPressed()
+                dialog?.dismiss()
+            }
+
+            override fun onNegativeClickListener(v: View, dialog: Dialog?) {
+                dialog?.dismiss()
+            }
+
+            override fun onDismissClickListener(dialog: DialogInterface) {
+            }
+
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        disposable?.dispose()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        disposable =
+            EventBus.subscribe<AppEvent>()
+                // if you want to receive the event on main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Log.d("EVENTBUS", "event received: $it")
+                }
+
     }
 }

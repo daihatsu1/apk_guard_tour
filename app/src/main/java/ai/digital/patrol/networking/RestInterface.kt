@@ -9,55 +9,33 @@
 
 package ai.digital.patrol.networking
 
+import ai.digital.patrol.data.entity.LoggedInUser
+import ai.digital.patrol.data.entity.Report
+import ai.digital.patrol.data.entity.Schedule
+import ai.digital.patrol.data.entity.Zone
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface RestInterface {
-//    @FormUrlEncoded
-//    @POST("auth/login")
-//    fun login(
-//        @Field("email") email: String?,
-//        @Field("password") password: String?
-//    ): Call<AuthToken?>?
+    @FormUrlEncoded
+    @POST("auth/login")
+    fun login(
+        @Field("npk") npk: String?,
+        @Field("password") password: String?
+    ): Call<LoggedInUser?>?
 
-//    @GET("auth/me")
-//    fun getUser(): Call<SurveyUser?>?
-//
-//    @GET("survey_data?expand=survey_data_detail")
-//    fun getSurveyData(): Call<List<SurveyData?>>?
-//
-//    @POST("survey_data")
-//    fun postSurveyData(@Body surveyData: SurveyData): Call<SurveyData>
-//
-//    @POST("survey_data")
-//    fun postSurveysData(@Body surveysData: List<SurveyData>): Call<List<SurveyData>>
-//
-//    @POST("survey_checkin")
-//    fun postSurveyCheckins(@Body surveyCheckin: List<SurveyCheckin>): Call<List<SurveyCheckin>>
-//
-//    @Multipart
-//    @POST("survey_image")
-//    @JvmSuppressWildcards
-//    fun postSurveyImage(
-////        @Part type: RequestBody,
-////        @Part image: MultipartBody,
-//        @PartMap params: Map< String, RequestBody>
-//    ): Call<SurveyImage>
-//
-//    @Multipart
-//    @POST("survey_data")
-//    @JvmSuppressWildcards
-//    fun postSurveyDataImage(
-//        @PartMap params: Map< String, RequestBody>
-//    ): Call<SurveyData>
-//
-//
-//    @GET("/common/search_brand?")
-//    fun searchBrand(
-//        @Query("q") keyword: String,
-//        @Query("survey_id") surveyEventId: String
-//    ): Call<BrandCompetitor?>?
+    @GET("patroli/jadwalPatroli")
+    fun getJadwal(): Call<List<Schedule?>>?
 
+    @GET("patroli/dataPatroli")
+    fun getPatrolData(): Call<List<Zone>>?
+
+    @Multipart
+    @POST("patroli/dataTemuan")
+    @JvmSuppressWildcards
+    fun postReport(
+        @PartMap params: Map< String, RequestBody>
+    ): Call<Report>
 
 }

@@ -7,13 +7,15 @@
   ~     Last modified 8/8/22, 1:37 AM
   -->
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:elevation="@dimen/dp_0"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="10dp"
     app:cardMaxElevation="@dimen/dp_2"
     android:layout_width="match_parent"
+    app:strokeColor="@color/info"
+    app:strokeWidth="2dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -62,4 +64,4 @@
 
         </LinearLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

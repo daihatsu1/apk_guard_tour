@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     Digital Patrol Guard
   ~     fragment_list_object.xml
   ~     Created by ImamSyahrudin on 8/8/2022
@@ -14,51 +13,91 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.form.MainFormActivity">
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/linearLayoutCompat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_16"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="-20dp"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@id/bottom_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/title_zone"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ZONA 1 > CHECKPOINT 1"
-            android:layout_gravity="center"
-            style="@style/textTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
-            android:drawablePadding="@dimen/dp_2"/>
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_8">
 
-        <Button
-            android:id="@+id/title_report_lists_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Daftar Temuan Checkpoint 1"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_gravity="center"
-            style="@style/AstraButtonStyle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/title_object"
+                style="@style/textTitle.bg"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_2"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/dp_2"
+                android:gravity="center_vertical"
+                android:text="PILIH OBJECT CHECKPOINT 1"
+                app:autoSizeMaxTextSize="@dimen/sp_16"
+                app:autoSizeTextType="uniform"
+                app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/title_report_lists_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:visibility="gone"
+                android:src="@drawable/ic_round_notification_important_24" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_object"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_16"
-            tools:listitem="@layout/item_object"
+            android:layout_marginTop="@dimen/dp_8"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/dp_24"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_zone" />
+            app:layout_constraintTop_toBottomOf="@+id/title_zone"
+            tools:listitem="@layout/item_object" />
 
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_shape_bk"
+        android:maxHeight="200dp"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_24"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/fab_checkpoint_done"
+            style="@style/AstraButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_above="@+id/start_unscheduled_patrol"
+            android:text="Selesai Checkpoint" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

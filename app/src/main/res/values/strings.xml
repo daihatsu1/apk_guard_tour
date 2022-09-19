@@ -14,10 +14,11 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Login</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="welcome">"Selamat datang !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="login_failed">"Login gagal, pastikan NPK dan Kata sandi sudah benar "</string>
+    <string name="login_failed_server">"Login gagal, Server tidak terhubung "</string>
     <string name="title_activity_main">MainActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -53,4 +54,29 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="shift">SHIFT %s</string>
+    <string name="zone">%s - ZONE %s</string>
+    <string name="reporting_not_found">Belum Ada temuan</string>
+    <string name="status">Status :</string>
+    <string name="status_patrol_done">Selesai Dipatroli</string>
+    <string name="status_patrol_ongoing">Sedang dipatroli</string>
+    <string name="start_patrol">MULAI PATROLI</string>
+    <string name="continue_patrol">lANJUTKAN PATROLI</string>
+    <string name="patrol_done">Selesai PATROLI</string>
+    <string name="status_patrol_pending">BELUM DIPATROLI</string>
+    <string name="temuan_hari_ini">Temuan hari ini</string>
+    <string name="_0">0</string>
+    <string name="tindakan_cepat">TINDAKAN CEPAT</string>
+    <string name="laporkan_kepada_pic">Laporkan kepada PIC</string>
+    <string name="catatan_tindakan">CATATAN TINDAKAN</string>
+    <string name="simpan">SIMPAN</string>
+    <string name="upload_data_patroli">Upload Data Patroli</string>
+    <string name="jadwal_patroli">Jadwal Patroli</string>
+    <string name="libur">LIBUR</string>
+    <string name="gagal_memuat_data_zona_patroli">GAGAL MEMUAT DATA ZONA PATROLI</string>
+    <string name="coba_lagi">COBA LAGI</string>
+    <string name="zone_not_found">Zona Patroli tidak ditemukan</string>
+    <string name="memuat_data_zona_patroli_n_pastikan_terhubung_ke_internet">MEMUAT DATA ZONA PATROLI. \n PASTIKAN TERHUBUNG KE INTERNET</string>
+    <string name="selengkapnya">SELENGKAPNYA</string>
+    <string name="login_background">login background</string>
 </resources>

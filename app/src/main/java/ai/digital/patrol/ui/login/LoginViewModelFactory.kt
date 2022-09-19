@@ -9,23 +9,26 @@
 
 package ai.digital.patrol.ui.login
 
+import ai.digital.patrol.DatabaseClient
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ai.digital.patrol.data.LoginDataSource
-import ai.digital.patrol.data.LoginRepository
+import ai.digital.patrol.data.repository.LoginRepository
+import android.app.Application
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
  * Required given LoginViewModel has a non-empty constructor
  */
-class LoginViewModelFactory : ViewModelProvider.Factory {
+class LoginViewModelFactory() : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(
                 loginRepository = LoginRepository(
-                    dataSource = LoginDataSource()
+                    dataSource = LoginDataSource(),
+                    databaseClient = DatabaseClient.getInstance()!!
                 )
             ) as T
         }

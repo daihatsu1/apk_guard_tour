@@ -7,39 +7,38 @@
   ~     Last modified 8/8/22, 11:43 AM
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.form.ReportingFragment">
 
-    <TextView
-        android:id="@+id/titlee"
-        style="@style/TextAppearance.AppCompat.Subhead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        style="@style/textTitledark"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:drawablePadding="@dimen/dp_2"
-        android:padding="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_2"
+        android:drawablePadding="@dimen/dp_8"
+        android:gravity="center_vertical"
+        android:padding="@dimen/dp_8"
         android:text="Zona Patroli A > Checkpoint X > Objek - Pintu Depan - Tidak Normal"
-        android:textColor="@color/primaryColor"
+        android:textSize="10sp"
+        app:autoSizeMaxTextSize="@dimen/sp_20"
+        app:autoSizeTextType="uniform"
         app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
-        app:layout_constraintBottom_toTopOf="@+id/nestedScrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titlee">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,6 +47,7 @@
             android:padding="@dimen/dp_24">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_reporting_category"
                 style="@style/dropdownTextInputTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,62 +55,60 @@
                 android:hint="KATEGORI TEMUAN">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/asset_type"
+                    android:id="@+id/et_reporting_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:inputType="none"
-                    android:maxLines="1" />
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:textAllCaps="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_reporting_note"
                 style="@style/AstraTextInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/loginViewsMargin"
-                android:background="#fff"
+                android:hint="CATATAN"
                 app:helperText="* DESKRIPSIKAN TEMUAN SEDETAIL MUNGKIN">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/asset_view"
+                    android:id="@+id/et_reporting_note"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:focusedByDefault="true"
-                    android:gravity="start"
-                    android:hint="CATATAN"
-                    android:inputType="textMultiLine"
-                    android:padding="16dp"
-                    android:singleLine="false"
-                    android:textColorHint="#757575" />
+                    android:layout_height="wrap_content"
+                    android:lines="3" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/forgot_password"
-                style="@style/AstraButtonOutlineStyle"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_photo"
+                style="@style/AstraButtonOutlineBgLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/loginViewsMargin"
-                android:drawableStart="@drawable/ic_baseline_camera_alt_24"
-                android:drawableLeft="@drawable/ic_baseline_camera_alt_24"
                 android:paddingStart="32dp"
                 android:paddingEnd="32dp"
-                android:text="Tambahkan Foto" />
+                android:text="Tambahkan Foto"
+                app:icon="@drawable/ic_baseline_camera_alt_24" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_photo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:isScrollContainer="false"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
+                android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2"
-                tools:itemCount="2"
+                tools:itemCount="3"
                 tools:listitem="@layout/item_photo">
 
             </androidx.recyclerview.widget.RecyclerView>
 
             <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cb_reporting_accident"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:button="@null"
@@ -120,55 +118,51 @@
                 android:textAllCaps="true" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cb_reporting_pic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:button="@null"
                 android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-                android:text="Laporkan kepada PIC"
+                android:text="@string/laporkan_kepada_pic"
                 android:textAllCaps="true" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cb_reporting_quickAction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:button="@null"
                 android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-                android:text="TINDAKAN CEPAT"
+                android:text="@string/tindakan_cepat"
                 android:textAllCaps="true" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/AstraTextInput"
+                android:id="@+id/til_reporting_action_note"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/loginViewsMargin"
-                android:background="#fff"
-                app:helperText="* DESKRIPSIKAN CATATAN TINDAKAN">
+                android:hint="@string/catatan_tindakan"
+                app:helperText="* DESKRIPSIKAN DETAIL TINDAKAN ANDA">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/asset_v"
+                    android:id="@+id/et_reporting_action_note"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:focusedByDefault="true"
-                    android:gravity="start"
-                    android:hint="CATATAN TINDAKAN"
-                    android:inputType="textMultiLine"
-                    android:padding="16dp"
-                    android:singleLine="false"
-                    android:textColorHint="#757575" />
+                    android:layout_height="wrap_content"
+                    android:lines="3" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/save"
-                style="@style/AstraButtonStyle"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_reporting_save"
+                style="@style/AstraButtonBgLightStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/loginViewsMargin"
                 android:drawableStart="@drawable/ic_baseline_camera_alt_24"
-                android:drawableLeft="@drawable/ic_baseline_camera_alt_24"
-                android:text="SIMPAN" />
+                android:padding="@dimen/sp_16"
+                android:text="@string/simpan" />
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

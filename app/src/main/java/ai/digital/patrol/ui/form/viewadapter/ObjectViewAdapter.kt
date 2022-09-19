@@ -10,63 +10,71 @@
 package ai.digital.patrol.ui.form.viewadapter
 
 import ai.digital.patrol.R
-import ai.digital.patrol.model.Object
+import ai.digital.patrol.data.entity.ObjectPatrol
 import ai.digital.patrol.ui.form.listener.OnObjectClickListener
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 
-class ObjectViewAdapter(private val listener: OnObjectClickListener) : RecyclerView.Adapter<ObjectViewAdapter.ObjectViewHolder>(){
-    private var _object = mutableListOf<Object>()
+class ObjectViewAdapter(private val listener: OnObjectClickListener) :
+    RecyclerView.Adapter<ObjectViewAdapter.ObjectViewHolder>() {
+    private var _objectPatrol = mutableListOf<ObjectPatrol>()
+    private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ObjectViewHolder {
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_object, parent, false)
+        context = parent.context
         return ObjectViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ObjectViewHolder, position: Int) {
-        val item = _object[position]
+        val item = _objectPatrol[position]
         holder.bind(item, listener)
     }
 
     override fun getItemCount(): Int {
-        return _object.size
+        return _objectPatrol.size
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setList(_object: List<Object>) {
-        this._object = _object.toMutableList()
-        Log.d("OBJECT", this._object.toString())
+    fun setList(_objectPatrol: List<ObjectPatrol>) {
+        this._objectPatrol = _objectPatrol.toMutableList()
+        Log.d("OBJECT", this._objectPatrol.toString())
         notifyDataSetChanged()
     }
 
-    inner class ObjectViewHolder(item: View): RecyclerView.ViewHolder(item) {
-        private val objectName: TextView = itemView.findViewById(R.id.tv_object_name)
-        private val objectStatus: View = itemView.findViewById(R.id.statusview)
-        private val objectIcon: ImageView = itemView.findViewById(R.id.imv_status)
+    inner class ObjectViewHolder(item: View) : RecyclerView.ViewHolder(item) {
+        private val objectName: TextView = itemView.findViewById(R.id.item_tv_object_name)
+        private val objectBg: MaterialCardView = itemView.findViewById(R.id.item_cv_object_card)
+        private val objectIcon: ImageView = itemView.findViewById(R.id.item_imv_object_icon)
 
-        fun bind(_object: Object, listener: OnObjectClickListener){
-            objectName.text = _object.nama_objek
-            if (!_object.status){
-                objectStatus.setBackgroundResource(R.color.primaryColor)
-                objectIcon.visibility = VISIBLE
-            }else{
-                objectStatus.setBackgroundResource(R.color.green)
-                objectIcon.visibility = GONE
+        fun bind(_objectPatrol: ObjectPatrol, listener: OnObjectClickListener) {
+            objectName.text = _objectPatrol.nama_objek
+            val patrolStatus = _objectPatrol.is_normal
+            if (patrolStatus == false) {
+                objectBg.setCardBackgroundColor(ContextCompat.getColor(context, R.color.alert))
+                objectBg.strokeColor =ContextCompat.getColor(context, R.color.alert)
 
-                itemView.setOnClickListener{
-                    listener.onItemClicked(_object)
+                objectName.setTextColor(ContextCompat.getColor(context, R.color.white))
+
+                objectIcon.setImageResource(R.drawable.ic_round_notification_important_24)
+                objectIcon.setColorFilter(ContextCompat.getColor(context, R.color.white))
+                itemView.setOnClickListener(null)
+            } else {
+                objectIcon.setImageResource(R.drawable.baseline_chevron_right_white_36dp)
+                itemView.setOnClickListener {
+                    listener.onItemClicked(_objectPatrol)
                 }
             }
-
         }
     }
 }

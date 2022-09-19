@@ -15,11 +15,10 @@ import java.io.IOException
 
 class AuthenticationInterceptor(private var authToken: String) : Interceptor {
     @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain?): Response {
-        val original = chain?.request()
-        authToken = "Bearer  $authToken"
-        val builder = original!!.newBuilder()
-            .header("Authorization", authToken)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val original = chain.request()
+        val builder = original.newBuilder()
+            .header("x-API-KEY", authToken)
         val request = builder.build()
         return chain.proceed(request)
     }

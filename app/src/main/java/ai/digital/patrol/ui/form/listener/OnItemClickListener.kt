@@ -9,10 +9,7 @@
 
 package ai.digital.patrol.ui.form.listener
 
-import ai.digital.patrol.model.Checkpoint
-import ai.digital.patrol.model.Object
-import ai.digital.patrol.model.Report
-import ai.digital.patrol.model.Zone
+import ai.digital.patrol.data.entity.*
 
 interface OnZoneClickListener {
     fun onItemClicked(_zone: Zone)
@@ -21,8 +18,8 @@ interface OnCheckpointClickListener {
     fun onItemClicked(_checkpoint: Checkpoint)
 }
 interface OnObjectClickListener {
-    fun onItemClicked(_object: Object)
+    fun onItemClicked(_objectPatrol: ObjectPatrol)
 }
 interface OnReportClickListener {
-    fun onItemClicked(_report: Report)
+    fun onItemClicked(_reportDetail: ReportDetail)
 }

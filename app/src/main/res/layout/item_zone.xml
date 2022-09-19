@@ -7,60 +7,62 @@
   ~     Last modified 8/6/22, 1:18 AM
   -->
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:elevation="@dimen/dp_0"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardUseCompatPadding="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/dp_0"
     app:cardCornerRadius="10dp"
     app:cardMaxElevation="@dimen/dp_2"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    app:cardUseCompatPadding="true"
+    app:strokeColor="@color/info"
+    android:id="@+id/zone_bg"
+    app:strokeWidth="2dp"
+    >
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <View
-            android:id="@+id/statusview"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="match_parent"
-            android:background="@color/primaryColor" />
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_24">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_weight="1"
-            android:layout_width="match_parent"
             android:id="@+id/content_zone_item"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/dp_8">
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_zone_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="start"
+                android:layout_gravity="center"
+                style="@style/textTitledark"
                 android:text="PLANT 5 - ZONA 1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:textStyle="bold" />
-
             <TextView
-                android:id="@+id/tv_zone_shift"
+                android:id="@+id/tv_zone_patrol_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="@dimen/dp_2"
-                android:paddingBottom="@dimen/dp_2"
-                android:text="SHIFT 1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-
-            <TextView
-                android:id="@+id/tv_zone_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:breakStrategy="high_quality"
-                android:gravity="center"
-                android:text="Senin, 1 Januari 2022"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto"
+                android:gravity="start|center_vertical"
+                android:text="Sedang dipatroli"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <ImageView
+            android:id="@+id/ic_chevron_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/baseline_chevron_right_white_36dp" />
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

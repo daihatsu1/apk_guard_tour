@@ -15,10 +15,9 @@
     android:layout_gravity="center"
     android:layout_marginTop="@dimen/loginViewsMargin"
     android:layout_marginBottom="@dimen/loginViewsMargin"
-    android:background="@color/cardview_light_background"
     app:cardCornerRadius="20dp"
-    app:cardElevation="8dp"
-    app:cardMaxElevation="10dp"
+    style="@style/card"
+    android:background="@color/default_background_color"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true">
 
@@ -29,6 +28,7 @@
         style="@style/linearParent">
 
         <TextView
+            style="@style/headerText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/loginViewsMargin"
@@ -40,23 +40,30 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/AstraTextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/loginViewsMargin"
-            android:hint="@string/text_email"
+            android:hint="Masukan NPK"
+            android:imeOptions="actionNext"
+            style="@style/AstraTextInputLogin"
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:endIconMode="clear_text" />
+                android:text="226146"
+                android:maxLines="1"
+                android:inputType="number"
+                app:endIconMode="clear_text"
+                android:nextFocusDown="@+id/password"
+                android:imeOptions="actionNext"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/AstraTextInput"
+            style="@style/AstraTextInputLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/loginViewsMargin"
@@ -68,13 +75,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:text="226146"
+                android:imeOptions="actionDone"
                 app:errorEnabled="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/login"
-            style="@style/AstraButtonStyle"
+            style="@style/AstraButtonBgLightStyle"
              android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -83,9 +92,10 @@
             android:paddingStart="32dp"
             android:paddingEnd="32dp"
             android:text="Login" />
+
         <Button
             android:id="@+id/forgot_password"
-            style="@style/AstraButtonOutlineStyle"
+            style="@style/AstraButtonOutlineBgLight"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"

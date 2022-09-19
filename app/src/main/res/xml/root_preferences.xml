@@ -14,6 +14,7 @@
 
         <SwitchPreferenceCompat
             app:key="view_mode"
+            android:icon="@drawable/baseline_dark_mode_grey_500_24dp"
             app:title="Mode Malam" />
 
     </PreferenceCategory>
@@ -21,6 +22,7 @@
     <PreferenceCategory app:title="Akun">
 
         <EditTextPreference
+            android:icon="@drawable/ic_password_grey_500_24dp"
             app:key="password"
             app:title="Ubah Password"
             app:useSimpleSummaryProvider="false" />
@@ -30,6 +32,7 @@
 <!--            app:title="Keluar"-->
 <!--            app:useSimpleSummaryProvider="false" />-->
         <Preference
+            android:icon="@drawable/ic_logout_grey_500_24dp"
             android:title="Keluar"
             android:key="logout"
             />

@@ -20,12 +20,15 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/iv_reporting_photo"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:src="@drawable/army_national_guard" />
+
         <ImageButton
+            android:id="@+id/btn_remove_photo"
             android:layout_width="25dp"
             android:layout_height="match_parent"
             android:background="@color/red_500"

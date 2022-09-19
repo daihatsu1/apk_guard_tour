@@ -9,24 +9,26 @@
 
 package ai.digital.patrol.ui.login
 
-import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import ai.digital.patrol.R
+import ai.digital.patrol.databinding.ActivityLoginBinding
+import ai.digital.patrol.helper.NFCReader
+import ai.digital.patrol.helper.Utils
+import ai.digital.patrol.ui.main.MainActivity
+//import android.app.PendingIntent
+import android.content.Intent
+import android.nfc.NfcAdapter
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.Toast
-import ai.digital.patrol.databinding.ActivityLoginBinding
-
-import ai.digital.patrol.R
-import ai.digital.patrol.ui.main.MainActivity
-import android.content.Intent
 import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 class LoginActivity : AppCompatActivity() {
 
@@ -34,30 +36,32 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     var loadingProgressBar: ProgressBar? = null
     val TAG: String = "LoginActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Utils.setConfig(this)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        setContentView(binding.root)
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
-        val usernameEditText = binding!!.layoutLogin.username
-        val passwordEditText = binding!!.layoutLogin.password
-        val loginButton = binding!!.layoutLogin.login
-        loadingProgressBar = binding!!.layoutLogin.loading
+        val usernameEditText = binding.layoutLogin.username
+        val passwordEditText = binding.layoutLogin.password
+        val loginButton = binding.layoutLogin.login
+        loadingProgressBar = binding.layoutLogin.loading
 
-        loginViewModel!!.loginFormState.observe(this, Observer { loginFormState ->
+        loginViewModel.loginFormState.observe(this, Observer { loginFormState ->
             if (loginFormState == null) {
                 return@Observer
             }
             loginButton.isEnabled = loginFormState.isDataValid
             if (loginFormState.usernameError != null) {
-                usernameEditText.error = getString(loginFormState.usernameError!!)
+                usernameEditText.error = getString(loginFormState.usernameError)
             }
         })
 
-        loginViewModel!!.loginResult.observe(this, Observer { loginResult ->
+        loginViewModel.loginResult.observe(this, Observer { loginResult ->
             if (loginResult == null) {
                 return@Observer
             }
@@ -69,7 +73,6 @@ class LoginActivity : AppCompatActivity() {
             }
             setResult(RESULT_OK)
 
-            finish();
         })
         val afterTextChangedListener: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -93,7 +96,8 @@ class LoginActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 loginViewModel.login(
                     usernameEditText.text.toString(),
-                    passwordEditText.text.toString(),
+                    passwordEditText.text.toString()
+
                 )
             }
             false
@@ -102,9 +106,11 @@ class LoginActivity : AppCompatActivity() {
             loadingProgressBar!!.visibility = View.VISIBLE
             loginViewModel.login(
                 usernameEditText.text.toString(),
-                passwordEditText.text.toString(),
+                passwordEditText.text.toString()
+
             )
         }
+
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
@@ -118,10 +124,26 @@ class LoginActivity : AppCompatActivity() {
 
         val mainActivity = Intent(this, MainActivity::class.java)
         startActivity(mainActivity)
+        finishAffinity()
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+        loadingProgressBar!!.visibility = View.GONE
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        NFCReader().resolveIntent(intent)
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 }
 

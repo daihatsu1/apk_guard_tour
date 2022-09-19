@@ -19,10 +19,17 @@
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/secondaryDarkColor</item>
         <!-- Customize your theme here. -->
     </style>
-    i
+
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/secondaryDarkColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="android:statusBarColor">@color/secondaryColor</item>
+    </style>
+
 
     <style name="Theme.DigitalPatrolGuard.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -34,26 +41,59 @@
     <style name="Theme.DigitalPatrolGuard.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AstraButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="backgroundTint">@color/secondaryColor</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/primaryDarkColor</item>
         <item name="textAllCaps">true</item>
         <item name="android:layout_height">@dimen/btn_height</item>
         <item name="cornerRadius">30dp</item>
         <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AstraButtonBgLightStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primaryDarkColor</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:layout_height">@dimen/btn_height</item>
+        <item name="cornerRadius">30dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/roboto</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="AstraButtonOutlineStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="android:layout_height">@dimen/btn_height</item>
-        <item name="color">@color/secondaryColor</item>
-        <item name="strokeColor">@color/secondaryColor</item>
+        <item name="color">@color/white</item>
+        <item name="strokeColor">@color/white</item>
         <item name="strokeWidth">2dp</item>
-        <item name="android:textColor">@color/secondaryColor</item>
+        <item name="android:textColor">@color/white</item>
         <item name="textAllCaps">true</item>
+        <item name="fontFamily">@font/roboto</item>
         <item name="cornerRadius">30dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AstraButtonOutlineBgLight" parent="AstraButtonOutlineStyle">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:layout_height">@dimen/btn_height</item>
+        <item name="color">@color/primaryColor</item>
+        <item name="strokeColor">@color/primaryColor</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:textColor">@color/primaryColor</item>
+        <item name="textAllCaps">true</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="cornerRadius">30dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
+    <style name="AstraButtonOutlineBgLight.dialog">
+        <item name="strokeColor">@color/primaryColor</item>
+        <item name="android:textColor">@color/primaryColor</item>
     </style>
 
     <style name="RoundedCornersDialog" parent="@style/Theme.MaterialComponents.Dialog">
@@ -74,13 +114,30 @@
         <item name="cardElevation">5dp</item>
         <item name="cardPreventCornerOverlap">true</item>
         <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">@color/bg_card</item>
     </style>
 
     <style name="textTitle" parent="@style/TextAppearance.MaterialComponents.Headline2">
-        <item name="android:textColor">@color/secondaryColor</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="drawableTint">@color/white</item>
+        <item name="android:textSize">18sp</item>
         <item name="textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="textTitledark" parent="textTitle">
+        <item name="android:textColor">@color/grey_900</item>
+        <item name="drawableTint">@color/grey_900</item>
+    </style>
+
+    <style name="textTitle.bg">
+        <item name="android:background">@drawable/refer_earn_button</item>
+        <item name="android:drawablePadding">@dimen/dp_8</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:paddingStart">@dimen/dp_16</item>
+        <item name="android:paddingTop">@dimen/dp_8</item>
+        <item name="android:paddingBottom">@dimen/dp_8</item>
     </style>
 
 
@@ -91,10 +148,12 @@
     </style>
 
     <style name="headerText" parent="parent">
-        <item name="android:textSize">@dimen/headerTextSize</item>
+        <item name="android:textSize">24dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/primaryTextColor</item>
         <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+
     </style>
 
     <style name="linearParent" parent="parent">
@@ -114,23 +173,38 @@
         <item name="android:textColor">@color/secondaryColor</item>
         <item name="textAllCaps">true</item>
         <item name="cornerRadius">30dp</item>
+        <item name="fontFamily">@font/roboto</item>
     </style>
 
-<!--    <style name="AstraTextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"></style>-->
+    <!--    <style name="AstraTextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"></style>-->
 
     <style name="AstraTextInputHintStyle" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/grey_900</item>
+        <item name="hintTextColor">@color/primaryColor</item>
     </style>
 
     <style name="dropdownTextInputTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="hintTextColor">?attr/colorOnSurface</item>
         <item name="endIconTint">?attr/colorOnSurface</item>
-
     </style>
 
     <style name="AstraTextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxStrokeErrorColor">@color/red_500</item>
-        <item name="hintTextColor">@color/white</item>
+        <item name="hintTextColor">@color/primaryColor</item>
         <item name="backgroundColor">@color/white</item>
+        <item name="fontFamily">@font/roboto</item>
     </style>
+
+    <style name="AstraTextInputLogin" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeErrorColor">@color/red_500</item>
+        <item name="hintTextColor">@color/grey_900</item>
+        <item name="backgroundColor">@color/grey_900</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="boxStrokeColor">@color/grey_900</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="android:textColorHint">@color/grey_900</item>
+
+    </style>
+
+    <color name="bg_card">#fff</color>
 </resources>

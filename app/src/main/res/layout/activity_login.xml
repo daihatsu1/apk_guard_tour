@@ -17,6 +17,7 @@
     tools:context=".ui.login.LoginActivity">
 
     <RelativeLayout
+        android:background="@color/default_background_color"
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -27,25 +28,11 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="300dp"
+                    android:background="@drawable/login_shape_bk"
                     android:layout_alignParentTop="true"
                     android:baselineAligned="false"
                     android:weightSum="12">
-
-                    <LinearLayout
-                        style="@style/parent"
-                        android:layout_height="300dp"
-                        android:layout_weight="3"
-                        android:background="@drawable/login_shape_bk"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            style="@style/parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/ic_login_bk"
-                            android:contentDescription="login background" />
-
-                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -64,21 +51,14 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="75dp"
                         android:layout_marginBottom="5dp"
+                        android:textColor="@color/white"
                         android:text="SELAMAT DATANG DI \n PATROLI DIGITAL"
-                        android:textColor="#FFFFFF" />
+                         />
 
                     <include
                         android:id="@+id/layout_login"
                         layout="@layout/layout_login" />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switch1"
-                        android:checked="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|bottom"
-                        android:text="@string/mode_gelap"
-                        />
                 </LinearLayout>
 
 
@@ -86,6 +66,12 @@
 
         </ScrollView>
 
+        <ImageView
+            style="@style/parent"
+            android:layout_height="450dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/ic_login_dark_bk"
+            android:contentDescription="login background" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

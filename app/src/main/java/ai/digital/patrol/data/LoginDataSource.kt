@@ -9,22 +9,29 @@
 
 package ai.digital.patrol.data
 
-import ai.digital.patrol.data.model.LoggedInUser
-import java.io.IOException
+import ai.digital.patrol.callback.LoginCallback
+import ai.digital.patrol.networking.ServiceGenerator
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
 class LoginDataSource {
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
-        try {
-            // TODO: handle loggedInUser authentication
-            val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-            return Result.Success(fakeUser)
-        } catch (e: Throwable) {
-            return Result.Error(IOException("Error logging in", e))
-        }
+    fun login(npk: String, password: String, callback: LoginCallback?)  {
+//        try {
+//            // TODO: handle loggedInUser authentication
+////            val user = User("", "Jane Doe")
+//            val restInterface = ServiceGenerator.createService()
+//            val loginCall = restInterface.login(npk, password)
+//            return Result.Success()
+//        } catch (e: Throwable) {
+//            return Result.Error(IOException("Error logging in", e))
+//        }
+
+        val restInterface = ServiceGenerator.createService()
+        val loginCall = restInterface.login(npk, password)
+        callback?.let { loginCall!!.enqueue(it) }
+
     }
 
     fun logout() {

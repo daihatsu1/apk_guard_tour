@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Digital Patrol Guard
+  ~     colors.xml
+  ~     Created by ImamSyahrudin on 12/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/12/22, 4:11 PM
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--    <color name="primaryColor">#000000</color>-->
+    <!--    <color name="primaryLightColor">#FFA191</color>-->
+    <!--    <color name="primaryDarkColor">#890000</color>-->
+    <!--    <color name="secondaryColor">#303030</color>-->
+    <!--    <color name="secondaryLightColor">#F44336</color>-->
+    <!--    <color name="secondaryDarkColor">#c20000</color>-->
+    <color name="primaryTextColor">#ffffff</color>
+    <!--    <color name="secondaryTextColor">#ffffff</color>-->
+
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#fff</color>
+    <color name="default_background_color">#633E3D3D</color>
+    <color name="bg_layout">#303030</color>
+    <color name="primaryAccentColor">#000000</color>
+    <color name="secondaryAccentColor">#303030</color>
+
+</resources>

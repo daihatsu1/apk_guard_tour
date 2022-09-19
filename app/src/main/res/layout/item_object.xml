@@ -6,65 +6,49 @@
   ~
   ~     Last modified 8/8/22, 1:59 AM
   -->
-
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:elevation="@dimen/dp_0"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardUseCompatPadding="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/dp_0"
     app:cardCornerRadius="10dp"
     app:cardMaxElevation="@dimen/dp_2"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    app:cardUseCompatPadding="true"
+    app:strokeColor="@color/info"
+    app:strokeWidth="2dp"
+    android:id="@+id/item_cv_object_card"
+    >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <View
-            android:id="@+id/statusview"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="match_parent"
-            android:background="@color/red_500" />
-<!--        <LinearLayout-->
-<!--            android:layout_weight="1"-->
-<!--            android:id="@+id/content_checkpoint_item"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            >-->
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_24">
 
             <TextView
-                android:id="@+id/tv_object_name"
+                android:id="@+id/item_tv_object_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_weight="1"
-                android:paddingTop="@dimen/dp_24"
-                android:paddingBottom="@dimen/dp_24"
-                android:text="OBJECT 1"
-                android:textAllCaps="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:layout_gravity="center"
+                android:gravity="left"
+                style="@style/textTitledark"
+                android:text="CHECKPOINT 1 ACBS KKLAKKJD"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/tv_object_desc"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:text="deskripsi object"-->
-<!--                android:textAllCaps="true"-->
-<!--                android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
-<!--                android:textStyle="bold" />-->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/item_imv_object_icon"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_chevron_right_white_36dp" />
 
-<!--        </LinearLayout>-->
-        <ImageView
-            android:id="@+id/imv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginEnd="@dimen/dp_24"
-            android:src="@drawable/ic_round_notification_important_24"
-            />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

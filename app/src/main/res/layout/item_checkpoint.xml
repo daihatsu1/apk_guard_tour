@@ -7,15 +7,17 @@
   ~     Last modified 8/8/22, 1:17 AM
   -->
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:elevation="@dimen/dp_0"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardUseCompatPadding="true"
-    app:cardCornerRadius="10dp"
-    app:cardBackgroundColor="#1DFFC1D0"
-    app:cardMaxElevation="@dimen/dp_2"
+    android:id="@+id/checkpoint_bg"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/dp_0"
+    app:cardCornerRadius="10dp"
+    app:cardMaxElevation="@dimen/dp_2"
+    app:cardUseCompatPadding="true"
+    app:strokeColor="@color/info"
+    app:strokeWidth="2dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,35 +27,56 @@
             android:id="@+id/content_checkpoint_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/dp_24"
-            android:paddingBottom="@dimen/dp_24">
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_24">
 
-            <TextView
-                android:layout_marginStart="@dimen/dp_24"
-                android:layout_marginEnd="@dimen/dp_24"
-                android:id="@+id/tv_checkpoint_name"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="CHECKPOINT 1 ACBS KKLAKKJD"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold" />
-            <TextView
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_checkpoint_name"
+                    style="@style/textTitledark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="start|center_vertical"
+                    android:text="CHECKPOINT 1 ACBS KKLAKKJD"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_checkpoint_patrol_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto"
+                    android:gravity="start|center_vertical"
+                    android:text="Sedang dipatroli"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_checkpoint_nfc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <ImageView
+                android:id="@+id/ic_chevron_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_checkpoint_nfc"
-                android:visibility="gone"
-                />
+                android:src="@drawable/baseline_chevron_right_white_36dp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-        <View
-            android:id="@+id/statusview"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/content_checkpoint_item"
-            android:layout_alignTop="@id/content_checkpoint_item"
-            android:background="@color/primaryColor" />
+
 
     </RelativeLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

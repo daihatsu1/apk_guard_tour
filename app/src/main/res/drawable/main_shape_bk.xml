@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~     Digital Patrol Guard
+  ~     login_shape_bk.xml
+  ~     Created by ImamSyahrudin on 8/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/7/22, 7:05 PM
+  -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
+    <corners
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp"
+        android:topLeftRadius="50dp"
+        android:topRightRadius="50dp"
+        />
+    <solid
+        android:color="@color/bg_layout"
+        />
+    <size
+        android:width="182dp"
+        android:height="100dp"
+        />
+</shape>

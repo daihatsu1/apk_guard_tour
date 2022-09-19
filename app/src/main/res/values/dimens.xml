@@ -22,7 +22,7 @@
     <dimen name="sp_16">16sp</dimen>
     <dimen name="sp_20">20sp</dimen>
     <dimen name="sp_24">24sp</dimen>
-    <dimen name="btn_height">72dp</dimen>
+    <dimen name="btn_height">62dp</dimen>
 
     <dimen name="font_size_24">24sp</dimen>
     <dimen name="loginViewsMargin">20dp</dimen>

@@ -11,9 +11,12 @@ package ai.digital.patrol.ui.dialog
 
 import ai.digital.patrol.R
 import ai.digital.patrol.databinding.FragmentDialogConfirmPatrolBinding
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 
 
@@ -23,7 +26,8 @@ import androidx.fragment.app.DialogFragment
  * @property dialogCallbackListener
  * @constructor Create empty Dialog fragment
  */
-class DialogFragment(private val dialogCallbackListener: DialogCallbackListener) : DialogFragment() {
+class DialogFragment(private val dialogCallbackListener: DialogCallbackListener) :
+    DialogFragment() {
     override fun getTheme() = R.style.RoundedCornersDialog
 
     companion object {
@@ -34,14 +38,22 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
         private const val KEY_TITLE = "KEY_TITLE"
         private const val KEY_SUBTITLE = "KEY_SUBTITLE"
         private const val KEY_POSITIVE = "KEY_POSITIVE"
+        private const val KEY_POSITIVE_COLOR = "KEY_POSITIVE_COLOR"
         private const val KEY_NEGATIVE = "KEY_NEGATIVE"
 
-        fun newInstance(title: String, subTitle: String, positiveText: String, negativeText: String,
-                        dialogCallbackListener: DialogCallbackListener): ai.digital.patrol.ui.dialog.DialogFragment {
+        fun newInstance(
+            title: String,
+            subTitle: String,
+            positiveText: String,
+            negativeText: String,
+            dialogCallbackListener: DialogCallbackListener,
+            positiveColorInt: Int = R.color.primaryDarkColor,
+        ): ai.digital.patrol.ui.dialog.DialogFragment {
             val args = Bundle()
             args.putString(KEY_TITLE, title)
             args.putString(KEY_SUBTITLE, subTitle)
             args.putString(KEY_POSITIVE, positiveText)
+            args.putInt(KEY_POSITIVE_COLOR, positiveColorInt)
             args.putString(KEY_NEGATIVE, negativeText)
             val fragment = DialogFragment(dialogCallbackListener)
             fragment.arguments = args
@@ -56,6 +68,7 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDialogConfirmPatrolBinding.inflate(inflater, container, false)
+
         return binding!!.root
     }
 
@@ -83,7 +96,11 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
      * @param view
      */
     private fun setupView(view: View) {
-
+        if (arguments?.getInt(KEY_POSITIVE_COLOR) != null) {
+//            binding!!.btnDialogPositif.setBackgroundResource(arguments?.getInt(KEY_POSITIVE_COLOR)!!)
+            binding!!.btnDialogPositif.backgroundTintList =
+                ContextCompat.getColorStateList(requireContext(), arguments?.getInt(KEY_POSITIVE_COLOR)!!)
+        }
         binding!!.dialogTitle.text = arguments?.getString(KEY_TITLE)
         binding!!.dialogSubtitle.text = arguments?.getString(KEY_SUBTITLE)
         binding!!.btnDialogPositif.text = arguments?.getString(KEY_POSITIVE)

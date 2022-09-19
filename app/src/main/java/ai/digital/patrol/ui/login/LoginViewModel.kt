@@ -9,16 +9,24 @@
 
 package ai.digital.patrol.ui.login
 
+import ai.digital.patrol.GuardTourApplication
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import ai.digital.patrol.data.LoginRepository
-import ai.digital.patrol.data.Result
+import ai.digital.patrol.data.repository.LoginRepository
 
 import ai.digital.patrol.R
+import ai.digital.patrol.callback.LoginCallback
+import ai.digital.patrol.helper.PreferenceHelper
+import ai.digital.patrol.helper.PreferenceHelper.set
+import ai.digital.patrol.data.entity.LoggedInUser
+import ai.digital.patrol.data.entity.User
+import android.util.Log
+import retrofit2.Call
+import retrofit2.Response
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel(), LoginCallback {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -28,14 +36,19 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
+        loginRepository.login(username, password, this)
+    }
+    fun logout() {
+        // can be launched in a separate asynchronous job
+        loginRepository.logout()
+    }
 
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
+    fun isLoggedIn(): Boolean {
+        Log.d("IS_LOGGED_IN","isLoggedIn "+ loginRepository.isLoggedIn())
+        return loginRepository.isLoggedIn()
+    }
+    fun getUser(): LiveData<User>? {
+        return loginRepository.getUser()
     }
 
     fun loginDataChanged(username: String, password: String) {
@@ -60,5 +73,33 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 5
+    }
+
+    override fun onResponse(call: Call<LoggedInUser?>, response: Response<LoggedInUser?>) {
+        if (response.isSuccessful) {
+            val data = response.body()
+            if (data != null) {
+                data.user?.let { loginRepository.setUser(it) }
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext()).set("apiKey", data.key)
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext()).set("userId",
+                    data.user?.npk
+                )
+                _loginResult.value =
+                    LoginResult(
+                        success = LoggedInUserView(
+                            displayName = data.user?.name.toString(),
+                            npk = data.user?.npk.toString()
+                        )
+                    )
+            }else{
+                _loginResult.value = LoginResult(error = R.string.login_failed_server)
+            }
+        }else{
+            _loginResult.value = LoginResult(error = R.string.login_failed)
+        }
+    }
+
+    override fun onFailure(call: Call<LoggedInUser?>, t: Throwable) {
+        _loginResult.value = LoginResult(error = R.string.login_failed)
     }
 }

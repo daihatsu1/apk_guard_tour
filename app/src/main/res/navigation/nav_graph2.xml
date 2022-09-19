@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     Digital Patrol Guard
   ~     nav_graph2.xml
   ~     Created by ImamSyahrudin on 8/8/2022
@@ -22,7 +21,9 @@
 
         <action
             android:id="@+id/action_ZoneFragment_to_CheckpointFragment"
-            app:destination="@id/checkpoint_fragment" />
+            app:destination="@id/checkpoint_fragment">
+
+        </action>
     </fragment>
     <fragment
         android:id="@+id/checkpoint_fragment"
@@ -34,11 +35,13 @@
             android:id="@+id/action_CheckpointFragment_to_listObjectFragment"
             app:destination="@id/object_fragment" />
         <action
-            android:id="@+id/action_CheckpointFragment_to_FirstFragment2"
-            app:destination="@id/zone_fragment" />
-        <action
             android:id="@+id/action_checkpoint_fragment_to_zone_fragment"
             app:destination="@id/zone_fragment" />
+        <argument
+            android:name="data_zone"
+            android:defaultValue="@null"
+            app:argType="ai.digital.patrol.data.entity.Zone"
+            app:nullable="true" />
 
     </fragment>
     <fragment
@@ -55,15 +58,40 @@
         <action
             android:id="@+id/action_object_fragment_to_listReportFragment"
             app:destination="@id/listReportFragment" />
+        <argument
+            android:name="data_checkpoint"
+            android:defaultValue="@null"
+            app:argType="ai.digital.patrol.data.entity.Checkpoint"
+            app:nullable="true" />
+        <argument
+            android:name="data_report"
+            android:defaultValue="@null"
+            app:argType="ai.digital.patrol.data.entity.Report"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/reporting_fragment"
         android:name="ai.digital.patrol.ui.form.ReportingFragment"
         android:label="fragment_reporting"
-        tools:layout="@layout/fragment_reporting" >
+        tools:layout="@layout/fragment_reporting">
         <action
             android:id="@+id/action_reportingFragment_to_listObjectFragment"
             app:destination="@id/object_fragment" />
+        <argument
+            android:name="data_object"
+            android:defaultValue="@null"
+            app:argType="ai.digital.patrol.data.entity.ObjectPatrol"
+            app:nullable="true" />
+        <argument
+            android:name="data_checkpoint"
+            android:defaultValue="@null"
+            app:argType="ai.digital.patrol.data.entity.Checkpoint"
+            app:nullable="true" />
+        <argument
+            android:name="data_report"
+            android:defaultValue="@null"
+            app:argType="ai.digital.patrol.data.entity.Report"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/listReportFragment"

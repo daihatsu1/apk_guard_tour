@@ -10,7 +10,7 @@
 package ai.digital.patrol.networking
 
 object APIUrl {
-//    val BASE_URL: String = "http://10.0.2.2:80/v1/"
-//    val BASE_URL: String = "http://192.168.205.1:8000/v1/"
-    const val BASE_URL: String = "http://yaka.cube.id/v1/"
+//        val BASE_URL: String = "http://10.0.2.2:8080/api/"
+//        const val BASE_URL: String = "https://patrolproject.isecuritydaihatsu.com/api/"
+    const val BASE_URL: String = "http://103.63.25.164/guard_tour/api/"
 }

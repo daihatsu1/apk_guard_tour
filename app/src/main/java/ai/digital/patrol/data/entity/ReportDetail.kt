@@ -20,17 +20,18 @@ import java.util.*
     tableName = "report_detail", foreignKeys = [
         ForeignKey(
             entity = Report::class,
-            onUpdate = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.NO_ACTION,
             parentColumns = arrayOf("sync_token"),
             childColumns = arrayOf("report")
         ),
         ForeignKey(
             entity = ObjectPatrol::class,
-            onUpdate = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.NO_ACTION,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("admisecsgp_mstobj_objek_id")
-        )
-    ]
+        ),
+
+    ],indices = [androidx.room.Index("admisecsgp_mstobj_objek_id", unique = true)]
 )
 data class ReportDetail(
     @PrimaryKey @SerializedName("sync_token") @ColumnInfo(name = "sync_token") var sync_token: String = UUID.randomUUID()
@@ -53,5 +54,4 @@ data class ReportDetail(
     @ColumnInfo(name = "created_at") @SerializedName("created_at") val created_at: String? = null,
     @ColumnInfo(name = "synced") var synced: Boolean? = false,
     @ColumnInfo(name = "report") var reportId: String,
-) {
-}
+)

@@ -77,6 +77,13 @@
             android:layout_above="@+id/start_unscheduled_patrol"
             android:text="Selesai Zona" />
 
+        <Button
+            android:visibility="gone"
+            android:id="@+id/fab_zone_back"
+            style="@style/AstraButtonOutlineStyle"
+            android:layout_width="match_parent"
+            android:layout_above="@+id/start_unscheduled_patrol"
+            android:text="Kembali ke Zona" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

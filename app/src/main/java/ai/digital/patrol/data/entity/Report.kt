@@ -20,7 +20,9 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
-@Entity(tableName = "report")
+@Entity(tableName = "report",
+    indices = [androidx.room.Index("admisecsgp_mstckp_checkpoint_id", unique = true)],
+)
 @Parcelize
 data class Report(
     @PrimaryKey @SerializedName("sync_token") @ColumnInfo(name = "sync_token") var sync_token: String = UUID.randomUUID().toString(),

@@ -29,7 +29,7 @@ import kotlinx.parcelize.Parcelize
     )
 @Parcelize
 data class Checkpoint(
-    @PrimaryKey(autoGenerate = true) @NonNull val checkpointLocalId: Int,
+    @PrimaryKey(autoGenerate = true) val checkpointLocalId: Int,
     @ColumnInfo(name = "id") @SerializedName("id") var id: String,
     @ColumnInfo(name = "zone_id") @SerializedName("zone_id")var zone_id: String? = null,
     @ColumnInfo(name = "check_name") @SerializedName("check_name")val check_name: String? = null,

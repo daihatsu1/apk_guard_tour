@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
@@ -59,20 +60,55 @@ class ObjectViewAdapter(private val listener: OnObjectClickListener) :
 
         fun bind(_objectPatrol: ObjectPatrol, listener: OnObjectClickListener) {
             objectName.text = _objectPatrol.nama_objek
-            val patrolStatus = _objectPatrol.is_normal
-            if (patrolStatus == false) {
-                objectBg.setCardBackgroundColor(ContextCompat.getColor(context, R.color.alert))
-                objectBg.strokeColor =ContextCompat.getColor(context, R.color.alert)
+            when (_objectPatrol.is_normal) {
+                false -> {
+                    objectBg.setCardBackgroundColor(ContextCompat.getColor(context, R.color.alert))
+                    objectBg.strokeColor = ContextCompat.getColor(context, R.color.alert)
 
-                objectName.setTextColor(ContextCompat.getColor(context, R.color.white))
+                    objectName.setTextColor(ContextCompat.getColor(context, R.color.white))
 
-                objectIcon.setImageResource(R.drawable.ic_round_notification_important_24)
-                objectIcon.setColorFilter(ContextCompat.getColor(context, R.color.white))
-                itemView.setOnClickListener(null)
-            } else {
-                objectIcon.setImageResource(R.drawable.baseline_chevron_right_white_36dp)
-                itemView.setOnClickListener {
-                    listener.onItemClicked(_objectPatrol)
+                    objectIcon.setImageResource(R.drawable.outline_error_outline_24)
+                    objectIcon.setColorFilter(ContextCompat.getColor(context, R.color.white))
+                    itemView.setOnClickListener {
+                        Toast.makeText(
+                            context,
+                            "Object ditandai sebagai temuan pada patroli sebelumnya",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                true -> {
+                    objectIcon.setImageResource(R.drawable.outline_check_circle_outline_24)
+                    objectIcon.setColorFilter(ContextCompat.getColor(context, R.color.white))
+                    objectBg.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.success
+                        )
+                    )
+                    objectBg.strokeColor = ContextCompat.getColor(context, R.color.success)
+
+                    objectName.setTextColor(ContextCompat.getColor(context, R.color.white))
+                    objectIcon.setColorFilter(ContextCompat.getColor(context, R.color.white))
+                    itemView.setOnClickListener(null)
+                }
+
+                else -> {
+                    objectIcon.setImageResource(R.drawable.baseline_chevron_right_white_36dp)
+                    objectBg.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.white
+                        )
+                    )
+                    objectBg.strokeColor = ContextCompat.getColor(context, R.color.info)
+
+                    objectName.setTextColor(ContextCompat.getColor(context, R.color.grey_900))
+                    objectIcon.setColorFilter(ContextCompat.getColor(context, R.color.info))
+                    itemView.setOnClickListener {
+                        listener.onItemClicked(_objectPatrol)
+                    }
                 }
             }
         }

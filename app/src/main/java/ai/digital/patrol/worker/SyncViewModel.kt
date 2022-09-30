@@ -4,6 +4,7 @@ import ai.digital.patrol.helper.Cons.SCHEDULE_SYNC_WORKER_REPORT
 import ai.digital.patrol.helper.Cons.SYNC_WORKER_NAME
 import ai.digital.patrol.helper.Cons.SYNC_WORKER_REPORT
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.work.*
@@ -16,6 +17,7 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         mWorkManager.getWorkInfosForUniqueWorkLiveData(SYNC_WORKER_NAME)
 
     fun syncReportData() {
+        Log.d(SYNC_WORKER_NAME, "syncing on proses" )
         mWorkManager.pruneWork()
         val workerRequest = OneTimeWorkRequestBuilder<SyncReportWorker>()
             .setBackoffCriteria(

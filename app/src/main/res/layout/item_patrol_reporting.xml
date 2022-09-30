@@ -95,7 +95,8 @@
             android:adjustViewBounds="true"
             android:cropToPadding="true"
             android:elevation="4dp"
-            android:src="@drawable/baseline_chevron_right_white_36dp" />
+            android:src="@drawable/baseline_chevron_right_white_36dp"
+            android:contentDescription="TODO" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.cardview.widget.CardView>
 

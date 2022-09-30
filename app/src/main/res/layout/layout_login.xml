@@ -52,7 +52,7 @@
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="226146"
+                android:text=""
                 android:maxLines="1"
                 android:inputType="number"
                 app:endIconMode="clear_text"
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:text="226146"
+                android:text=""
                 android:imeOptions="actionDone"
                 app:errorEnabled="true" />
 
@@ -102,6 +102,7 @@
             android:layout_marginTop="@dimen/loginViewsMargin"
             android:paddingStart="32dp"
             android:paddingEnd="32dp"
+            android:visibility="gone"
             android:text="Lupa Password" />
 
         <ProgressBar

@@ -73,7 +73,8 @@
                 android:id="@+id/ic_chevron_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/baseline_chevron_right_white_36dp" />
+                android:src="@drawable/baseline_chevron_right_white_36dp"
+                android:contentDescription="TODO" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -9,10 +9,7 @@
 
 package ai.digital.patrol.networking
 
-import ai.digital.patrol.data.entity.LoggedInUser
-import ai.digital.patrol.data.entity.Report
-import ai.digital.patrol.data.entity.Schedule
-import ai.digital.patrol.data.entity.Zone
+import ai.digital.patrol.data.entity.*
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -31,11 +28,23 @@ interface RestInterface {
     @GET("patroli/dataPatroli")
     fun getPatrolData(): Call<List<Zone>>?
 
+    @GET("patroli/getDataTemuan")
+    fun getDataTemuan(): Call<List<Temuan>>?
+
     @Multipart
     @POST("patroli/dataTemuan")
     @JvmSuppressWildcards
     fun postReport(
-        @PartMap params: Map< String, RequestBody>
+        @PartMap params: Map<String, RequestBody>
     ): Call<Report>
 
+    @GET("patroli/getPatrolActivity")
+    fun getPatrolActivity(@Query("id_jadwal_patroli") idJadwal: String): Call<PatrolActivity>?
+
+    @Multipart
+    @JvmSuppressWildcards
+    @POST("patroli/setPatrolActivity")
+    fun setPatrolActivity(
+        @PartMap params: Map<String, RequestBody>
+    ): Call<PatrolActivity>
 }

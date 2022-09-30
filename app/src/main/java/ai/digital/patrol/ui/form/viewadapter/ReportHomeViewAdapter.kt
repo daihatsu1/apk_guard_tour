@@ -14,6 +14,7 @@ import ai.digital.patrol.data.entity.ReportDetailObject
 import ai.digital.patrol.helper.*
 import ai.digital.patrol.ui.form.listener.OnReportClickListener
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,17 +22,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import com.google.android.material.card.MaterialCardView
 
 class ReportDetailHomeViewAdapter(private val listener: OnReportClickListener?) :
     RecyclerView.Adapter<ReportDetailHomeViewAdapter.ReportDetailViewHolder>() {
     private var _report = mutableListOf<ReportDetailObject>()
+    private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReportDetailViewHolder {
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_patrol_reporting_home, parent, false)
+        context = parent.context
         return ReportDetailViewHolder(view)
     }
 
@@ -50,7 +56,7 @@ class ReportDetailHomeViewAdapter(private val listener: OnReportClickListener?) 
 //            this._report.add(it.reportDetail)
 //        }
         this._report = _reportDetail.toMutableList()
-        Log.d("OBJECT", this._report.toString())
+//        Log.d("OBJECT", this._report.toString())
         notifyDataSetChanged()
     }
 
@@ -59,32 +65,51 @@ class ReportDetailHomeViewAdapter(private val listener: OnReportClickListener?) 
         private val reportDesc: TextView = itemView.findViewById(R.id.tv_reporting_note)
         private val image: ImageView = itemView.findViewById(R.id.iv_reporting_photo)
         private val animIcon: LottieAnimationView = itemView.findViewById(R.id.animIcon)
+        private val card: MaterialCardView = itemView.findViewById(R.id.card_layout)
 
         fun bind(_reportDetailObject: ReportDetailObject, listener: OnReportClickListener?) {
             val reportDetail = _reportDetailObject.reportDetail
             val objectPatrol = _reportDetailObject.objectPatrol
+            image.setImageBitmap(null)
 
             reportTitle.text = objectPatrol.nama_objek
             reportDesc.text = reportDetail.description
-            if (reportDetail.image_1 != null) {
-                if (reportDetail.image_1.startsWith("http")) {
-                    image.loadUrl(reportDetail.image_1)
-                } else if (reportDetail.image_1.startsWith("file")) {
-                    image.loadUri(Uri.parse(reportDetail.image_1))
-                } else {
-                    val images = Utils.decoder(reportDetail.image_1)
-                    if (images != null) {
-                        image.loadBitmap(images)
+            image.scaleType = ImageView.ScaleType.CENTER
+            when (reportDetail.status) {
+                1 -> {
+                    image.loadDrawable(R.drawable.outline_check_circle_outline_24)
+                }
+
+                0 -> {
+                    if (reportDetail.image_1 != null) {
+                        if (reportDetail.image_1.startsWith("http")) {
+                            image.loadUrl(reportDetail.image_1)
+                        } else if (reportDetail.image_1.startsWith("file")) {
+                            image.loadUri(Uri.parse(reportDetail.image_1))
+                        } else {
+                            image.loadDrawable(R.drawable.no_img)
+                        }
                     } else {
                         image.loadDrawable(R.drawable.no_img)
                     }
+                    image.scaleType = ImageView.ScaleType.CENTER_CROP
+
+                }
+
+                else -> {
+                    image.loadDrawable(R.drawable.no_img)
+                    image.scaleType = ImageView.ScaleType.CENTER_CROP
                 }
             }
 
+
             if (reportDetail.synced == true) {
                 animIcon.setAnimation(R.raw.check_okey_done)
+                card.strokeColor = ContextCompat.getColor(context, R.color.success)
+
             } else {
                 animIcon.setAnimation(R.raw.warning)
+                card.strokeColor = ContextCompat.getColor(context, R.color.primaryDarkColor)
             }
             animIcon.repeatCount = LottieDrawable.INFINITE
             animIcon.playAnimation()

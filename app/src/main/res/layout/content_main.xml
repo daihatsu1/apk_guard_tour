@@ -15,7 +15,7 @@
     android:background="@color/default_background_color"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_layout"
@@ -30,26 +30,45 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/linearLayoutCompat"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/dp_24">
 
-                <TextView
-                    style="@style/textTitle"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_24"
                     android:layout_marginRight="@dimen/dp_24"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:background="@drawable/refer_earn_button"
-                    android:drawablePadding="@dimen/dp_8"
-                    android:fontFamily="@font/roboto_bold"
-                    android:paddingStart="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_8"
-                    android:text="@string/jadwal_patroli"
-                    app:drawableStartCompat="@drawable/ic_round_calendar_today_24" />
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:background="@drawable/refer_earn_button">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignTop="@+id/card_layout"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:elevation="4dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/calendar" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="@dimen/dp_8"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center_vertical"
+                        android:paddingStart="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_4"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingBottom="@dimen/dp_4"
+                        android:text="@string/jadwal_patroli" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_schedule"
@@ -65,10 +84,97 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginRight="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:background="@drawable/refer_earn_button">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignTop="@+id/card_layout"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:elevation="4dp"
+                        app:lottie_scale=".5"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/chart" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/dp_8"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/roboto_bold"
+                        android:paddingStart="@dimen/dp_4"
+                        android:paddingTop="@dimen/dp_4"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingBottom="@dimen/dp_4"
+                        android:text="Target Patroli" />
+
+                    <TextView
+                        android:id="@+id/tv_reporting_target"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/dp_2"
+                        android:background="@drawable/circle_white"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:minWidth="40dp"
+                        android:padding="@dimen/dp_4"
+                        android:text="0/0"
+                        android:textColor="@color/primaryAccentColor"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_reporting_persentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/dp_8"
+                        android:layout_marginEnd="@dimen/dp_8"
+                        android:background="@drawable/circle_white"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:maxWidth="60dp"
+                        android:minWidth="30dp"
+                        android:padding="@dimen/dp_4"
+                        android:text="0.0%"
+                        android:textColor="@color/primaryAccentColor"
+                        android:textSize="@dimen/sp_16" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/layout_widget_temuan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_24"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_24"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:background="@drawable/refer_earn_button">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignTop="@+id/card_layout"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:elevation="4dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/bell_alert" />
 
                     <TextView
                         style="@style/textTitle"
@@ -78,38 +184,40 @@
                         android:layout_weight="1"
                         android:drawablePadding="@dimen/dp_8"
                         android:fontFamily="@font/roboto_bold"
-                        android:paddingStart="@dimen/dp_16"
-                        android:paddingTop="@dimen/dp_8"
+                        android:paddingStart="@dimen/dp_4"
+                        android:paddingTop="@dimen/dp_4"
                         android:paddingEnd="@dimen/dp_16"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:text="@string/temuan_hari_ini"
-                        app:drawableStartCompat="@drawable/ic_round_calendar_today_24" />
+                        android:autoSizeTextType="uniform"
+                        android:paddingBottom="@dimen/dp_4"
+                        android:text="Temuan Patroli" />
 
 
                     <TextView
                         android:id="@+id/tv_reporting_count"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_marginEnd="@dimen/dp_2"
                         android:background="@drawable/circle_white"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center"
-                        android:padding="5dp"
-                        android:text="@string/_0"
+                        android:minWidth="30dp"
+                        android:padding="@dimen/dp_4"
+                        android:text="0"
                         android:textColor="@color/primaryAccentColor"
                         android:textSize="@dimen/sp_16" />
 
                     <ImageButton
                         android:id="@+id/btn_upload"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_margin="@dimen/dp_8"
                         android:background="@drawable/circle_white"
                         android:contentDescription="@string/upload_data_patroli"
                         android:padding="@dimen/dp_2"
-                        android:src="@drawable/ic_baseline_autorenew_24" />
+                        android:src="@drawable/ic_baseline_autorenew_24"
+                        android:visibility="visible" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -145,15 +253,13 @@
                     android:id="@+id/patrol_reporting_more"
                     style="@style/AstraButtonBgLightStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginBottom="@dimen/sp_16"
-                    android:layout_weight="1"
                     android:paddingLeft="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_4"
                     android:text="@string/selengkapnya"
                     android:visibility="gone"
                     app:icon="@drawable/baseline_chevron_right_white_36dp"
@@ -161,9 +267,10 @@
                     app:iconSize="18dp"
                     app:iconTint="@color/white" />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
         </RelativeLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/bottom_layout"

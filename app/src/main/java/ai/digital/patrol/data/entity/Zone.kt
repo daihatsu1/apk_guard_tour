@@ -20,7 +20,7 @@ import kotlinx.parcelize.Parcelize
 )
 @Parcelize
 data class Zone(
-    @PrimaryKey(autoGenerate = true) @NonNull val zoneLocalId:Int,
+    @PrimaryKey(autoGenerate = true) val zoneLocalId:Int,
     @ColumnInfo(name = "id") @SerializedName("id") var id: String,
     @ColumnInfo(name = "plant_id") @SerializedName("plant_id") val plant_id: String? = null,
     @ColumnInfo(name = "plant_name") @SerializedName("plant_name") val plant_name: String? = null,

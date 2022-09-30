@@ -21,11 +21,11 @@
 
     <PreferenceCategory app:title="Akun">
 
-        <EditTextPreference
-            android:icon="@drawable/ic_password_grey_500_24dp"
-            app:key="password"
-            app:title="Ubah Password"
-            app:useSimpleSummaryProvider="false" />
+<!--        <EditTextPreference-->
+<!--            android:icon="@drawable/ic_password_grey_500_24dp"-->
+<!--            app:key="password"-->
+<!--            app:title="Ubah Password"-->
+<!--            app:useSimpleSummaryProvider="false" />-->
 
 <!--        <EditTextPreference-->
 <!--            app:key="logout"-->

@@ -9,12 +9,14 @@
 
 package ai.digital.patrol.ui.form
 
+import ai.digital.patrol.GuardTourApplication
 import ai.digital.patrol.data.entity.Checkpoint
 import ai.digital.patrol.data.entity.Report
 import ai.digital.patrol.data.entity.Schedule
 import ai.digital.patrol.data.entity.Zone
 import ai.digital.patrol.databinding.FragmentListCheckpointBinding
 import ai.digital.patrol.helper.*
+import ai.digital.patrol.helper.PreferenceHelper.set
 import ai.digital.patrol.ui.dialog.DialogCallbackListener
 import ai.digital.patrol.ui.dialog.DialogFragment
 import ai.digital.patrol.ui.dialog.DialogNFCFragment
@@ -29,6 +31,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -99,6 +102,10 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
         _binding!!.fabZoneDone.setOnClickListener {
             dialogConfirmZoneDone(zone)
         }
+        _binding!!.fabZoneBack.setOnClickListener {
+            clickBackPressed = false
+            activity?.onBackPressed()
+        }
         onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (clickBackPressed) {
@@ -116,17 +123,17 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
             EventBus.subscribe<AppEvent>()
                 // if you want to receive the event on main thread
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ appEvent ->
+                .subscribe({ appEvent ->
                     Log.d("EVENTBUS", "event received: $appEvent")
                     if (appEvent == AppEvent.NFC_MATCHED) {
-                        if (dialogNfcFragment?.showsDialog == true){
+                        if (dialogNfcFragment?.showsDialog == true) {
                             dialogNfcFragment!!.dismiss()
                             checkpoint?.let { addReport(it) }
                         }
                     }
 
                 }, {
-                    Log.e("EVENTBUS", it.message.toString());
+                    Log.e("EVENTBUS", it.message.toString())
                 })
 
         return binding.root
@@ -168,10 +175,9 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
     }
 
     private fun addReport(_checkpoint: Checkpoint) {
-
         patrolDataViewModel.checkReport(_checkpoint.id)?.observe(viewLifecycleOwner) { it ->
             var report = it
-            if (it == null) {
+            if (report == null) {
                 val syncToken = UUID.randomUUID().toString()
                 val npk = PreferenceHelper.appsPrefs(this.requireContext()).getString(Cons.NPK, "")
                 report = Report(
@@ -182,13 +188,16 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
                     admisecsgp_mstzone_zone_id = zone.id,
                     date_patroli = Utils.createdAt("yyyy-MM-dd"),
                     checkin_checkpoint = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
-                    created_at = Utils.createdAt(),
+                    created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
                 )
                 patrolDataViewModel.checkInCheckpoint(_checkpoint.id)
                 patrolDataViewModel.insertReport(report)
+                val action =
+                    ListCheckpointFragmentDirections.actionCheckpointFragmentToListObjectFragment(
+                        _checkpoint, report
+                    )
+                findNavController().safeNavigate(action)
                 syncViewModel.syncReportData()
-
-                addReport(_checkpoint)
             } else {
                 val action =
                     ListCheckpointFragmentDirections.actionCheckpointFragmentToListObjectFragment(
@@ -197,6 +206,8 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
                 findNavController().safeNavigate(action)
             }
         }
+        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.ALLOW_BACK_BUTTON] =
+            true
     }
 
     private fun NavController.safeNavigate(direction: NavDirections) {
@@ -212,7 +223,11 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
 
     override fun onItemClicked(_checkpoint: Checkpoint) {
         checkpoint = _checkpoint
-        dialogNfc(_checkpoint)
+        if (_checkpoint.patrol_status == true) {
+            addReport(_checkpoint)
+        } else {
+            dialogNfc(_checkpoint)
+        }
     }
 
     private fun dialogConfirmZoneDone(zone: Zone) {
@@ -256,6 +271,13 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
 
     override fun onResume() {
         super.onResume()
+        activity?.title = "DAFTAR CHECKPOINT PATROLI"
+        syncViewModel.syncReportData()
+        val backButtonShow = PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+            .getBoolean(Cons.ALLOW_BACK_BUTTON, false)
+        if (backButtonShow) {
+            binding.fabZoneBack.visibility = VISIBLE
+        }
         disposable =
             EventBus.subscribe<AppEvent>()
                 // if you want to receive the event on main thread

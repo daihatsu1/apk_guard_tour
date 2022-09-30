@@ -10,19 +10,24 @@
 package ai.digital.patrol.ui.form
 
 import ai.digital.patrol.GuardTourApplication
+import ai.digital.patrol.data.entity.PatrolActivity
+import ai.digital.patrol.data.entity.Schedule
 import ai.digital.patrol.databinding.FragmentListZoneBinding
 import ai.digital.patrol.data.entity.Zone
 import ai.digital.patrol.helper.Cons
 import ai.digital.patrol.helper.PreferenceHelper
 import ai.digital.patrol.helper.PreferenceHelper.set
+import ai.digital.patrol.helper.Utils
 import ai.digital.patrol.ui.dialog.DialogCallbackListener
 import ai.digital.patrol.ui.dialog.DialogFragment
 import ai.digital.patrol.ui.form.listener.OnZoneClickListener
 import ai.digital.patrol.ui.form.viewadapter.ZoneViewAdapter
+import ai.digital.patrol.ui.main.ScheduleViewModel
 import android.app.Application
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +45,14 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
     private var _binding: FragmentListZoneBinding? = null
     private val zoneViewAdapter = ZoneViewAdapter(this)
     private var confirmationPatrolDoneCallback: DialogCallbackListener? = null
+    private lateinit var schedule: Schedule
+
+    private val scheduleViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ScheduleViewModel.Factory(Application())
+        )[ScheduleViewModel::class.java]
+    }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -70,6 +83,25 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
 
     }
 
+    private fun getSchedule() {
+        scheduleViewModel.getSchedule()?.observe(this) { it ->
+            if (it != null) {
+                schedule = it
+//                runnableCode.run()
+                it.id_jadwal_patroli?.let { it1 -> getPatrolActivity(it1) }
+            }
+        }
+    }
+
+    private fun getPatrolActivity(idJadwal: String) {
+        patrolDataViewModel.getPatrolActivity(idJadwal)?.observe(this) {
+            if (it != null) {
+                Log.d(this.tag, it.toString())
+            }
+        }
+    }
+
+
     private fun dialogConfirmPatrolDone() {
         val title = "APAKAH ANDA YAKIN TELAH SELESAI MELAKUKAN PATROLI?"
         val subTitle = ""
@@ -89,10 +121,20 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
     private fun setPatrolDoneDialogFragmentListener() {
         confirmationPatrolDoneCallback = object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
-                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                    .set(Cons.PATROL_STATE, false)
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
+                    false
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.IS_PATROL_ALREADY_TAKEN] =
+                    true
+
+                schedule.id_jadwal_patroli?.let { patrolDataViewModel.setPatrolActivityDone(it) }
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
+                    false
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.UNSCHEDULE_PATROL_STATE] =
+                    false
 
                 this@ListZoneFragment.activity?.finish()
+
+//                patrolDataViewModel.setPatrolActivityDone()
             }
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
@@ -105,8 +147,10 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
+        activity?.title = "DAFTAR ZONA PATROLI"
+        getSchedule()
     }
 
     private fun getZones() {
@@ -121,7 +165,12 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
                     //set state patrol true
                     PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
                         true
+                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.IS_PATROL_ALREADY_TAKEN] =
+                        false
+
                     val random = Random().nextInt(zones.size)
+                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.ALLOW_BACK_BUTTON] =
+                        false
                     gotoCheckpoint(zones[random])
                 }
             }

@@ -39,10 +39,14 @@ class ListReportActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        title = "Daftar Temuan Hari Ini"
         val recyclerHomeViewReporting = binding.layoutList.recyclerReportList
         recyclerHomeViewReporting.adapter = reportHomeViewAdapter
         recyclerHomeViewReporting.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.layoutList.fabBackHome.setOnClickListener {
+            finish()
+        }
         setListReport()
     }
     private fun setListReport() {

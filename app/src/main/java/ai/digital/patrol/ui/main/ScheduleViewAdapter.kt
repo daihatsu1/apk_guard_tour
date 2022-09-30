@@ -52,7 +52,7 @@ class ScheduleViewAdapter : RecyclerView.Adapter<ScheduleViewAdapter.ScheduleVie
         private val time: TextView = itemView.findViewById(R.id.tv_schedule_time)
 
         fun bind(schedule: Schedule, position: Int) {
-            date.text = schedule.date?.let { Utils.dateFormat(it) }
+            date.text = schedule.date?.let { Utils.scheduleDateFormat(it) }
 
             time.visibility = VISIBLE
             if( schedule.shift == "LIBUR"){

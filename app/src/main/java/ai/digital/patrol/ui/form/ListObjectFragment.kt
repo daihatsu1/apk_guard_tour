@@ -11,19 +11,24 @@ package ai.digital.patrol.ui.form
 
 import ai.digital.patrol.R
 import ai.digital.patrol.data.entity.Checkpoint
-import ai.digital.patrol.databinding.FragmentListObjectBinding
 import ai.digital.patrol.data.entity.ObjectPatrol
 import ai.digital.patrol.data.entity.Report
+import ai.digital.patrol.data.entity.ReportDetail
+import ai.digital.patrol.databinding.FragmentListObjectBinding
+import ai.digital.patrol.helper.Utils
 import ai.digital.patrol.ui.dialog.DialogCallbackListener
 import ai.digital.patrol.ui.dialog.DialogFragment
 import ai.digital.patrol.ui.form.listener.OnObjectClickListener
 import ai.digital.patrol.ui.form.viewadapter.ObjectViewAdapter
+import ai.digital.patrol.worker.SyncViewModel
 import android.app.Application
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -55,6 +60,9 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
             PatrolDataViewModel::class.java
         )
     }
+    private val syncViewModel by lazy {
+        ViewModelProvider(this)[SyncViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,9 +73,9 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
         report = args.dataReport!!
 
         _binding!!.titleObject.text = buildString {
-        append("PILIH OBJECT CHECKPOINT ")
-        append(checkpoint.check_name)
-    }
+            append("PILIH OBJECT CHECKPOINT ")
+            append(checkpoint.check_name)
+        }
 
         val recyclerView = binding.recyclerObject
         recyclerView.adapter = objectViewAdapter
@@ -79,21 +87,26 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
         }
 
         binding.titleReportListsBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_object_fragment_to_listReportFragment)
+            val action =
+                ListObjectFragmentDirections.actionObjectFragmentToListReportFragment( checkpoint
+                )
+            findNavController().navigate(action)
         }
-        onBackPressedCallback = object : OnBackPressedCallback(true){
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(clickBackPressed){
+                if (clickBackPressed) {
                     dialogConfirmDoneCheck(checkpoint)
-                }else{
+                } else {
                     isEnabled = false
                     activity?.onBackPressed()
                 }
             }
         }
+
         activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner, onBackPressedCallback as OnBackPressedCallback
         )
+
 
         return binding.root
     }
@@ -150,6 +163,7 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
     private fun setCallback(_objectPatrol: ObjectPatrol) {
         confirmationPatrolCheckCallback = object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
+                setNormalObject(_objectPatrol, report)
                 dialog?.dismiss()
             }
 
@@ -167,6 +181,36 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity?.title = "DAFTAR OBJEK PATROLI"
+
+        syncViewModel.syncReportData()
+        patrolDataViewModel.getDataTemuanByCheckpoint(checkpoint.id)?.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                binding.titleReportListsBtn.visibility = VISIBLE
+            }else{
+                binding.titleReportListsBtn.visibility = GONE
+            }
+        }
+    }
+
+    fun setNormalObject(_objectPatrol: ObjectPatrol, report: Report){
+        val dataReportDetail = ReportDetail(
+            admisecsgp_mstobj_objek_id = _objectPatrol.id,
+            is_laporan_kejadian = 0,
+            laporkan_pic = 0,
+            is_tindakan_cepat = 0,
+            conditions = "Normal",
+            description = "Normal",
+            status = 1,
+            created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
+            synced = false,
+            reportId = report.sync_token
+        )
+        patrolDataViewModel.addReportNormalDetail(dataReportDetail)
+        syncViewModel.syncReportData()
+    }
 
     private fun setCallbackCheckpointDone(_checkpoint: Checkpoint) {
         confirmationPatrolCheckpointDoneCallback = object : DialogCallbackListener {
@@ -187,6 +231,5 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
             }
         }
     }
-
 
 }

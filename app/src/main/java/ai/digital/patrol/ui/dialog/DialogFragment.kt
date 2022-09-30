@@ -11,13 +11,16 @@ package ai.digital.patrol.ui.dialog
 
 import ai.digital.patrol.R
 import ai.digital.patrol.databinding.FragmentDialogConfirmPatrolBinding
-import android.content.Context
+import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
-import androidx.annotation.ColorInt
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 
 
 /**
@@ -40,14 +43,20 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
         private const val KEY_POSITIVE = "KEY_POSITIVE"
         private const val KEY_POSITIVE_COLOR = "KEY_POSITIVE_COLOR"
         private const val KEY_NEGATIVE = "KEY_NEGATIVE"
+        private const val KEY_SHOW_LIST = "SHOW_LIST"
+        private const val KEY_DATA_LIST = "SHOW_DATA_LIST"
+        private const val KEY_CANCELLABLE = "KEY_CANCELLABLE"
 
         fun newInstance(
             title: String,
             subTitle: String,
             positiveText: String,
-            negativeText: String,
+            negativeText: String?,
             dialogCallbackListener: DialogCallbackListener,
             positiveColorInt: Int = R.color.primaryDarkColor,
+            showList: Boolean = false,
+            dataList: ArrayList<String>? = null,
+            cancelable: Boolean = false
         ): ai.digital.patrol.ui.dialog.DialogFragment {
             val args = Bundle()
             args.putString(KEY_TITLE, title)
@@ -55,12 +64,17 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
             args.putString(KEY_POSITIVE, positiveText)
             args.putInt(KEY_POSITIVE_COLOR, positiveColorInt)
             args.putString(KEY_NEGATIVE, negativeText)
+            args.putBoolean(KEY_SHOW_LIST, showList)
+            args.putStringArrayList(KEY_DATA_LIST, dataList)
+            args.putBoolean(KEY_CANCELLABLE, cancelable)
             val fragment = DialogFragment(dialogCallbackListener)
             fragment.arguments = args
             return fragment
         }
 
     }
+
+    private val listDialogViewAdapter = ListDialogViewAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,6 +84,17 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
         binding = FragmentDialogConfirmPatrolBinding.inflate(inflater, container, false)
 
         return binding!!.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        val cancelable = arguments?.getBoolean(KEY_CANCELLABLE)
+        if (cancelable == true) {
+            dialog.setCancelable(true)
+            dialog.setCanceledOnTouchOutside(true)
+        }
+        return dialog
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,14 +122,34 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
      */
     private fun setupView(view: View) {
         if (arguments?.getInt(KEY_POSITIVE_COLOR) != null) {
-//            binding!!.btnDialogPositif.setBackgroundResource(arguments?.getInt(KEY_POSITIVE_COLOR)!!)
             binding!!.btnDialogPositif.backgroundTintList =
-                ContextCompat.getColorStateList(requireContext(), arguments?.getInt(KEY_POSITIVE_COLOR)!!)
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    arguments?.getInt(KEY_POSITIVE_COLOR)!!
+                )
         }
         binding!!.dialogTitle.text = arguments?.getString(KEY_TITLE)
         binding!!.dialogSubtitle.text = arguments?.getString(KEY_SUBTITLE)
         binding!!.btnDialogPositif.text = arguments?.getString(KEY_POSITIVE)
-        binding!!.btnDialogNegative.text = arguments?.getString(KEY_NEGATIVE)
+        if (arguments?.getString(KEY_NEGATIVE) != null) {
+            binding!!.btnDialogNegative.visibility = VISIBLE
+            binding!!.btnDialogNegative.text = arguments?.getString(KEY_NEGATIVE)
+        } else {
+            binding!!.btnDialogNegative.visibility = GONE
+        }
+        if (arguments?.getBoolean(KEY_SHOW_LIST) == true) {
+            binding!!.layoutDialogList.visibility = VISIBLE
+            binding!!.rvListDialog.visibility = VISIBLE
+            binding!!.dialogListTitle.visibility = VISIBLE
+            val recyclerHomeViewReporting = binding!!.rvListDialog
+            recyclerHomeViewReporting.adapter = listDialogViewAdapter
+            recyclerHomeViewReporting.layoutManager =
+                GridLayoutManager(context, 2)
+            requireArguments().getStringArrayList(KEY_DATA_LIST)
+                ?.let { listDialogViewAdapter.setList(it) }
+        } else {
+            binding!!.layoutDialogList.visibility = GONE
+        }
     }
 
     /**

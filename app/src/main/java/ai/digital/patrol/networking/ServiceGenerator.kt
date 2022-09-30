@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit
 object ServiceGenerator {
     var gson: Gson = GsonBuilder()
         .setLenient()
+        .serializeNulls()
         .create()
 
     private val builder = Retrofit.Builder()

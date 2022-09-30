@@ -32,6 +32,18 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
         return repository!!.getPatrolDataAPI()
     }
 
+    fun getDataTemuanAPI(): LiveData<List<Temuan>> {
+        return repository!!.getDataTemuanAPI()
+    }
+
+    fun getDataTemuan(): LiveData<List<Temuan>>? {
+        return repository!!.getTemuan()
+    }
+
+    fun getDataTemuanByCheckpoint(checkpointId: String): LiveData<List<Temuan>>? {
+        return repository!!.getTemuanByCheckPoint(checkpointId)
+    }
+
     fun insertPatrolData(zones: List<Zone>) {
         return repository!!.insertDataPatrol(zones)
     }
@@ -43,6 +55,9 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
 
     fun getCheckpointByZone(zone_id: String): LiveData<List<Checkpoint>>? {
         return repository?.getCheckpointByZone(zone_id)
+    }
+    fun getAllCheckpoint(): LiveData<List<Checkpoint>>? {
+        return repository?.getAllCheckpoint()
     }
 
     fun getObjectByCheckpoint(checkpointId: String): LiveData<List<ObjectPatrol>>? {
@@ -60,6 +75,9 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
 
     fun addReportDetail(dataReportDetail: ReportDetail) {
         repository?.addReportDetail(dataReportDetail)
+    }
+    fun addReportNormalDetail(dataReportDetail: ReportDetail) {
+        repository?.addReportNormalDetail(dataReportDetail)
     }
 
     fun setZoneOnPatrol(zoneId: String) {
@@ -93,6 +111,22 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
 
     fun getReportDetail(): LiveData<List<ReportDetailObject>>? {
         return repository?.getReportDetail()
+    }
+
+    fun setPatrolActivity(patrolActivity: PatrolActivity) {
+        repository?.setPatrolActivity(patrolActivity)
+    }
+    fun setPatrolActivityStart(idJadwal: String) {
+        repository?.setPatrolActivityStart(idJadwal)
+    }
+    fun setPatrolActivityDone(idJadwal: String) {
+        repository?.setPatrolActivityDone(idJadwal)
+    }
+    fun getPatrolActivity(idJadwal:String): LiveData<PatrolActivity>? {
+        return repository?.getPatrolActivity(idJadwal)
+    }
+    fun getPatrolActivityApi(idJadwal:String): LiveData<PatrolActivity>? {
+        return repository?.getPatrolActivityApi(idJadwal = idJadwal)
     }
 
 

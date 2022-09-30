@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     Digital Patrol Guard
   ~     fragment_dialog_confirm_patrol.xml
   ~     Created by ImamSyahrudin on 8/8/2022
@@ -10,6 +9,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_8"
@@ -50,6 +50,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialog_title" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_dialog_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_subtitle">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dialog_list_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:text="Daftar zona patroli"
+            android:textAllCaps="true"
+            android:textColor="@color/grey_900"
+            android:textSize="25sp"
+            android:fontFamily="@font/roboto_bold"
+            android:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:visibility="visible"
+            android:layout_gravity="center"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_list_title"
+            app:spanCount="2"
+            tools:itemCount="5"
+            tools:listitem="@layout/item_dialog" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dialog_positif"
         style="@style/AstraButtonBgLightStyle"
@@ -60,7 +101,7 @@
         android:text="LANJUTKAN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_subtitle" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_dialog_list" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dialog_negative"
@@ -74,5 +115,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_dialog_positif" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

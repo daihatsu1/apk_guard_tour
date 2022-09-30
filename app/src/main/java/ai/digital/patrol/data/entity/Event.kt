@@ -13,6 +13,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
@@ -26,11 +27,9 @@ import com.google.gson.annotations.SerializedName
             childColumns = arrayOf("object_id")
         )
     )),
-    indices = [androidx.room.Index("object_id", unique = true)],
-
-    )
+    indices = [Index(value = ["id", "object_id"], unique = true)]    )
 data class Event(
-    @PrimaryKey(autoGenerate = true) @NonNull val eventLocalId: Int,
+    @PrimaryKey(autoGenerate = true) val eventLocalId: Int,
     @ColumnInfo(name = "id") @SerializedName("id") val id: String? = null,
     @ColumnInfo(name = "object_id") @SerializedName("object_id") val object_id: String? = null,
     @ColumnInfo(name = "event_name") @SerializedName("event_name") val event_name: String? = null,

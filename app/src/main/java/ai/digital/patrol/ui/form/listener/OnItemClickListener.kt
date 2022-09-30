@@ -23,3 +23,6 @@ interface OnObjectClickListener {
 interface OnReportClickListener {
     fun onItemClicked(_reportDetail: ReportDetail)
 }
+interface OnPhotoClickListener{
+    fun onPhotoDeleteBtnClick(photoReport: PhotoReport)
+}

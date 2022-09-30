@@ -38,7 +38,6 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LifecycleOwner
 import androidx.preference.PreferenceManager
@@ -76,9 +75,11 @@ object Utils {
             TypePhoto.ASSET_PHOTO -> {
                 1
             }
+
             TypePhoto.ASSET_AREA_PHOTO -> {
                 2
             }
+
             TypePhoto.ASSET_STREET_PHOTO -> {
                 3
             }
@@ -96,8 +97,20 @@ object Utils {
         return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size)
     }
 
-    fun dateFormat(dateStr: String): String? {
-        val inputFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy", Locale("ID"));
+    fun formatDate(
+        dateStr: String,
+        currentFormat: String = "dd-MM-yyyy",
+        newFormat: String = "dd-MM-yyyy"
+    ): String {
+        val inputFormat: DateFormat = SimpleDateFormat(currentFormat, Locale("ID"))
+        val outputFormat: DateFormat = SimpleDateFormat(newFormat, Locale("ID"))
+        val date: Date = inputFormat.parse(dateStr) as Date
+
+        return outputFormat.format(date)
+    }
+
+    fun scheduleDateFormat(dateStr: String): String? {
+        val inputFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy", Locale("ID"))
         val outputFormat: DateFormat = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("ID"))
 
         val date: Date = inputFormat.parse(dateStr) as Date
@@ -107,7 +120,7 @@ object Utils {
 
     @SuppressLint("SimpleDateFormat")
     fun timeFormat(timeStr: String, format: String): Date {
-        val inputFormat: DateFormat = SimpleDateFormat(format, Locale("ID"));
+        val inputFormat: DateFormat = SimpleDateFormat(format, Locale("ID"))
         return inputFormat.parse(timeStr) as Date
     }
 
@@ -120,9 +133,8 @@ object Utils {
         return df.format(calStart.time)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun isOnPatrolTime(datePatrol: String?, jamMasuk: String?, jamPulang: String?): Boolean {
-        if (datePatrol!=null && jamMasuk != null && jamPulang != null) {
+        if (datePatrol != null && jamMasuk != null && jamPulang != null) {
             val currentTime = Calendar.getInstance().time
             val now = createdAt("yyyy-MM-dd")
             val s = "$datePatrol $jamMasuk"
@@ -137,18 +149,13 @@ object Utils {
                 c.add(Calendar.DATE, 1)
                 endTime = c.time
             }
-
-            Log.d("COMPARE", currentTime.time.toString() +" > "+startTime.time +" = "+(currentTime.time > startTime.time).toString())
-            Log.d("COMPARE", currentTime.time.toString() +" < "+endTime.time +" = "+(currentTime.time < endTime.time).toString())
-
-            if (currentTime.after(startTime)&& currentTime.before(endTime) ) {
+            if (currentTime.after(startTime) && currentTime.before(endTime)) {
                 return true
             }
         }
         return false
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun formatTimePatrol(timeStr: String, tomorrow: Boolean): Date {
         val current = LocalDateTime.now()
         val time = timeFormat(timeStr, "HH:mm")
@@ -165,7 +172,6 @@ object Utils {
         return cal.time
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun formatTextTimePatrol(jamMasuk: String, jamPulang: String): String {
         val current = LocalDateTime.now()
 
@@ -197,7 +203,7 @@ object Utils {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun createdAt(format: String = "dd-MM-yyyy HH:mm:ss"): String {
+    fun createdAt(format: String = "yyyy-MM-dd HH:mm:ss"): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val current = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern(format)
@@ -211,7 +217,7 @@ object Utils {
 
     private fun blinkAnim(): Animation {
         val anim: Animation = AlphaAnimation(0.0f, 1.0f)
-        anim.duration = 75 //You can manage the blinking time with this parameter
+        anim.duration = 90 //You can manage the blinking time with this parameter
         anim.startOffset = 20
         anim.repeatMode = Animation.REVERSE
         anim.repeatCount = Animation.INFINITE
@@ -266,5 +272,4 @@ object Utils {
         }
 
     }
-
 }

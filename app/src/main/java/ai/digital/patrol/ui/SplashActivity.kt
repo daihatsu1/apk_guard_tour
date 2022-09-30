@@ -4,7 +4,6 @@ package ai.digital.patrol.ui
 import ai.digital.patrol.databinding.ActivitySplashBinding
 import ai.digital.patrol.helper.Cons
 import ai.digital.patrol.helper.PreferenceHelper
-import ai.digital.patrol.helper.RuntimePermissions
 import ai.digital.patrol.ui.login.LoginActivity
 import ai.digital.patrol.ui.login.LoginViewModel
 import ai.digital.patrol.ui.login.LoginViewModelFactory
@@ -12,15 +11,12 @@ import ai.digital.patrol.ui.main.MainActivity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.Preference
 import androidx.preference.PreferenceManager
 
 
@@ -33,7 +29,6 @@ class SplashActivity : AppCompatActivity() {
     private var PERMISSION_CODE = 100
     private lateinit var permissions: Array<String>
 
-    //    private lateinit var loginViewModel: LoginViewModel
     private val loginViewModel by lazy {
         ViewModelProvider(this, LoginViewModelFactory()).get(
             LoginViewModel::class.java
@@ -44,26 +39,29 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setConfig()
+
         Handler(Looper.getMainLooper()).postDelayed({
             go()
-//            setConfig()
         }, 3000)
 
     }
 
 
     private fun go() {
-
         val accessToken = PreferenceHelper.appsPrefs(this).getString(Cons.APIKEY, null)
-
-        if (accessToken != null) {
-            val mainActivity = Intent(this@SplashActivity, MainActivity::class.java)
-            startActivity(mainActivity)
+        val nextIntent: Intent = if (accessToken != null) {
+            Intent(this@SplashActivity, MainActivity::class.java)
         } else {
-            val loginActivity = Intent(this@SplashActivity, LoginActivity::class.java)
-            startActivity(loginActivity)
+            Intent(this@SplashActivity, LoginActivity::class.java)
         }
-        finishAffinity()
+        nextIntent.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+        )
+//        nextIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        startActivity(nextIntent)
+        finish()
     }
 
     private fun setConfig() {

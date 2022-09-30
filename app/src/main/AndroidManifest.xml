@@ -44,13 +44,7 @@
             android:name=".ui.form.MainFormActivity"
             android:exported="true"
             android:label="@string/title_activity_main_form"
-            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" >
-<!--                        <intent-filter>-->
-<!--                            <action android:name="android.intent.action.MAIN" />-->
-
-<!--                            <category android:name="android.intent.category.LAUNCHER" />-->
-<!--                        </intent-filter>-->
-        </activity>
+            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar" />
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
@@ -61,16 +55,6 @@
             android:exported="true"
             android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.nfc.action.TECH_DISCOVERED" /> -->
-            <!-- </intent-filter> -->
-            <!-- <meta-data -->
-            <!-- android:name="android.nfc.action.TECH_DISCOVERED" -->
-            <!-- android:resource="@xml/nfc_tech_filter" /> -->
         </activity>
         <activity
             android:name=".ui.SplashActivity"
@@ -83,29 +67,6 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
-
-            <!-- If you are using androidx.startup to initialize other components -->
-            <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
-        </provider>
-        <!--        <activity-->
-        <!--            android:name=".ui.nfc.NfcActivity"-->
-        <!--            android:exported="true"-->
-        <!--            android:label="@string/title_activity_main"-->
-        <!--            android:theme="@style/Theme.DigitalPatrolGuard.NoActionBar">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.MAIN" />-->
-
-        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-        <!--            </intent-filter>-->
-        <!--        </activity>-->
     </application>
 
 </manifest>

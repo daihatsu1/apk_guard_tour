@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Digital Patrol Guard
+  ~     item_item.xml
+  ~     Created by ImamSyahrudin on 8/8/2022
+  ~     Copyright © 2022 imamSyahrudin. All rights reserved.
+  ~
+  ~     Last modified 8/6/22, 1:18 AM
+  -->
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/dp_0"
+    app:cardCornerRadius="10dp"
+    app:cardMaxElevation="@dimen/dp_2"
+    app:cardBackgroundColor="@color/cardview_dark_background"
+    app:cardUseCompatPadding="true"
+    android:id="@+id/item_bg"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                style="@style/textTitledark"
+                android:text="PLANT 5 - ZONA 1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textStyle="bold" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

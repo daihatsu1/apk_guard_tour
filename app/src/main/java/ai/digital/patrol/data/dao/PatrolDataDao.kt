@@ -31,14 +31,12 @@ interface PatrolDataDao {
             if (it != null) {
                 insertZone(it)
                 val checkpoint = it.checkpoints
-
                 checkpoint?.forEach { _checkpoint ->
                     insertCheckpoint(_checkpoint)
                     val objectPatrols = _checkpoint.objects
                     objectPatrols?.forEach { _objectPatrol ->
                         insertObjects(_objectPatrol)
                         val event = _objectPatrol.event
-
                         event?.forEach { _event ->
                             insertEvent(_event)
                         }
@@ -89,7 +87,14 @@ interface PatrolDataDao {
     @Query("DELETE FROM objectPatrol")
     fun deleteAllObjectPatrol()
 
+    @Query("DELETE FROM schedule")
+    fun deleteAllSchedule()
+    @Query("DELETE FROM patrol_activity")
+    fun deleteAllPatrolActivity()
+
     fun clearAll() {
+        deleteAllSchedule()
+        deleteAllPatrolActivity()
         deleteAllEvent()
         deleteAllObjectPatrol()
         deleteAllCheckpoint()
@@ -101,10 +106,13 @@ interface PatrolDataDao {
     @Query("UPDATE objectPatrol SET is_normal=0 WHERE id = :msObjectsId")
     fun flagObjectAsTemuan(msObjectsId: String?)
 
+    @Query("UPDATE objectPatrol SET is_normal=1 WHERE id = :msObjectsId")
+    fun flagObjectAsNormal(msObjectsId: String?)
+
     @Query("UPDATE report SET checkin_checkpoint=:checkin_at WHERE admisecsgp_mstckp_checkpoint_id = :checkpointId and checkin_checkpoint not null")
     fun checkInCheckpoint(checkin_at: String, checkpointId: String)
 
-    @Query("UPDATE report SET checkout_checkpoint=:checkout_at WHERE admisecsgp_mstckp_checkpoint_id = :checkpointId")
+    @Query("UPDATE report SET checkout_checkpoint=:checkout_at, synced=0 WHERE admisecsgp_mstckp_checkpoint_id = :checkpointId")
     fun checkOutCheckpoint(checkout_at: String, checkpointId: String)
 
     @Query("UPDATE zone SET patrol_status=1 WHERE id = :zoneId")
@@ -139,9 +147,9 @@ interface PatrolDataDao {
 
     }
 
-    @Query("SELECT r.* FROM report r where r.synced = 0 order by status ASC")
+    @Query("SELECT r.* FROM report r left join report_detail rd on r.sync_token = rd.report where r.synced = 0 or rd.synced=0 order by status ASC")
     fun getUnSyncReport(): List<ReportDataDetail>?
 
-    @Query("SELECT * FROM report_detail ORDER BY status ASC, created_at DESC")
+    @Query("SELECT * FROM report_detail where status=0 ORDER BY created_at DESC")
     fun getReportDetail(): LiveData<List<ReportDetailObject>>?
 }

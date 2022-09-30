@@ -14,6 +14,7 @@ import ai.digital.patrol.databinding.FragmentReportingBinding
 import ai.digital.patrol.helper.Utils
 import ai.digital.patrol.ui.dialog.DialogCallbackListener
 import ai.digital.patrol.ui.dialog.DialogFragment
+import ai.digital.patrol.ui.form.listener.OnPhotoClickListener
 import ai.digital.patrol.ui.form.viewadapter.PhotoViewAdapter
 import android.app.Activity
 import android.app.Application
@@ -42,7 +43,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.dhaval2404.imagepicker.ImagePicker
 
-class ReportingFragment : Fragment() {
+class ReportingFragment : Fragment(), OnPhotoClickListener {
 
     private lateinit var _binding: FragmentReportingBinding
     private val args: ReportingFragmentArgs by navArgs()
@@ -55,8 +56,8 @@ class ReportingFragment : Fragment() {
             PatrolDataViewModel.Factory(Application())
         )[PatrolDataViewModel::class.java]
     }
-    private val imageList: MutableList<PhotoReport> = ArrayList()
-    private val photoViewAdapter = PhotoViewAdapter()
+    private val imageList: ArrayList<PhotoReport> = ArrayList()
+    private val photoViewAdapter = PhotoViewAdapter(this)
     private var selectedEvent: KeyValueModel? = null
     private var confirmationSubmitCallback: DialogCallbackListener? = null
 
@@ -72,7 +73,7 @@ class ReportingFragment : Fragment() {
 
         _binding.title.text = _objectPatrol.nama_objek
         _binding.btnReportingSave.setOnClickListener {
-            dialogConfirmSubmit()
+            if (validate()) dialogConfirmSubmit()
         }
         _objectPatrol = args.dataObject!!
 
@@ -97,7 +98,6 @@ class ReportingFragment : Fragment() {
                             _binding.btnAddPhoto.visibility = GONE
                         } else {
                             _binding.btnAddPhoto.visibility = VISIBLE
-
                         }
                     }
 
@@ -184,6 +184,7 @@ class ReportingFragment : Fragment() {
         if (imageList.isEmpty()) {
             _binding.btnAddPhoto.requestFocus()
             _binding.btnAddPhoto.error = "Wajib Tambahkan Foto."
+            Toast.makeText(context, "Wajib Tambahkan Foto.", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -196,7 +197,7 @@ class ReportingFragment : Fragment() {
         val actionNote = _binding.etReportingActionNote.text.toString()
         val picReport = if(_binding.cbReportingPic.isChecked) 1 else 0
         val quickAction = if (_binding.cbReportingQuickAction.isChecked) 1 else 0
-        val accident = if (_binding.cbReportingAccident.isChecked) 1 else 0
+        val accident = 0
 
         if (validate()) {
             val image1 = imageList.getOrNull(0)?.photoUri.toString()
@@ -216,7 +217,7 @@ class ReportingFragment : Fragment() {
                 is_tindakan_cepat = quickAction,
                 note_tindakan_cepat = actionNote,
                 status = 0,
-                created_at = Utils.createdAt(),
+                created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
                 synced = false,
                 reportId = _report.sync_token
             )
@@ -253,7 +254,18 @@ class ReportingFragment : Fragment() {
 
             override fun onDismissClickListener(dialog: DialogInterface) {
             }
+        }
+    }
 
+    override fun onPhotoDeleteBtnClick(photoReport: PhotoReport) {
+        imageList.removeIf {
+            it.photoUri==photoReport.photoUri
+        }
+        photoViewAdapter.notifyDataSetChanged()
+        if (imageList.size >= 3) {
+            _binding.btnAddPhoto.visibility = GONE
+        } else {
+            _binding.btnAddPhoto.visibility = VISIBLE
         }
     }
 }

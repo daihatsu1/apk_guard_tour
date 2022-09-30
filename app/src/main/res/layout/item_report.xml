@@ -14,8 +14,9 @@
     app:cardCornerRadius="10dp"
     app:cardMaxElevation="@dimen/dp_2"
     android:layout_width="match_parent"
-    app:strokeColor="@color/info"
-    app:strokeWidth="2dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/alert"
+    app:strokeWidth="@dimen/dp_2"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -29,10 +30,12 @@
             android:background="@color/red_500" />
         
         <ImageView
+            android:id="@+id/imv_temuan"
             android:padding="@dimen/dp_8"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:src="@drawable/army_national_guard"/>
+            android:src="@drawable/no_img"
+            android:contentDescription="TODO" />
         
         <LinearLayout
             android:layout_weight="1"
@@ -40,6 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:paddingTop="@dimen/dp_24"
             android:paddingBottom="@dimen/dp_24">
 
@@ -58,6 +63,15 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:text="deskripsi report"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_report_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Tanggal"
                 android:textAllCaps="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textStyle="bold" />

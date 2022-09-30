@@ -16,6 +16,9 @@ import android.nfc.tech.MifareClassic;
 import android.nfc.tech.MifareUltralight;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -129,7 +132,7 @@ public class NFCReader {
 //    Log.v("test",sb.toString());
 //    return sb.toString();
 //}
-    String toHex(byte[] bytes) {
+    public static String toHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (int i = bytes.length - 1; i >= 0; --i) {
             int b = bytes[i] & 0xff;
@@ -143,7 +146,7 @@ public class NFCReader {
         return sb.toString();
     }
 
-    String toReversedHex(byte[] bytes) {
+    public static String toReversedHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < bytes.length; ++i) {
             if (i > 0) {
@@ -157,7 +160,7 @@ public class NFCReader {
         return sb.toString();
     }
 
-    long toDec(byte[] bytes) {
+    public static long toDec(byte[] bytes) {
         long result = 0;
         long factor = 1;
         for (byte aByte : bytes) {
@@ -168,7 +171,7 @@ public class NFCReader {
         return result;
     }
 
-    long toReversedDec(byte[] bytes) {
+    public static long toReversedDec(byte[] bytes) {
         long result = 0;
         long factor = 1;
         for (int i = bytes.length - 1; i >= 0; --i) {
@@ -215,4 +218,6 @@ public class NFCReader {
         }
         return null;
     }
+
+
 }

@@ -41,9 +41,13 @@ class DialogNFCFragment(
 ) :
     DialogFragment() {
     override fun getTheme() = R.style.RoundedCornersDialog
+
     companion object {
         const val TAG = "NFCDialogFragment"
-        fun newInstance(dialogCallbackListener: DialogCallbackListener, checkpoint: Checkpoint?): ai.digital.patrol.ui.dialog.DialogNFCFragment {
+        fun newInstance(
+            dialogCallbackListener: DialogCallbackListener,
+            checkpoint: Checkpoint?
+        ): DialogNFCFragment {
             val args = Bundle()
 
             val fragment = DialogNFCFragment(dialogCallbackListener, checkpoint)
@@ -52,6 +56,7 @@ class DialogNFCFragment(
         }
 
     }
+
     var binding: FragmentDialogNfcBinding? = null
 
     override fun onCreateView(
@@ -90,7 +95,7 @@ class DialogNFCFragment(
     private fun setupView() {
         binding!!.dialogIcon.loadDrawable(R.drawable.icon_nfc)
         binding!!.dialogIcon.setOnClickListener {
-//            dialogCallbackListener.onPositiveClickListener(it, dialog)
+            dialogCallbackListener.onPositiveClickListener(it, dialog)
         }
     }
 
@@ -110,7 +115,7 @@ class DialogNFCFragment(
 
     override fun onResume() {
         super.onResume()
-        if (checkpoint?.no_nfc!=null){
+        if (checkpoint?.no_nfc != null) {
             (activity as MainFormActivity?)?.enableNFC(checkpoint.no_nfc) // enable read nfc
         }
 

@@ -25,14 +25,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="@drawable/army_national_guard" />
+            android:src="@drawable/army_national_guard"
+            android:contentDescription="TODO" />
 
         <ImageButton
             android:id="@+id/btn_remove_photo"
             android:layout_width="25dp"
             android:layout_height="match_parent"
             android:background="@color/red_500"
-            android:src="@drawable/ic_baseline_delete_forever_24"/>
+            android:src="@drawable/ic_baseline_delete_forever_24"
+            android:contentDescription="TODO" />
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>

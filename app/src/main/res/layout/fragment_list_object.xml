@@ -60,7 +60,8 @@
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:visibility="gone"
-                android:src="@drawable/ic_round_notification_important_24" />
+                android:src="@drawable/ic_round_notification_important_24"
+                android:contentDescription="TODO" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

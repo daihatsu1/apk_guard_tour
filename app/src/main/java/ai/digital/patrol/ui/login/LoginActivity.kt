@@ -14,6 +14,7 @@ import ai.digital.patrol.databinding.ActivityLoginBinding
 import ai.digital.patrol.helper.NFCReader
 import ai.digital.patrol.helper.Utils
 import ai.digital.patrol.ui.main.MainActivity
+import android.app.Activity
 //import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
@@ -43,8 +44,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
 
         val usernameEditText = binding.layoutLogin.username
         val passwordEditText = binding.layoutLogin.password
@@ -124,6 +124,7 @@ class LoginActivity : AppCompatActivity() {
 
         val mainActivity = Intent(this, MainActivity::class.java)
         startActivity(mainActivity)
+        setResult(Activity.RESULT_CANCELED)
         finishAffinity()
     }
 
@@ -132,19 +133,6 @@ class LoginActivity : AppCompatActivity() {
         loadingProgressBar!!.visibility = View.GONE
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        NFCReader().resolveIntent(intent)
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
 }
 
 /**

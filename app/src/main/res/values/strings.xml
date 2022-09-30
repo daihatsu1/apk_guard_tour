@@ -79,4 +79,14 @@
     <string name="memuat_data_zona_patroli_n_pastikan_terhubung_ke_internet">MEMUAT DATA ZONA PATROLI. \n PASTIKAN TERHUBUNG KE INTERNET</string>
     <string name="selengkapnya">SELENGKAPNYA</string>
     <string name="login_background">login background</string>
+    <string name="cancel">BATAL</string>
+    <string name="photo_dialog_confirm_delete">Yakin hapus foto?</string>
+    <string name="messaage_photo_dialog_confirm_delete">Foto yang telah dihapus tidak bisa di pulihkan kembali</string>
+    <string name="delete">HAPUS FOTO</string>
+    <string name="lanjutkan">LANJUTKAN</string>
+    <string name="batal">BATAL</string>
+    <string name="start_patrol_unschedule">APAKAH ANDA YAKIN MEMULAI PATROLI DILUAR JADWAL?</string>
+    <string name="start_patrol_title">APAKAH ANDA YAKIN MEMULAI PATROLI SEKARANG?</string>
+    <string name="selamat_datang_di_n_patroli_digital">SELAMAT DATANG DI \n PATROLI DIGITAL</string>
+
 </resources>

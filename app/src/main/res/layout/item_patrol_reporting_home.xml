@@ -24,17 +24,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingStart="15dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
 
         <ImageView
             android:id="@+id/iv_reporting_photo"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/no_img" />
+            android:src="@drawable/no_img"
+            android:contentDescription="TODO" />
 
         <LinearLayout
             android:paddingStart="10dp"
@@ -51,6 +52,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_bold"
                 android:text="PINTU DALAM"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textAllCaps="true"
                 android:textColor="@color/primaryTextColor"
                 android:textSize="16sp"
@@ -61,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="@font/roboto_thin"
+                android:fontFamily="@font/roboto"
                 android:singleLine="true"
                 android:text="HANDLE PINTU RUSAK, HANDLE PINTU RUSAK, HANDLE PINTU RUSAK, HANDLE PINTU RUSAKHANDLE PINTU RUSAK"
                 android:textAllCaps="true"
@@ -71,8 +74,8 @@
         </LinearLayout>
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignTop="@+id/card_layout"
             android:layout_alignParentEnd="true"
             android:adjustViewBounds="true"

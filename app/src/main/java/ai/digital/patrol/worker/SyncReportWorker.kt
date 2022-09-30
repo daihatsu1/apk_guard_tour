@@ -3,6 +3,7 @@ package ai.digital.patrol.worker
 import ai.digital.patrol.data.entity.Report
 import ai.digital.patrol.data.repository.PatrolDataRepository
 import ai.digital.patrol.helper.Utils
+import ai.digital.patrol.helper.Utils.toRequestBody
 import ai.digital.patrol.networking.ServiceGenerator
 import android.content.Context
 import android.net.Uri
@@ -27,10 +28,8 @@ class SyncReportWorker
     (appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
     private val patrolDataRepository = PatrolDataRepository.getInstance()
 
-    private fun toRequestBody(value: Any?): Any {
-        return RequestBody.create(MediaType.parse("text/plain"), value.toString())
-    }
-    
+
+
     override fun doWork(): Result {
         Log.i(TAG, "SyncSurveyDataWorker START")
         val reportData = patrolDataRepository!!.getUnSyncReport()
@@ -46,9 +45,10 @@ class SyncReportWorker
                 .build()
         return Result.success(output)
     }
+
     private fun postReport(unSyncReport: List<Report>) {
         val restInterface = ServiceGenerator.createService()
-        
+
 
         unSyncReport.forEachIndexed { k, it ->
             Log.d("COUNTER UPLOAD", k.toString())
@@ -62,7 +62,9 @@ class SyncReportWorker
                 toRequestBody(it.admisecsgp_mstckp_checkpoint_id) as RequestBody
             map["date_patroli"] = toRequestBody(it.date_patroli) as RequestBody
             map["checkin_checkpoint"] = toRequestBody(it.checkin_checkpoint) as RequestBody
-            map["checkout_checkpoint"] = toRequestBody(it.checkout_checkpoint) as RequestBody
+            if (it.checkout_checkpoint != null) {
+                map["checkout_checkpoint"] = toRequestBody(it.checkout_checkpoint) as RequestBody
+            }
 
             map["status"] = toRequestBody(it.status) as RequestBody
 
@@ -73,8 +75,11 @@ class SyncReportWorker
                     toRequestBody(its.admisecsgp_mstobj_objek_id) as RequestBody
                 map["detail_temuan[$index][conditions]"] =
                     toRequestBody(0) as RequestBody
-                map["detail_temuan[$index][admisecsgp_mstevent_event_id]"] =
-                    toRequestBody(its.admisecsgp_mstevent_event_id) as RequestBody
+                if (its.admisecsgp_mstevent_event_id != null) {
+                    map["detail_temuan[$index][admisecsgp_mstevent_event_id]"] =
+                        toRequestBody(its.admisecsgp_mstevent_event_id) as RequestBody
+                }
+
                 map["detail_temuan[$index][description]"] =
                     toRequestBody(its.description) as RequestBody
                 map["detail_temuan[$index][is_laporan_kejadian]"] =
@@ -90,7 +95,7 @@ class SyncReportWorker
                     toRequestBody(its.note_tindakan_cepat) as RequestBody
 
                 map["detail_temuan[$index][status]"] =
-                    Utils.toRequestBody(its.status) as RequestBody
+                    toRequestBody(its.status) as RequestBody
 
                 map["detail_temuan[$index][created_at]"] =
                     toRequestBody(its.created_at) as RequestBody
@@ -151,7 +156,7 @@ class SyncReportWorker
                                 report.synced = true
                                 report.sync_token = it.sync_token
                                 patrolDataRepository?.syncReport(report, report.detailTemuan)
-                               
+
                             }
                         }
                     } else {
@@ -168,6 +173,7 @@ class SyncReportWorker
         }
 
     }
+
     companion object {
         private val TAG = SyncReportWorker::class.java.simpleName
     }

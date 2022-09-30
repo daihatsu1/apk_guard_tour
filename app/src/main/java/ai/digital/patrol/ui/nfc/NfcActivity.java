@@ -255,9 +255,9 @@ public class NfcActivity extends AppCompatActivity {
         long result = 0;
         long factor = 1;
         for (byte aByte : bytes) {
-            long value = aByte & 0xffl;
+            long value = aByte & 0xffL;
             result += value * factor;
-            factor *= 256l;
+            factor *= 256L;
         }
         return result;
     }
@@ -266,9 +266,9 @@ public class NfcActivity extends AppCompatActivity {
         long result = 0;
         long factor = 1;
         for (int i = bytes.length - 1; i >= 0; --i) {
-            long value = bytes[i] & 0xffl;
+            long value = bytes[i] & 0xffL;
             result += value * factor;
-            factor *= 256l;
+            factor *= 256L;
         }
         return result;
     }
@@ -276,10 +276,10 @@ public class NfcActivity extends AppCompatActivity {
     public void writeTag(MifareUltralight mifareUlTag) {
         try {
             mifareUlTag.connect();
-            mifareUlTag.writePage(4, "get ".getBytes(Charset.forName("US-ASCII")));
-            mifareUlTag.writePage(5, "fast".getBytes(Charset.forName("US-ASCII")));
-            mifareUlTag.writePage(6, " NFC".getBytes(Charset.forName("US-ASCII")));
-            mifareUlTag.writePage(7, " now".getBytes(Charset.forName("US-ASCII")));
+            mifareUlTag.writePage(4, "get ".getBytes(StandardCharsets.US_ASCII));
+            mifareUlTag.writePage(5, "fast".getBytes(StandardCharsets.US_ASCII));
+            mifareUlTag.writePage(6, " NFC".getBytes(StandardCharsets.US_ASCII));
+            mifareUlTag.writePage(7, " now".getBytes(StandardCharsets.US_ASCII));
         } catch (IOException e) {
             Log.e(TAG, "IOException while writing MifareUltralight...", e);
         } finally {

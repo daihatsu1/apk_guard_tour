@@ -14,7 +14,13 @@ object Cons {
     const val APIKEY = "apiKey"
     const val VIEW_MODE = "view_mode"
     const val PATROL_STATE = "patrol_state"
+    const val UNSCHEDULE_PATROL_STATE = "patrol_state_unschedule"
+    const val ALLOW_BACK_BUTTON = "allow_back_button"
+    const val IS_PATROL_ALREADY_TAKEN = "patrol_already_taken"
     const val NPK = "npk"
+
+    const val SCHEDULE = "schedule_bundle"
+    const val PATROL_ACTIVITY = "patrolactivity_bundle"
 
     const val SYNC_WORKER_NAME = "sync-worker"
     const val SYNC_WORKER_REPORT = "sync-data-report"

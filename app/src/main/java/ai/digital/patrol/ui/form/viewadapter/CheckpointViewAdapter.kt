@@ -71,6 +71,7 @@ class CheckpointViewAdapter(private val listener: OnCheckpointClickListener) : R
                     checkpointBg.setCardBackgroundColor(ContextCompat.getColor(context, R.color.info))
                     checkpointBg.strokeColor =ContextCompat.getColor(context, R.color.info)
                     icon.visibility = GONE
+                    itemView.setOnClickListener(null)
                 }
                 true -> {
                     checkpointPatrolStatus.text = context.getString(R.string.status_patrol_ongoing)

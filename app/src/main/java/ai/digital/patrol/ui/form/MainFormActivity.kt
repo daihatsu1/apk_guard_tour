@@ -9,66 +9,128 @@
 
 package ai.digital.patrol.ui.form
 
+import ai.digital.patrol.GuardTourApplication
 import ai.digital.patrol.R
 import ai.digital.patrol.data.entity.NfcData
+import ai.digital.patrol.data.entity.PatrolActivity
+import ai.digital.patrol.data.entity.Schedule
 import ai.digital.patrol.databinding.ActivityMainFormBinding
 import ai.digital.patrol.helper.AppEvent
+import ai.digital.patrol.helper.Cons
+import ai.digital.patrol.helper.Cons.PATROL_ACTIVITY
+import ai.digital.patrol.helper.Cons.SCHEDULE
 import ai.digital.patrol.helper.EventBus
+import ai.digital.patrol.helper.NFCReader.toDec
+import ai.digital.patrol.helper.NFCReader.toHex
+import ai.digital.patrol.helper.NFCReader.toReversedDec
+import ai.digital.patrol.helper.NFCReader.toReversedHex
+import ai.digital.patrol.helper.PreferenceHelper
+import ai.digital.patrol.helper.PreferenceHelper.set
 import ai.digital.patrol.helper.Utils
+import ai.digital.patrol.ui.dialog.DialogCallbackListener
+import ai.digital.patrol.ui.dialog.DialogFragment
+import ai.digital.patrol.ui.main.MainActivity
+import ai.digital.patrol.ui.main.ScheduleViewModel
 import android.annotation.SuppressLint
+import android.app.Application
+import android.app.Dialog
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import android.nfc.tech.MifareUltralight
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
-import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
-import java.util.*
-import kotlin.experimental.and
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
+import java.util.Arrays
 
 class MainFormActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainFormBinding
+    private var _binding: ActivityMainFormBinding? = null
+    private val binding get() = _binding!!
+
     val TAG = "MainFormActivity"
     var nfcAdapter: NfcAdapter? = null
     var pendingIntent: PendingIntent? = null
     var decTarget: String? = null
+    private lateinit var schedule: Schedule
+    private lateinit var activityPatrol: PatrolActivity
+    private var disposable: Disposable? = null
+    private var confirmationDoneCallback: DialogCallbackListener? = null
+    private var dialogPatrolDoneShowAlready: Boolean = false
+
+    private val patrolDataViewModel by lazy {
+        ViewModelProvider(
+            this, PatrolDataViewModel.Factory(Application())
+        )[PatrolDataViewModel::class.java]
+    }
+    private val scheduleViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ScheduleViewModel.Factory(Application())
+        )[ScheduleViewModel::class.java]
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainFormBinding.inflate(layoutInflater)
+        _binding = ActivityMainFormBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val extras = intent.extras
+        if (extras != null) {
+            if (Build.VERSION.SDK_INT >= 33) {
+                schedule = intent.extras?.getSerializable(SCHEDULE, Schedule::class.java)!!
+                activityPatrol =
+                    intent.extras?.getSerializable(PATROL_ACTIVITY, PatrolActivity::class.java)!!
+            } else {
+                schedule = intent.extras?.get(SCHEDULE) as Schedule
+                activityPatrol = intent.extras?.get(PATROL_ACTIVITY) as PatrolActivity
+            }
+        }
 
         setSupportActionBar(binding.layoutToolbar.toolbar)
+
         binding.layoutToolbar.settings.visibility = GONE
-
         val navController = findNavController(R.id.nav_host_fragment_content_main_form)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
+//        appBarConfiguration = AppBarConfiguration(navController.graph)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.zone_fragment,
+                R.id.checkpoint_fragment,
+                R.id.object_fragment,
+                R.id.reporting_fragment
+            )
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        setToolBarText()
 
+        setTitle()
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
         Utils.connectionChecker(
             this,
             applicationContext,
             binding.layoutToolbar.viewOnlineStatus,
             null
         )
+
 
         /**snip **/
         val intentFilter = IntentFilter()
@@ -125,13 +187,27 @@ class MainFormActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main_form)
+        navController.enableOnBackPressed(true)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
 
-    private fun setToolBarText() {
-        binding.layoutToolbar.tvToolbarUsername.text = "PATROL GUARD"
+    //    setNavigationOnClickListener
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main_form)
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+    }
 
+    private fun setTitle(text: String = "PATROL GUARD") {
+        binding.layoutToolbar.tvToolbarUsername.text = text
+    }
+
+    override fun setTitle(title: CharSequence?) {
+        super.setTitle(title)
+        if (title.isNullOrBlank())
+            binding.layoutToolbar.tvToolbarUsername.text = "PATROL GUARD"
+        else
+            binding.layoutToolbar.tvToolbarUsername.text = title.toString()
     }
 
     private fun showToast(message: String) {
@@ -151,14 +227,14 @@ class MainFormActivity : AppCompatActivity() {
                     showToast("SCAN SUKSES, SILAKAN MELANJUTKAN PATROLI ANDA")
                     Log.d("nfcAdapter", "NFC_MATCHED")
 
-                }else{
+                } else {
                     EventBus.post(AppEvent.NFC_NO_MATCHED)
                     showToast("CHECKPOINT TIDAK SESUAI, PERIKAS KEMBALI KARTU DAN CHEKPOINT")
                     Log.d("nfcAdapter", "NFC_NO_MATCHED")
 
                 }
             } else {
-                showToast("Terjadi kesalahan, periksa kembali kartu atau checkpoint yang di pilih");
+                showToast("Terjadi kesalahan, periksa kembali kartu atau checkpoint yang di pilih")
             }
         }
     }
@@ -201,95 +277,98 @@ class MainFormActivity : AppCompatActivity() {
         return data
     }
 
-    private fun toHex(bytes: ByteArray): String? {
-        val sb = java.lang.StringBuilder()
-        for (i in bytes.indices.reversed()) {
-            val b: Byte = bytes[i] and 0xff.toByte()
-            if (b < 0x10) sb.append('0')
-            sb.append(Integer.toHexString(b.toInt()))
-            if (i > 0) {
-                sb.append(" ")
-            }
-        }
-        return sb.toString()
-    }
-
-    private fun toReversedHex(bytes: ByteArray): String {
-        val sb = java.lang.StringBuilder()
-        for (i in bytes.indices) {
-            if (i > 0) {
-                sb.append(" ")
-            }
-            val b: Byte = bytes[i] and 0xff.toByte()
-            if (b < 0x10) sb.append('0')
-            sb.append(Integer.toHexString(b.toInt()))
-        }
-        return sb.toString()
-    }
-
-    private fun toDec(bytes: ByteArray): Long {
-        var result: Long = 0
-        var factor: Long = 1
-        for (aByte in bytes) {
-            val value: Byte = aByte and 0xffL.toByte()
-            result += value * factor
-            factor *= 256L
-        }
-        return result
-    }
-
-    private fun toReversedDec(bytes: ByteArray): Long {
-        var result: Long = 0
-        var factor: Long = 1
-        for (i in bytes.indices.reversed()) {
-            val value: Byte = bytes[i] and 0xffL.toByte()
-            result += value * factor
-            factor *= 256L
-        }
-        return result
-    }
-
-    fun writeTag(mifareUlTag: MifareUltralight) {
-        try {
-            mifareUlTag.connect()
-            mifareUlTag.writePage(4, "get ".toByteArray(Charset.forName("US-ASCII")))
-            mifareUlTag.writePage(5, "fast".toByteArray(Charset.forName("US-ASCII")))
-            mifareUlTag.writePage(6, " NFC".toByteArray(Charset.forName("US-ASCII")))
-            mifareUlTag.writePage(7, " now".toByteArray(Charset.forName("US-ASCII")))
-        } catch (e: IOException) {
-            Log.e(TAG, "IOException while writing MifareUltralight...", e)
-        } finally {
-            try {
-                mifareUlTag.close()
-            } catch (e: IOException) {
-                Log.e(TAG, "IOException while closing MifareUltralight...", e)
+    private fun getSchedule() {
+        scheduleViewModel.getSchedule()?.observe(this) { it ->
+            if (it != null) {
+                schedule = it
             }
         }
     }
 
-    fun readTag(mifareUlTag: MifareUltralight?): String? {
-        try {
-            mifareUlTag!!.connect()
-            val payload = mifareUlTag.readPages(4)
-            return String(payload, StandardCharsets.US_ASCII)
-        } catch (e: IOException) {
-            Log.e(TAG, "IOException while reading MifareUltralight message...", e)
-        } finally {
-            if (mifareUlTag != null) {
-                try {
-                    mifareUlTag.close()
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error closing tag...", e)
-                }
+    override fun onResume() {
+        super.onResume()
+        getSchedule()
+        disposable =
+            EventBus.subscribe<AppEvent>()
+                // if you want to receive the event on main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ appEvent ->
+                    Log.d("EVENTBUS", "event received: $appEvent")
+                    if (appEvent == AppEvent.PATROL_TIME_OFF) {
+                        val statePatrol =
+                            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                                .getBoolean(Cons.PATROL_STATE, false)
+                        if (statePatrol) {
+                            val stateUnschedulePatrol =
+                                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                                    .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
+                            if (!stateUnschedulePatrol) {
+                                // force to finish patroli
+                                if (!dialogPatrolDoneShowAlready) {
+                                    dialogConfirmDone()
+                                }
+                            }
+                        }
+                        disposable?.dispose()
+                    }
+
+                }, {
+                    Log.e("EVENTBUS", it.message.toString())
+                })
+
+    }
+
+    private fun dialogConfirmDone() {
+        dialogPatrolDoneShowAlready = true
+        setPatrolDoneDialogFragmentListener()
+        val title = "WAKTU PATROLI TELAH HABIS, KLIK SELESAI UNTUK KEMBALI KE HALAMAN UTAMA?"
+        val subTitle = ""
+        val positiveText = "SELESAI PATROLI"
+        val negativeText = "CEK KEMBALI"
+
+        DialogFragment.newInstance(
+            title,
+            subTitle,
+            positiveText,
+            null,
+            confirmationDoneCallback!!
+        ).show(supportFragmentManager, "dialogConfirmZoneDone")
+    }
+
+    private fun setPatrolDoneDialogFragmentListener() {
+        confirmationDoneCallback = object : DialogCallbackListener {
+            override fun onPositiveClickListener(v: View, dialog: Dialog?) {
+
+                schedule.id_jadwal_patroli?.let { patrolDataViewModel.setPatrolActivityDone(it) }
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
+                    false
+                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.UNSCHEDULE_PATROL_STATE] =
+                    false
+
+                val gotoMain = Intent(this@MainFormActivity, MainActivity::class.java)
+                startActivity(gotoMain)
+                finishAndRemoveTask()
+                dialog?.dismiss()
             }
+
+            override fun onNegativeClickListener(v: View, dialog: Dialog?) {
+                dialog?.dismiss()
+            }
+
+            override fun onDismissClickListener(dialog: DialogInterface) {
+            }
+
         }
-        return null
     }
 
     override fun onPause() {
         super.onPause()
-        //Onpause stop listening
-//        disableNFC()
+        disposable?.dispose()
     }
 
+    override fun onStop() {
+        super.onStop()
+        disposable?.dispose()
+
+    }
 }

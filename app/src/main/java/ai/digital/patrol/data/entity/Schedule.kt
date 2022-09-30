@@ -14,10 +14,17 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-@Entity(tableName = "schedule")
+@Entity(tableName = "schedule"    ,
+    indices = [androidx.room.Index(
+    value = ["id_jadwal_patroli"],
+    unique = true
+)]
+)
 data class Schedule(
     @PrimaryKey(autoGenerate = true) val id:Int,
+    @ColumnInfo(name = "id_jadwal_patroli") @SerializedName("id_jadwal_patroli") val id_jadwal_patroli: String? = null,
     @ColumnInfo(name = "shift") @SerializedName("shift") val shift: String? = null,
     @ColumnInfo(name = "shift_id") @SerializedName("shift_id") val shift_id: String? = null,
     @ColumnInfo(name = "plant_id") @SerializedName("plant_id") val plant_id: String? = null,
@@ -25,4 +32,4 @@ data class Schedule(
     @ColumnInfo(name = "jam_masuk") @SerializedName("jam_masuk") var jam_masuk: String? = null,
     @ColumnInfo(name = "jam_pulang") @SerializedName("jam_pulang") var jam_pulang: String? = null,
     @ColumnInfo(name = "date") @SerializedName("date") val date: String? = null,
-)
+):Serializable

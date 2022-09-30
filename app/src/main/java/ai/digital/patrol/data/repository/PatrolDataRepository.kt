@@ -13,12 +13,15 @@ import ai.digital.patrol.DatabaseClient
 import ai.digital.patrol.data.dao.*
 import ai.digital.patrol.data.entity.*
 import ai.digital.patrol.helper.Utils
+import ai.digital.patrol.helper.Utils.toRequestBody
 import ai.digital.patrol.networking.ServiceGenerator
 import android.util.Log
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.RequestBody
+import okhttp3.internal.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,6 +50,12 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
     private val patrolDataDao: PatrolDataDao? =
         DatabaseClient.getInstance()?.appDatabase?.patrolDataDao()
 
+    private val temuanDao: TemuanDao? =
+        DatabaseClient.getInstance()?.appDatabase?.temuanDao()
+
+    private val patrolActivityDao: PatrolActivityDao? =
+        DatabaseClient.getInstance()?.appDatabase?.patrolActivityDao()
+
     private val runnerScope: CoroutineScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext =
             Dispatchers.IO // no job added i.e + SupervisorJob()
@@ -61,6 +70,16 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
     fun insertDataPatrol(zones: List<Zone?>?) {
         runnerScope.launch {
             patrolDataDao?.insertPatrolDate(zones as List<Zone?>)
+            getDataTemuanRequest
+        }
+    }
+
+    fun insertDataTemuan(temuan: List<Temuan>?) {
+        runnerScope.launch {
+            temuanDao?.insertAll(temuan as List<Temuan>)
+            temuan?.forEach {
+                patrolDataDao?.flagObjectAsTemuan(it.object_id)
+            }
         }
     }
 
@@ -87,13 +106,29 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
         return patrolDataRequest
     }
 
+    fun getDataTemuanAPI(): LiveData<List<Temuan>> {
+        return getDataTemuanRequest
+    }
+
+    fun getTemuan(): LiveData<List<Temuan>>? {
+        return temuanDao?.all
+    }
+
+    fun getTemuanByCheckPoint(checkpointId: String): LiveData<List<Temuan>>? {
+        return temuanDao?.getByCheckpoint(checkpointId)
+    }
+
+
     fun getZone(): LiveData<List<Zone>>? {
         return zoneDao?.zones
     }
 
     fun getCheckpointByZone(zoneId: String): LiveData<List<Checkpoint>>? {
         return checkpointDao?.checkpointByZones(zoneId)
+    }
 
+    fun getAllCheckpoint(): LiveData<List<Checkpoint>>? {
+        return checkpointDao?.all
     }
 
     fun getObjectByCheckpoint(checkpointId: String): LiveData<List<ObjectPatrol>>? {
@@ -111,16 +146,27 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
             patrolDataDao?.flagObjectAsTemuan(dataReportDetail.admisecsgp_mstobj_objek_id)
         }
     }
+
+    fun addReportNormalDetail(dataReportDetail: ReportDetail) {
+        runnerScope.launch {
+            patrolDataDao?.insertReportDetail(dataReportDetail)
+            patrolDataDao?.flagObjectAsNormal(dataReportDetail.admisecsgp_mstobj_objek_id)
+        }
+    }
+
     fun setZoneOnPatrol(zoneId: String) {
         runnerScope.launch {
             patrolDataDao?.setZoneOnPatrol(zoneId)
         }
     }
+
+
     fun setZoneOnPatrolDone(zoneId: String) {
         runnerScope.launch {
             patrolDataDao?.setZoneOnPatrolDone(zoneId)
         }
     }
+
     fun checkInCheckpoint(checkpointId: String) {
         runnerScope.launch {
             patrolDataDao?.checkInCheckpoint(Utils.createdAt("yyyy-MM-dd HH:mm:ss"), checkpointId)
@@ -149,7 +195,7 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
         }
     }
 
-    fun syncReport(report: Report, reportDetail: List<ReportDetail>?){
+    fun syncReport(report: Report, reportDetail: List<ReportDetail>?) {
         runnerScope.launch {
             patrolDataDao?.insertDataReport(report, reportDetail)
 //            patrolDataDao?.flagObjectAsTemuan(dataReportDetail.admisecsgp_mstobj_objek_id)
@@ -167,10 +213,118 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
                 unSyncReportList.add(report)
             }
         }
-        return  unSyncReportList
+        return unSyncReportList
     }
+
     fun getReportDetail(): LiveData<List<ReportDetailObject>>? {
-        return   patrolDataDao!!.getReportDetail()
+        return patrolDataDao!!.getReportDetail()
+    }
+
+    fun setPatrolActivity(patrolActivity: PatrolActivity) {
+
+        val map: MutableMap<String, RequestBody> = HashMap()
+        map["id_jadwal_patroli"] =
+            toRequestBody(patrolActivity.id_jadwal_patroli) as RequestBody
+        map["status"] =
+            toRequestBody(patrolActivity.status) as RequestBody
+        map["start_at"] =
+            toRequestBody(patrolActivity.start_at) as RequestBody
+        if (patrolActivity.end_at != null) {
+
+            map["end_at"] =
+                toRequestBody(patrolActivity.end_at) as RequestBody
+        }
+        val restInterface = ServiceGenerator.createService()
+        val post = restInterface.setPatrolActivity(map)
+        post.enqueue(object : Callback<PatrolActivity> {
+            override fun onResponse(
+                call: Call<PatrolActivity>,
+                response: Response<PatrolActivity>
+            ) {
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        runnerScope.launch {
+                            patrolActivityDao?.insert(response.body())
+                        }
+                    }
+                } else {
+                    Log.d("PatrolActivity", "PatrolActivity failed")
+                }
+            }
+
+            override fun onFailure(call: Call<PatrolActivity>, t: Throwable) {
+                Log.d("PatrolActivity", "Error " + t.message)
+                t.printStackTrace()
+            }
+        })
+
+    }
+
+    fun setPatrolActivityDone(idJadwal: String) {
+        runnerScope.launch {
+            patrolActivityDao?.setActivityDone(idJadwal, Utils.createdAt())
+            val patrolActivity: PatrolActivity? =
+                patrolActivityDao?.getPatrolActivityByJadwal(idJadwal)
+
+            if (patrolActivity != null) {
+                patrolActivity.status = 1
+                patrolActivity.end_at = Utils.createdAt()
+                setPatrolActivity(patrolActivity)
+            }
+        }
+    }
+
+    fun setPatrolActivityStart(idJadwal: String) {
+        runnerScope.launch {
+            var patrolActivity: PatrolActivity? =
+                patrolActivityDao?.getPatrolActivityByJadwal(idJadwal)
+            if (patrolActivity != null) {
+                patrolActivity.status = 0
+            } else {
+                patrolActivity = PatrolActivity(
+                    id_jadwal_patroli = idJadwal,
+                    start_at = Utils.createdAt(),
+                    status = 0 //set on running
+                )
+            }
+            setPatrolActivity(patrolActivity)
+        }
+    }
+
+    fun insertPatrolActivity(patrolActivity: PatrolActivity) {
+        runnerScope.launch {
+            patrolActivityDao?.insert(patrolActivity)
+//            patrolDataDao?.flagObjectAsTemuan(dataReportDetail.admisecsgp_mstobj_objek_id)
+        }
+    }
+
+    fun getPatrolActivity(idJadwal: String): LiveData<PatrolActivity> {
+        return patrolActivityDao!!.getPatrolActivity(idJadwal)
+    }
+
+    fun getPatrolActivityApi(idJadwal: String): LiveData<PatrolActivity> {
+        val restInterface = ServiceGenerator.createService()
+        val call = restInterface.getPatrolActivity(idJadwal = idJadwal)
+        call!!.enqueue(object : Callback<PatrolActivity> {
+            override fun onResponse(
+                call: Call<PatrolActivity>,
+                response: Response<PatrolActivity>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        if (it.id_jadwal_patroli != null) {
+                            insertPatrolActivity(it)
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<PatrolActivity>, t: Throwable) {
+                Log.d("PatrolActivity", "FAIL....", t)
+
+            }
+        })
+        return getPatrolActivity(idJadwal)
     }
 
     private val patrolDataRequest: LiveData<List<Zone>>
@@ -194,6 +348,33 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
             })
             return patrolDataDao?.getData()!!
         }
+
+    private val getDataTemuanRequest: LiveData<List<Temuan>>
+        get() {
+            val restInterface = ServiceGenerator.createService()
+            val temuanRest = restInterface.getDataTemuan()
+            temuanRest!!.enqueue(object : Callback<List<Temuan>> {
+                override fun onResponse(
+                    call: Call<List<Temuan>>,
+                    response: Response<List<Temuan>>
+                ) {
+                    if (response.isSuccessful) {
+                        if (response.body()?.isNotEmpty() == true) {
+                            insertDataTemuan(response.body())
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Temuan>>, t: Throwable) {
+                    Log.d("ZONE", "FAIL....", t)
+
+                }
+            })
+            return temuanDao?.all!!
+        }
+
+//    private val
+
 
     companion object {
         @Volatile

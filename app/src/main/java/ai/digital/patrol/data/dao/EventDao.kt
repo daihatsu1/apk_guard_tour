@@ -21,6 +21,6 @@ interface EventDao {
     @Query("DELETE FROM event")
     fun deleteAll()
 
-    @Query("SELECT * FROM event where object_id = :objectId limit 1")
+    @Query("SELECT * FROM event where object_id = :objectId")
     fun getEventByObjectId(objectId: String): LiveData<List<Event>>
 }

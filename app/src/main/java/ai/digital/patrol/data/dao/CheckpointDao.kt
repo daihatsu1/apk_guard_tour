@@ -10,6 +10,9 @@ interface CheckpointDao {
     @get:Query("SELECT * FROM checkpoint limit 1")
     val checkpoint: LiveData<Checkpoint>
 
+    @get:Query("SELECT * FROM checkpoint")
+    val all: LiveData<List<Checkpoint>>
+
     @Query("SELECT * FROM checkpoint where zone_id = :zone_id ")
     fun checkpointByZones(zone_id:String): LiveData<List<Checkpoint>>
 

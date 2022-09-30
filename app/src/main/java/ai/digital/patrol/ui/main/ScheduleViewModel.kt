@@ -33,4 +33,9 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     fun getSchedule(): LiveData<Schedule>? {
         return repository!!.getSchedule()
     }
+
+    fun getScheduleOnly(): Schedule? {
+        return repository!!.getCurrentSchedule()
+
+    }
 }

@@ -58,6 +58,10 @@ class ScheduleRepository(val dataSource: DatabaseClient) {
         return scheduleRequest
     }
 
+    fun getCurrentSchedule(): Schedule? {
+        return scheduleDao?.current
+    }
+
     private val scheduleRequest: LiveData<List<Schedule>>?
         get() {
             val restInterface = ServiceGenerator.createService()

@@ -9,7 +9,6 @@
 
 package ai.digital.patrol.ui.main
 
-import ai.digital.patrol.AppDatabase
 import ai.digital.patrol.DatabaseClient
 import ai.digital.patrol.R
 import ai.digital.patrol.helper.Cons
@@ -17,8 +16,10 @@ import ai.digital.patrol.helper.PreferenceHelper
 import ai.digital.patrol.helper.PreferenceHelper.clearAll
 import ai.digital.patrol.ui.dialog.DialogCallbackListener
 import ai.digital.patrol.ui.dialog.DialogFragment
+import ai.digital.patrol.ui.login.LoginActivity
 import ai.digital.patrol.ui.login.LoginViewModel
 import ai.digital.patrol.ui.login.LoginViewModelFactory
+import android.R.id
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -28,6 +29,7 @@ import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
@@ -35,10 +37,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.system.exitProcess
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -54,13 +52,20 @@ class SettingsActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Pengaturan"
+
+        onBackPressedDispatcher.addCallback(
+            this /* lifecycle owner */,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    finish()
+                }
+            })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
-                super.onBackPressed()
-                return true
+            id.home -> {
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -120,7 +125,7 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             )
-                .show(parentFragmentManager, "dialogConfirmStartUnscheduledPatrol")
+                .show(parentFragmentManager, "dialogConfirmLogout")
         }
 
         @OptIn(DelicateCoroutinesApi::class)
@@ -132,11 +137,10 @@ class SettingsActivity : AppCompatActivity() {
                 val broadcastIntent = Intent()
                 broadcastIntent.action = "com.package.ACTION_LOGOUT"
                 activity?.sendBroadcast(broadcastIntent)
-                activity?.finishAffinity()
                 Toast.makeText(context, "Logout", Toast.LENGTH_LONG).show()
-
-                android.os.Process.killProcess(android.os.Process.myPid());
-                exitProcess(0);
+                val loginActivity = Intent(activity, LoginActivity::class.java)
+                startActivity(loginActivity)
+                activity?.finishAffinity()
 
             }, 1500)
         }

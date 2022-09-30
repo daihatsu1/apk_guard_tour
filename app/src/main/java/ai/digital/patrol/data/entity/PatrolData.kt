@@ -10,6 +10,4 @@ data class PatrolData(
         entityColumn = "zone_id"
     )
     val checkpoint: List<Checkpoint>?
-){
-
-}
+)

@@ -17,6 +17,7 @@
     app:cardMaxElevation="@dimen/dp_2"
     app:cardUseCompatPadding="true"
     app:strokeColor="@color/info"
+    style="@style/cardItem"
     app:strokeWidth="2dp">
 
     <RelativeLayout
@@ -71,8 +72,8 @@
 
             <ImageView
                 android:id="@+id/ic_chevron_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="match_parent"
                 android:src="@drawable/baseline_chevron_right_white_36dp"
                 android:contentDescription="TODO" />
 

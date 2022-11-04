@@ -10,6 +10,7 @@
 package ai.digital.patrol.ui.main
 
 import ai.digital.patrol.data.entity.Schedule
+import ai.digital.patrol.data.entity.Shift
 import ai.digital.patrol.data.repository.ScheduleRepository
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -30,6 +31,18 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     fun getSchedules(): LiveData<List<Schedule>>? {
         return repository!!.getScheduleAPI()
     }
+
+    fun getShift(): LiveData<List<Shift>>? {
+        return repository!!.getShiftAPI()
+    }
+
+    fun getCurrentShift(): Shift? {
+        return repository!!.getCurrentShift()
+    }
+    fun getPatrolShift(): Shift? {
+        return repository!!.getPatrolShift()
+    }
+
     fun getSchedule(): LiveData<Schedule>? {
         return repository!!.getSchedule()
     }

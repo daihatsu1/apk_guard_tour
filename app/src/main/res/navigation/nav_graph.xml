@@ -60,14 +60,12 @@
             app:destination="@id/listReportFragment" />
         <argument
             android:name="data_checkpoint"
-            android:defaultValue="@null"
-            app:argType="ai.digital.patrol.data.entity.Checkpoint"
-            app:nullable="true" />
+            app:argType="ai.digital.patrol.data.entity.Checkpoint" />
         <argument
             android:name="data_report"
-            android:defaultValue="@null"
             app:argType="ai.digital.patrol.data.entity.Report"
-            app:nullable="true" />
+            app:nullable="false"
+            />
     </fragment>
     <fragment
         android:id="@+id/reporting_fragment"
@@ -79,19 +77,15 @@
             app:destination="@id/object_fragment" />
         <argument
             android:name="data_object"
-            android:defaultValue="@null"
             app:argType="ai.digital.patrol.data.entity.ObjectPatrol"
-            app:nullable="true" />
+            app:nullable="false" />
         <argument
             android:name="data_checkpoint"
-            android:defaultValue="@null"
-            app:argType="ai.digital.patrol.data.entity.Checkpoint"
-            app:nullable="true" />
+            app:argType="ai.digital.patrol.data.entity.Checkpoint" />
         <argument
             android:name="data_report"
-            android:defaultValue="@null"
-            app:argType="ai.digital.patrol.data.entity.Report"
-            app:nullable="true" />
+            app:nullable="false"
+            app:argType="ai.digital.patrol.data.entity.Report"/>
     </fragment>
     <fragment
         android:id="@+id/listReportFragment"

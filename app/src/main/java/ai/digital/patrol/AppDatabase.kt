@@ -18,7 +18,8 @@ import androidx.room.TypeConverters
         Report::class,
         ReportDetail::class,
         Temuan::class,
-        PatrolActivity::class
+        PatrolActivity::class,
+        Shift::class
     ],
     version = 1,
     exportSchema = false
@@ -32,6 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun objectPatrolDao(): ObjectPatrolDao?
     abstract fun patrolDataDao(): PatrolDataDao?
     abstract fun scheduleDao(): ScheduleDao?
+    abstract fun shiftDao(): ShiftDao?
     abstract fun eventDao(): EventDao?
     abstract fun temuanDao(): TemuanDao?
     abstract fun patrolActivityDao(): PatrolActivityDao?

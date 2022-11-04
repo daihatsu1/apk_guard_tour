@@ -94,12 +94,14 @@
         <item name="cardPreventCornerOverlap">true</item>
         <item name="cardUseCompatPadding">true</item>
         <item name="cardBackgroundColor">#303030</item>
+        <item name="strokeColor">@color/primaryColor</item>
+        <item name="strokeWidth">1dp</item>
+
     </style>
 
-    <style name="textTitle" parent="@style/TextAppearance.MaterialComponents.Headline2">
+    <style name="textTitle" parent="@style/TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">@color/white</item>
         <item name="drawableTint">@color/white</item>
-        <item name="android:textSize">22sp</item>
         <item name="textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
         <item name="fontFamily">@font/roboto</item>
@@ -109,5 +111,6 @@
         <item name="android:textColor">@color/white</item>
         <item name="drawableTint">@color/white</item>
     </style>
+    <color name="bg_card">@color/default_background_color</color>
 
 </resources>

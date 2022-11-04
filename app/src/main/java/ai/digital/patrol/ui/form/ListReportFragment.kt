@@ -66,7 +66,6 @@ class ListReportFragment : Fragment(), OnReportClickListener {
     override fun onResume() {
         super.onResume()
         activity?.title = "DAFTAR TEMUAN CHECKPOINT"
-
     }
 
     private fun setListReport(checkpoint: Checkpoint) {
@@ -75,7 +74,6 @@ class ListReportFragment : Fragment(), OnReportClickListener {
                 temuanViewAdapter.setList(it)
             }
         }
-
     }
 
     override fun onItemClicked(_reportDetail: ReportDetail) {

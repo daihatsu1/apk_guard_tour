@@ -39,7 +39,7 @@
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:textColor="@color/white"
-                style="@style/textTitledark"
+                style="@style/textTitle"
                 android:text="PLANT 5 - ZONA 1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:textStyle="bold" />

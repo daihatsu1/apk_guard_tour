@@ -11,6 +11,7 @@ package ai.digital.patrol.helper
 
 object Cons {
 
+    const val RANDOM_ZONE = "random_zone"
     const val APIKEY = "apiKey"
     const val VIEW_MODE = "view_mode"
     const val PATROL_STATE = "patrol_state"

@@ -16,8 +16,16 @@
         android:topRightRadius="50dp"
         />
     <solid
-        android:color="@color/bg_layout"
+        android:color="@color/secondaryDarkColor"
         />
+<!--    <gradient-->
+<!--        android:angle="90"-->
+<!--        android:centerX="0%"-->
+<!--        android:startColor="@color/primaryColor"-->
+<!--        android:centerColor="@color/bg_layout"-->
+<!--        android:endColor="@color/secondaryAccentColor"-->
+<!--        android:type="linear"-->
+<!--        />-->
     <size
         android:width="182dp"
         android:height="100dp"

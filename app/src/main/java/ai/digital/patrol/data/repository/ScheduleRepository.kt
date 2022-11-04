@@ -12,6 +12,7 @@ package ai.digital.patrol.data.repository
 import ai.digital.patrol.DatabaseClient
 import ai.digital.patrol.data.dao.*
 import ai.digital.patrol.data.entity.Schedule
+import ai.digital.patrol.data.entity.Shift
 import ai.digital.patrol.networking.ServiceGenerator
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -28,8 +29,10 @@ class ScheduleRepository(val dataSource: DatabaseClient) {
 
     // in-memory cache of the user object
     internal var schedule: Schedule? = null
+    internal var shift: Shift? = null
 
     private val scheduleDao: ScheduleDao? = DatabaseClient.getInstance()?.appDatabase?.scheduleDao()
+    private val shiftDao: ShiftDao? = DatabaseClient.getInstance()?.appDatabase?.shiftDao()
 
 
     private val runnerScope: CoroutineScope = object : CoroutineScope {
@@ -49,6 +52,13 @@ class ScheduleRepository(val dataSource: DatabaseClient) {
         }
     }
 
+    fun insertShift(shift: List<Shift?>) {
+        runnerScope.launch {
+            shiftDao?.deleteAll()
+            shiftDao?.insertList(shift)
+        }
+    }
+
     fun getSchedule(): LiveData<Schedule>? {
         return scheduleDao?.get
     }
@@ -56,6 +66,17 @@ class ScheduleRepository(val dataSource: DatabaseClient) {
 
     fun getScheduleAPI(): LiveData<List<Schedule>>? {
         return scheduleRequest
+    }
+
+    fun getShiftAPI(): LiveData<List<Shift>>? {
+        return shiftRequest
+    }
+
+    fun getCurrentShift(): Shift? {
+        return shiftDao?.current
+    }
+    fun getPatrolShift(): Shift? {
+        return shiftDao?.patrolShift
     }
 
     fun getCurrentSchedule(): Schedule? {
@@ -87,6 +108,32 @@ class ScheduleRepository(val dataSource: DatabaseClient) {
                 }
             })
             return scheduleDao?.all
+        }
+    private val shiftRequest: LiveData<List<Shift>>?
+        get() {
+            val restInterface = ServiceGenerator.createService()
+            val scheduleDataCall = restInterface.getShift()
+            scheduleDataCall!!.enqueue(object : Callback<List<Shift?>> {
+                override fun onResponse(
+                    call: Call<List<Shift?>>,
+                    response: Response<List<Shift?>>
+                ) {
+                    if (response.isSuccessful) {
+
+                        val shift = response.body()
+                        if (shift?.isEmpty() == false) {
+                            if (shift[0] != null) {
+                                insertShift(shift)
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Shift?>>, t: Throwable) {
+                    Log.d("Shift", "FAIL....", t)
+                }
+            })
+            return shiftDao?.all
         }
 
     companion object {

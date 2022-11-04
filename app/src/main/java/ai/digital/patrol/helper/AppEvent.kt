@@ -10,6 +10,15 @@
 package ai.digital.patrol.helper
 
 enum class AppEvent {
-    NFC_MATCHED, NFC_NO_MATCHED, PATROL_TIME_ON, PATROL_TIME_OFF
+    NFC_MATCHED,
+    NFC_NO_MATCHED,
+    PATROL_TIME_ON,
+    PATROL_TIME_OFF,
+    PATROL_SHIFT_ON,
+    PATROL_SHIFT_OFF,
+    PATROL_ON_SHIFT_ON_TIME,
+    PATROL_OFF_SHIFT_ON_TIME,
+    PATROL_ON_SHIFT_OFF_TIME,
+    PATROL_OFF_SHIFT_OFF_TIME,
 }
 //data class AppEvent(val text: String)

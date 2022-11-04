@@ -93,7 +93,7 @@ class DialogNFCFragment(
      * @param view
      */
     private fun setupView() {
-        binding!!.dialogIcon.loadDrawable(R.drawable.icon_nfc)
+//        binding!!.dialogIcon.loadDrawable(R.drawable.icon_nfc)
         binding!!.dialogIcon.setOnClickListener {
             dialogCallbackListener.onPositiveClickListener(it, dialog)
         }

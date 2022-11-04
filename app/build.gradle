@@ -10,7 +10,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.gms.google-services'  // Google Services plugin
+    id 'com.google.gms.google-services'
     // Apply the Crashlytics Gradle plugin
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
@@ -41,7 +41,7 @@ android {
         minSdk 26
         targetSdk 33
         versionCode 1
-        versionName "1.0.3"
+        versionName "1.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release

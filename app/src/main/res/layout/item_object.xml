@@ -16,6 +16,7 @@
     app:cardUseCompatPadding="true"
     app:strokeColor="@color/info"
     app:strokeWidth="2dp"
+    style="@style/cardItem"
     android:id="@+id/item_cv_object_card"
     >
 
@@ -38,12 +39,11 @@
                 android:gravity="left"
                 style="@style/textTitledark"
                 android:text="CHECKPOINT 1 ACBS KKLAKKJD"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/item_imv_object_icon"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_24"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:src="@drawable/baseline_chevron_right_white_36dp" />

@@ -36,6 +36,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ListObjectFragment : Fragment(), OnObjectClickListener {
 
@@ -56,22 +60,25 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
     private var onBackPressedCallback: OnBackPressedCallback? = null
 
     private val patrolDataViewModel by lazy {
-        ViewModelProvider(this, PatrolDataViewModel.Factory(Application())).get(
-            PatrolDataViewModel::class.java
-        )
+        ViewModelProvider(
+            this,
+            PatrolDataViewModel.Factory(Application())
+        )[PatrolDataViewModel::class.java]
     }
     private val syncViewModel by lazy {
         ViewModelProvider(this)[SyncViewModel::class.java]
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentListObjectBinding.inflate(inflater, container, false)
-        checkpoint = args.dataCheckpoint!!
-        report = args.dataReport!!
-
+        args.let {
+            checkpoint = it.dataCheckpoint
+            report = it.dataReport
+        }
         _binding!!.titleObject.text = buildString {
             append("PILIH OBJECT CHECKPOINT ")
             append(checkpoint.check_name)
@@ -88,14 +95,15 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
 
         binding.titleReportListsBtn.setOnClickListener {
             val action =
-                ListObjectFragmentDirections.actionObjectFragmentToListReportFragment( checkpoint
+                ListObjectFragmentDirections.actionObjectFragmentToListReportFragment(
+                    checkpoint
                 )
             findNavController().navigate(action)
         }
         onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (clickBackPressed) {
-                    dialogConfirmDoneCheck(checkpoint)
+//                    dialogConfirmDoneCheck(checkpoint)
                 } else {
                     isEnabled = false
                     activity?.onBackPressed()
@@ -107,7 +115,6 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
             viewLifecycleOwner, onBackPressedCallback as OnBackPressedCallback
         )
 
-
         return binding.root
     }
 
@@ -116,13 +123,24 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
         patrolDataViewModel.getObjectByCheckpoint(checkpoint.id)
             ?.observe(viewLifecycleOwner) { it ->
                 objectViewAdapter.setList(it)
+                val totalObject = it.size
+                val totalObjectChecked = it.filter {
+                    it.is_normal != null
+                }.size
+                if (totalObjectChecked < totalObject) {
+                    binding.bottomLayout.visibility = GONE
+                } else {
+                    binding.bottomLayout.visibility = VISIBLE
+                }
             }
     }
 
 
     override fun onItemClicked(_objectPatrol: ObjectPatrol) {
-        setCallback(_objectPatrol)
-        _objectPatrol.nama_objek?.let { dialogConfirmCheckObject(it) }
+        if (_objectPatrol.nama_objek != null) {
+            setCallback(_objectPatrol)
+            dialogConfirmCheckObject(_objectPatrol.nama_objek)
+        }
     }
 
     private fun dialogConfirmCheckObject(objectName: String) {
@@ -169,6 +187,7 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
                 dialog?.dismiss()
+
                 val action =
                     ListObjectFragmentDirections.actionListObjectFragmentToReportingFragment(
                         _objectPatrol, checkpoint, report
@@ -189,27 +208,36 @@ class ListObjectFragment : Fragment(), OnObjectClickListener {
         patrolDataViewModel.getDataTemuanByCheckpoint(checkpoint.id)?.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 binding.titleReportListsBtn.visibility = VISIBLE
-            }else{
+            } else {
                 binding.titleReportListsBtn.visibility = GONE
             }
         }
     }
 
-    fun setNormalObject(_objectPatrol: ObjectPatrol, report: Report){
-        val dataReportDetail = ReportDetail(
-            admisecsgp_mstobj_objek_id = _objectPatrol.id,
-            is_laporan_kejadian = 0,
-            laporkan_pic = 0,
-            is_tindakan_cepat = 0,
-            conditions = "Normal",
-            description = "Normal",
-            status = 1,
-            created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
-            synced = false,
-            reportId = report.sync_token
-        )
-        patrolDataViewModel.addReportNormalDetail(dataReportDetail)
-        syncViewModel.syncReportData()
+    @OptIn(DelicateCoroutinesApi::class)
+    fun setNormalObject(_objectPatrol: ObjectPatrol, report: Report) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val reportData =
+                patrolDataViewModel.getReportByCheckpointId(checkpointId = checkpoint.id)
+            if (reportData != null) {
+                val dataReportDetail = ReportDetail(
+                    admisecsgp_mstobj_objek_id = _objectPatrol.id,
+                    is_laporan_kejadian = 0,
+                    laporkan_pic = 0,
+                    is_tindakan_cepat = 0,
+                    conditions = "Normal",
+                    description = "Normal",
+                    status = 1,
+                    status_temuan = 1,
+                    created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
+                    synced = false,
+                    reportId = reportData.sync_token,
+                    admisecsgp_mstckp_checkpoint_id = checkpoint.id
+                )
+                patrolDataViewModel.addReportNormalDetail(reportData, dataReportDetail)
+                syncViewModel.syncReportData()
+            }
+        }
     }
 
     private fun setCallbackCheckpointDone(_checkpoint: Checkpoint) {

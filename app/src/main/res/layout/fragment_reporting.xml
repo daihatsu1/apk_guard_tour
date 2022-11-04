@@ -105,9 +105,17 @@
                 tools:listitem="@layout/item_photo">
 
             </androidx.recyclerview.widget.RecyclerView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="TINDAKAN"
+                android:layout_marginTop="@dimen/dp_16"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold" />
             <RadioGroup
                 android:id="@+id/radioGroup"
-                android:checkedButton="@+id/radio_button_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <RadioButton

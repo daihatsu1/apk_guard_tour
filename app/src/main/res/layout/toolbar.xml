@@ -12,6 +12,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
+    android:background="@color/primaryColor"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,6 +38,7 @@
                 android:fontFamily="@font/roboto"
                 android:text="NAMA USER LOGIN"
                 android:textColor="@color/white"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold" />
 

@@ -82,9 +82,9 @@ class ReportDetailHomeViewAdapter(private val listener: OnReportClickListener?) 
 
                 0 -> {
                     if (reportDetail.image_1 != null) {
-                        if (reportDetail.image_1.startsWith("http")) {
+                        if (reportDetail.image_1!!.startsWith("http")) {
                             image.loadUrl(reportDetail.image_1)
-                        } else if (reportDetail.image_1.startsWith("file")) {
+                        } else if (reportDetail.image_1!!.startsWith("file")) {
                             image.loadUri(Uri.parse(reportDetail.image_1))
                         } else {
                             image.loadDrawable(R.drawable.no_img)
@@ -111,7 +111,7 @@ class ReportDetailHomeViewAdapter(private val listener: OnReportClickListener?) 
                 animIcon.setAnimation(R.raw.warning)
                 card.strokeColor = ContextCompat.getColor(context, R.color.primaryDarkColor)
             }
-            animIcon.repeatCount = LottieDrawable.INFINITE
+//            animIcon.repeatCount = LottieDrawable.
             animIcon.playAnimation()
         }
     }

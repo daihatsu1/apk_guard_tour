@@ -129,7 +129,12 @@ class DialogFragment(private val dialogCallbackListener: DialogCallbackListener)
                 )
         }
         binding!!.dialogTitle.text = arguments?.getString(KEY_TITLE)
-        binding!!.dialogSubtitle.text = arguments?.getString(KEY_SUBTITLE)
+        if(arguments?.getString(KEY_SUBTITLE)?.isNotEmpty() == true){
+            binding!!.dialogSubtitle.visibility = VISIBLE
+            binding!!.dialogSubtitle.text = arguments?.getString(KEY_SUBTITLE)
+        }else{
+            binding!!.dialogSubtitle.visibility = GONE
+        }
         binding!!.btnDialogPositif.text = arguments?.getString(KEY_POSITIVE)
         if (arguments?.getString(KEY_NEGATIVE) != null) {
             binding!!.btnDialogNegative.visibility = VISIBLE

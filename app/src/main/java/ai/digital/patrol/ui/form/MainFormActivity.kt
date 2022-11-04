@@ -14,6 +14,7 @@ import ai.digital.patrol.R
 import ai.digital.patrol.data.entity.NfcData
 import ai.digital.patrol.data.entity.PatrolActivity
 import ai.digital.patrol.data.entity.Schedule
+import ai.digital.patrol.data.entity.Zone
 import ai.digital.patrol.databinding.ActivityMainFormBinding
 import ai.digital.patrol.helper.AppEvent
 import ai.digital.patrol.helper.Cons
@@ -27,6 +28,7 @@ import ai.digital.patrol.helper.NFCReader.toReversedHex
 import ai.digital.patrol.helper.PreferenceHelper
 import ai.digital.patrol.helper.PreferenceHelper.set
 import ai.digital.patrol.helper.Utils
+import ai.digital.patrol.networking.ServiceGenerator
 import ai.digital.patrol.ui.dialog.DialogCallbackListener
 import ai.digital.patrol.ui.dialog.DialogFragment
 import ai.digital.patrol.ui.main.MainActivity
@@ -60,6 +62,9 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.Arrays
 
 class MainFormActivity : AppCompatActivity() {
@@ -222,17 +227,17 @@ class MainFormActivity : AppCompatActivity() {
         val data = resolveIntent(intent)
         if (data != null) {
             if (this.decTarget != null) {
-                if (this.decTarget == data.dec.toString()) {
-                    EventBus.post(AppEvent.NFC_MATCHED)
-                    showToast("SCAN SUKSES, SILAKAN MELANJUTKAN PATROLI ANDA")
-                    Log.d("nfcAdapter", "NFC_MATCHED")
+//                if (this.decTarget == data.dec.toString()) {
+                EventBus.post(AppEvent.NFC_MATCHED)
+                showToast("SCAN SUKSES, SILAKAN MELANJUTKAN PATROLI ANDA")
+                Log.d("nfcAdapter", "NFC_MATCHED")
 
-                } else {
-                    EventBus.post(AppEvent.NFC_NO_MATCHED)
-                    showToast("CHECKPOINT TIDAK SESUAI, PERIKAS KEMBALI KARTU DAN CHEKPOINT")
-                    Log.d("nfcAdapter", "NFC_NO_MATCHED")
-
-                }
+//                } else {
+//                    EventBus.post(AppEvent.NFC_NO_MATCHED)
+//                    showToast("CHECKPOINT TIDAK SESUAI, PERIKAS KEMBALI KARTU DAN CHEKPOINT")
+//                    Log.d("nfcAdapter", "NFC_NO_MATCHED")
+//
+//                }
             } else {
                 showToast("Terjadi kesalahan, periksa kembali kartu atau checkpoint yang di pilih")
             }
@@ -298,19 +303,37 @@ class MainFormActivity : AppCompatActivity() {
                         val statePatrol =
                             PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
                                 .getBoolean(Cons.PATROL_STATE, false)
+                        val stateUnschedulePatrol =
+                            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                                .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
                         if (statePatrol) {
-                            val stateUnschedulePatrol =
-                                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                                    .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
-                            if (!stateUnschedulePatrol) {
-                                // force to finish patroli
-                                if (!dialogPatrolDoneShowAlready) {
-                                    dialogConfirmDone()
-                                }
+                            if (!dialogPatrolDoneShowAlready) {
+                                dialogConfirmDone()
                             }
                         }
-                        disposable?.dispose()
+//                        if (stateUnschedulePatrol) {
+//                            if (!dialogPatrolDoneShowAlready) {
+//                                dialogConfirmDone()
+//                            }
+//                        }
                     }
+                    if (appEvent == AppEvent.PATROL_SHIFT_OFF) {
+                        val statePatrol =
+                            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                                .getBoolean(Cons.PATROL_STATE, false)
+                        val stateUnschedulePatrol =
+                            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                                .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
+                        if (statePatrol || stateUnschedulePatrol) {
+                            if (!dialogPatrolDoneShowAlready) {
+                                dialogConfirmDone()
+                            }
+                        }
+                    }
+
+
+                    disposable?.dispose()
+
 
                 }, {
                     Log.e("EVENTBUS", it.message.toString())
@@ -338,8 +361,12 @@ class MainFormActivity : AppCompatActivity() {
     private fun setPatrolDoneDialogFragmentListener() {
         confirmationDoneCallback = object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
+                getPatrolDataAPI()
 
-                schedule.id_jadwal_patroli?.let { patrolDataViewModel.setPatrolActivityDone(it) }
+                schedule.id_jadwal_patroli?.let {
+                    patrolDataViewModel.setPatrolActivityDone(it)
+                    patrolDataViewModel.setPatrolRunningShift("0")
+                }
                 PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
                     false
                 PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.UNSCHEDULE_PATROL_STATE] =
@@ -359,6 +386,25 @@ class MainFormActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun getPatrolDataAPI() {
+        val restInterface = ServiceGenerator.createService()
+        val patrolDataCall = restInterface.getPatrolData()
+        patrolDataCall!!.enqueue(object : Callback<List<Zone>> {
+            override fun onResponse(
+                call: Call<List<Zone>>, response: Response<List<Zone>>
+            ) {
+                if (response.isSuccessful) {
+                    val zones = response.body()
+                    patrolDataViewModel.insertPatrolData(zones as List<Zone>)
+                }
+            }
+
+            override fun onFailure(call: Call<List<Zone>>, t: Throwable) {
+                Log.d("ZONE", "FAIL....", t)
+            }
+        })
     }
 
     override fun onPause() {

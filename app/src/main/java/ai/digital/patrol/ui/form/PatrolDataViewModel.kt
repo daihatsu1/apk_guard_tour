@@ -73,11 +73,19 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
         return repository?.checkReport(checkpointId)
     }
 
-    fun addReportDetail(dataReportDetail: ReportDetail) {
-        repository?.addReportDetail(dataReportDetail)
+    suspend fun getReportBySyncToken(sync_token: String): Report? {
+        return repository?.getReportBySyncToken(sync_token)
     }
-    fun addReportNormalDetail(dataReportDetail: ReportDetail) {
-        repository?.addReportNormalDetail(dataReportDetail)
+
+    suspend fun getReportByCheckpointId(checkpointId: String): Report? {
+        return repository?.getReportByCheckpointId(checkpointId)
+    }
+
+    fun addReportDetail(report: Report, dataReportDetail: ReportDetail) {
+        repository?.addReportDetail(report, dataReportDetail)
+    }
+    fun addReportNormalDetail(report: Report, dataReportDetail: ReportDetail) {
+        repository?.addReportNormalDetail(report, dataReportDetail)
     }
 
     fun setZoneOnPatrol(zoneId: String) {
@@ -96,11 +104,13 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
         repository?.checkOutCheckpoint(checkpointId)
     }
 
-    fun insertReport(report: Report) {
-
-        repository?.addReport(report)
+    suspend fun insertReport(report: Report): Report? {
+         return repository?.addReport(report)
     }
 
+    fun getReport(sync_token: String): LiveData<Report>? {
+        return repository?.getReport(sync_token)
+    }
     fun getUnSyncReport(): List<Report>? {
         return repository?.getUnSyncReport()
     }
@@ -119,6 +129,9 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
     fun setPatrolActivityStart(idJadwal: String) {
         repository?.setPatrolActivityStart(idJadwal)
     }
+    fun setPatrolRunningShift(status:String) {
+        repository?.setRunningPatrolShift(status)
+    }
     fun setPatrolActivityDone(idJadwal: String) {
         repository?.setPatrolActivityDone(idJadwal)
     }
@@ -127,6 +140,10 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
     }
     fun getPatrolActivityApi(idJadwal:String): LiveData<PatrolActivity>? {
         return repository?.getPatrolActivityApi(idJadwal = idJadwal)
+    }
+
+    fun resetDataReport() {
+        repository?.resetDataReport()
     }
 
 

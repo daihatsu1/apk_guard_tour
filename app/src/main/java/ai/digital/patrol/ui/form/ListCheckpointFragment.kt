@@ -43,6 +43,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -52,13 +56,13 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
 
     private var _binding: FragmentListCheckpointBinding? = null
     private val checkpointViewAdapter = CheckpointViewAdapter(this)
-    val args: ListCheckpointFragmentArgs by navArgs()
+    private val args: ListCheckpointFragmentArgs by navArgs()
     lateinit var zone: Zone
     private lateinit var schedule: Schedule
     private var confirmationZoneDoneCallback: DialogCallbackListener? = null
     private var clickBackPressed: Boolean = true
 
-    var checkpoint: Checkpoint? = null
+    lateinit var checkpoint: Checkpoint
     private var onBackPressedCallback: OnBackPressedCallback? = null
     private var disposable: Disposable? = null
     private var dialogNfcFragment: DialogNFCFragment? = null
@@ -86,9 +90,10 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
+        args.let {
+            zone = it.dataZone!!
+        }
         _binding = FragmentListCheckpointBinding.inflate(inflater, container, false)
-        zone = args.dataZone!!
         _binding!!.titleZone.text = buildString {
             append("PILIH CHECKPOINT ZONA ")
             append(zone.zone_name)
@@ -109,7 +114,7 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
         onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (clickBackPressed) {
-                    dialogConfirmZoneDone(zone)
+//                    dialogConfirmZoneDone(zone)
                 } else {
                     isEnabled = false
                     activity?.onBackPressed()
@@ -128,7 +133,7 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
                     if (appEvent == AppEvent.NFC_MATCHED) {
                         if (dialogNfcFragment?.showsDialog == true) {
                             dialogNfcFragment!!.dismiss()
-                            checkpoint?.let { addReport(it) }
+                            addReport(checkpoint)
                         }
                     }
 
@@ -137,6 +142,12 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
                 })
 
         return binding.root
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
 
     }
 
@@ -163,6 +174,17 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
     private fun setListCheckpoint() {
         patrolDataViewModel.getCheckpointByZone(zone.id)?.observe(viewLifecycleOwner) { it ->
             checkpointViewAdapter.setList(it)
+
+            val totalCheckpoint = it.size
+            val totalCheckpointChecked = it.filter {
+                it.patrol_status != null
+            }.size
+
+            if (totalCheckpointChecked < totalCheckpoint) {
+                binding.fabZoneDone.visibility = View.GONE
+            } else {
+                binding.fabZoneDone.visibility = VISIBLE
+            }
         }
     }
 
@@ -174,13 +196,17 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun addReport(_checkpoint: Checkpoint) {
-        patrolDataViewModel.checkReport(_checkpoint.id)?.observe(viewLifecycleOwner) { it ->
-            var report = it
-            if (report == null) {
+        Log.d("CHECKPOINT REPORT", checkpoint.toString())
+        val npk = PreferenceHelper.appsPrefs(this.requireContext()).getString(Cons.NPK, "")
+        var reportData: Report? = null
+
+        GlobalScope.launch(Dispatchers.IO) {
+            reportData = patrolDataViewModel.getReportByCheckpointId(_checkpoint.id)
+            if (reportData == null) {
                 val syncToken = UUID.randomUUID().toString()
-                val npk = PreferenceHelper.appsPrefs(this.requireContext()).getString(Cons.NPK, "")
-                report = Report(
+                val newReport = Report(
                     sync_token = syncToken,
                     admisecsgp_mstckp_checkpoint_id = _checkpoint.id,
                     admisecsgp_mstshift_shift_id = schedule.shift_id!!,
@@ -190,24 +216,36 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
                     checkin_checkpoint = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
                     created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
                 )
+                val statePatrol =
+                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                        .getBoolean(Cons.PATROL_STATE, false)
+                if (statePatrol) {
+                    newReport.type_patrol = 0
+                } else {
+                    newReport.type_patrol = 1
+                }
+                reportData = patrolDataViewModel.insertReport(newReport)
+            }
+            gotoObject(reportData, _checkpoint) // ...back on Main
+        }
+
+        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.ALLOW_BACK_BUTTON] =
+            true
+    }
+
+    private fun gotoObject(reportData: Report?, _checkpoint: Checkpoint) {
+        if (reportData != null) {
+            activity?.runOnUiThread {
                 patrolDataViewModel.checkInCheckpoint(_checkpoint.id)
-                patrolDataViewModel.insertReport(report)
                 val action =
                     ListCheckpointFragmentDirections.actionCheckpointFragmentToListObjectFragment(
-                        _checkpoint, report
+                        _checkpoint, reportData
                     )
                 findNavController().safeNavigate(action)
                 syncViewModel.syncReportData()
-            } else {
-                val action =
-                    ListCheckpointFragmentDirections.actionCheckpointFragmentToListObjectFragment(
-                        _checkpoint, report
-                    )
-                findNavController().safeNavigate(action)
             }
         }
-        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.ALLOW_BACK_BUTTON] =
-            true
+
     }
 
     private fun NavController.safeNavigate(direction: NavDirections) {

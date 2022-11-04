@@ -17,21 +17,23 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity(
-    tableName = "report_detail", foreignKeys = [
-        ForeignKey(
-            entity = Report::class,
-            onUpdate = ForeignKey.NO_ACTION,
-            parentColumns = arrayOf("sync_token"),
-            childColumns = arrayOf("report")
-        ),
-        ForeignKey(
-            entity = ObjectPatrol::class,
-            onUpdate = ForeignKey.NO_ACTION,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("admisecsgp_mstobj_objek_id")
-        ),
-
-    ],indices = [androidx.room.Index("admisecsgp_mstobj_objek_id", unique = true)]
+    tableName = "report_detail",
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = Report::class,
+//            onUpdate = ForeignKey.NO_ACTION,
+//            parentColumns = arrayOf("sync_token"),
+//            childColumns = arrayOf("report")
+//        ),
+//        ForeignKey(
+//            entity = ObjectPatrol::class,
+//            onUpdate = ForeignKey.NO_ACTION,
+//            parentColumns = arrayOf("id"),
+//            childColumns = arrayOf("admisecsgp_mstobj_objek_id")
+//        ),
+//
+//    ],
+    indices = [androidx.room.Index("admisecsgp_mstobj_objek_id", unique = true)]
 )
 data class ReportDetail(
     @PrimaryKey @SerializedName("sync_token") @ColumnInfo(name = "sync_token") var sync_token: String = UUID.randomUUID()
@@ -42,16 +44,18 @@ data class ReportDetail(
     @ColumnInfo(name = "conditions") @SerializedName("conditions") val conditions: String? = null,
     @ColumnInfo(name = "admisecsgp_mstevent_event_id") @SerializedName("admisecsgp_mstevent_event_id") val admisecsgp_mstevent_event_id: String? = null,
     @ColumnInfo(name = "description") @SerializedName("description") val description: String? = null,
-    @ColumnInfo(name = "image_1") @SerializedName("image_1") val image_1: String? = null,
-    @ColumnInfo(name = "image_2") @SerializedName("image_2") val image_2: String? = null,
-    @ColumnInfo(name = "image_3") @SerializedName("image_3") val image_3: String? = null,
+    @ColumnInfo(name = "image_1") @SerializedName("image_1") var image_1: String? = null,
+    @ColumnInfo(name = "image_2") @SerializedName("image_2") var image_2: String? = null,
+    @ColumnInfo(name = "image_3") @SerializedName("image_3") var image_3: String? = null,
     @ColumnInfo(name = "is_laporan_kejadian") @SerializedName("is_laporan_kejadian") val is_laporan_kejadian: Int? = null,
     @ColumnInfo(name = "laporkan_pic") @SerializedName("laporkan_pic") val laporkan_pic: Int? = null,
-    @ColumnInfo(name = "is_tindakan_cepat") @SerializedName("is_tindakan_cepat") val is_tindakan_cepat: Int? = null,
+    @ColumnInfo(name = "is_tindakan_cepat") @SerializedName("is_tindakan_cepat") var is_tindakan_cepat: Int? = null,
     @ColumnInfo(name = "deskripsi_tindakan") @SerializedName("deskripsi_tindakan") val deskripsi_tindakan: String? = null,
-    @ColumnInfo(name = "note_tindakan_cepat") @SerializedName("note_tindakan_cepat") val note_tindakan_cepat: String? = null,
-    @ColumnInfo(name = "status") @SerializedName("status") val status: Int = 1,
+    @ColumnInfo(name = "note_tindakan_cepat") @SerializedName("note_tindakan_cepat") var note_tindakan_cepat: String? = null,
+    @ColumnInfo(name = "status") @SerializedName("status") var status: Int = 1,
+    @ColumnInfo(name = "status_temuan") @SerializedName("status_temuan") var status_temuan: Int = 0,
     @ColumnInfo(name = "created_at") @SerializedName("created_at") val created_at: String? = null,
     @ColumnInfo(name = "synced") var synced: Boolean? = false,
+    @ColumnInfo(name = "admisecsgp_mstckp_checkpoint_id") val admisecsgp_mstckp_checkpoint_id: String? = null,
     @ColumnInfo(name = "report") var reportId: String,
 )

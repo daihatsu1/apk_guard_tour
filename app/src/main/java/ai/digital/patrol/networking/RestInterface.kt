@@ -25,6 +25,9 @@ interface RestInterface {
     @GET("patroli/jadwalPatroli")
     fun getJadwal(): Call<List<Schedule?>>?
 
+    @GET("patroli/shift")
+    fun getShift(): Call<List<Shift?>>?
+
     @GET("patroli/dataPatroli")
     fun getPatrolData(): Call<List<Zone>>?
 

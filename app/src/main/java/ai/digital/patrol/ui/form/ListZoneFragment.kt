@@ -31,6 +31,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -87,12 +89,28 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
         scheduleViewModel.getSchedule()?.observe(this) { it ->
             if (it != null) {
                 schedule = it
-//                runnableCode.run()
                 it.id_jadwal_patroli?.let { it1 -> getPatrolActivity(it1) }
             }
         }
     }
-
+    private fun getAllCheckpoint() {
+        patrolDataViewModel.getAllCheckpoint()?.observe(this) {
+            if (it.isNotEmpty()) {
+                val checkpointDone = it.filter { ch ->
+                    ch.patrol_status == false
+                }
+                val total = it.size
+                val totalCheckpointDone = checkpointDone.size
+               if(total == totalCheckpointDone){
+                   _binding!!.bottomLayout.visibility = VISIBLE
+               }else{
+                   _binding!!.bottomLayout.visibility = GONE
+               }
+            } else {
+                Log.d("TEMUAN", "NOT FOUND TEMUAN")
+            }
+        }
+    }
     private fun getPatrolActivity(idJadwal: String) {
         patrolDataViewModel.getPatrolActivity(idJadwal)?.observe(this) {
             if (it != null) {
@@ -121,20 +139,19 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
     private fun setPatrolDoneDialogFragmentListener() {
         confirmationPatrolDoneCallback = object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
-                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
-                    false
-                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.IS_PATROL_ALREADY_TAKEN] =
-                    true
-
                 schedule.id_jadwal_patroli?.let { patrolDataViewModel.setPatrolActivityDone(it) }
-                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
-                    false
-                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.UNSCHEDULE_PATROL_STATE] =
+                PreferenceHelper.appsPrefs(
+                    GuardTourApplication
+                        .applicationContext()
+                )[Cons.PATROL_STATE] =
                     false
 
+                PreferenceHelper.appsPrefs(
+                    GuardTourApplication
+                        .applicationContext()
+                )[Cons.UNSCHEDULE_PATROL_STATE] =
+                    false
                 this@ListZoneFragment.activity?.finish()
-
-//                patrolDataViewModel.setPatrolActivityDone()
             }
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
@@ -151,6 +168,7 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
         super.onResume()
         activity?.title = "DAFTAR ZONA PATROLI"
         getSchedule()
+        getAllCheckpoint()
     }
 
     private fun getZones() {
@@ -158,14 +176,14 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
             if (it.isNotEmpty()) {
                 zones = it
                 zoneViewAdapter.setListZone(zones)
-                val statePatrol =
+
+                val randomZone =
                     PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                        .getBoolean(Cons.PATROL_STATE, false)
-                if (!statePatrol) {
+                        .getBoolean(Cons.RANDOM_ZONE, false)
+
+                if (randomZone) {
                     //set state patrol true
-                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
-                        true
-                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.IS_PATROL_ALREADY_TAKEN] =
+                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.RANDOM_ZONE] =
                         false
 
                     val random = Random().nextInt(zones.size)

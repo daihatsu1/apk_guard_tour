@@ -42,6 +42,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.dhaval2404.imagepicker.ImagePicker
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ReportingFragment : Fragment(), OnPhotoClickListener {
 
@@ -67,18 +71,18 @@ class ReportingFragment : Fragment(), OnPhotoClickListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentReportingBinding.inflate(inflater, container, false)
-        _objectPatrol = args.dataObject!!
-        _checkpoint = args.dataCheckpoint!!
-        _report = args.dataReport!!
+        _objectPatrol = args.dataObject
+        _checkpoint = args.dataCheckpoint
+        _report = args.dataReport
 
         _binding.title.text = _objectPatrol.nama_objek
         _binding.btnReportingSave.setOnClickListener {
-            if (validate()) dialogConfirmSubmit()
+            if (isValid()) dialogConfirmSubmit()
         }
         _objectPatrol = args.dataObject!!
 
-        _binding.etReportingNote.validate("Harus di isi") { s -> s.isNotEmpty() }
-        _binding.etReportingCategory.validate("Harus di isi") { s -> s.isNotEmpty() }
+        _binding.etReportingNote.isValid("Harus di isi") { s -> s.isNotEmpty() }
+        _binding.etReportingCategory.isValid("Harus di isi") { s -> s.isNotEmpty() }
         val recyclerPhoto = _binding.recyclerPhoto
         recyclerPhoto.adapter = photoViewAdapter
         recyclerPhoto.layoutManager = GridLayoutManager(this.requireContext(), 2)
@@ -104,6 +108,7 @@ class ReportingFragment : Fragment(), OnPhotoClickListener {
                     ImagePicker.RESULT_ERROR -> {
                         Log.e("RESULT_ERROR", ImagePicker.getError(data))
                     }
+
                     else -> {
                         Toast.makeText(
                             this.requireContext(),
@@ -161,7 +166,7 @@ class ReportingFragment : Fragment(), OnPhotoClickListener {
             }
     }
 
-    private fun validate(): Boolean {
+    private fun isValid(): Boolean {
         if (selectedEvent?.value.toString().isEmpty()) {
             _binding.tilReportingCategory.error = "WAJIB DI ISI"
             _binding.tilReportingActionNote.requestFocus()
@@ -181,6 +186,12 @@ class ReportingFragment : Fragment(), OnPhotoClickListener {
                 return false
             }
         }
+
+        if (_binding.radioGroup.checkedRadioButtonId == -1) {
+            Toast.makeText(context, "Wajib Pilih Tindakan", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
         if (imageList.isEmpty()) {
             _binding.btnAddPhoto.requestFocus()
             _binding.btnAddPhoto.error = "Wajib Tambahkan Foto."
@@ -190,38 +201,54 @@ class ReportingFragment : Fragment(), OnPhotoClickListener {
         return true
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun collectData() {
-        val category = selectedEvent?.key.toString()
-        val categoryText = selectedEvent?.value.toString()
-        val note = _binding.etReportingNote.text.toString()
-        val actionNote = _binding.etReportingActionNote.text.toString()
-        val picReport = if(_binding.cbReportingPic.isChecked) 1 else 0
-        val quickAction = if (_binding.cbReportingQuickAction.isChecked) 1 else 0
-        val accident = 0
+        GlobalScope.launch(Dispatchers.IO) {
+            val reportData =
+                patrolDataViewModel.getReportByCheckpointId(checkpointId = _checkpoint.id)
+            if (reportData != null) {
+                val category = selectedEvent?.key.toString()
+                val categoryText = selectedEvent?.value.toString()
+                val note = _binding.etReportingNote.text.toString()
+                val actionNote = _binding.etReportingActionNote.text.toString()
+                val picReport = if (_binding.cbReportingPic.isChecked) 1 else 0
+                val quickAction = if (_binding.cbReportingQuickAction.isChecked) 1 else 0
+                val accident = 0
 
-        if (validate()) {
-            val image1 = imageList.getOrNull(0)?.photoUri.toString()
-            val image2 = imageList.getOrNull(1)?.photoUri.toString()
-            val image3 = imageList.getOrNull(2)?.photoUri.toString()
+                if (isValid()) {
+                    val image1 = imageList.getOrNull(0)?.photoUri.toString()
+                    val image2 = imageList.getOrNull(1)?.photoUri.toString()
+                    val image3 = imageList.getOrNull(2)?.photoUri.toString()
 
-            val dataReportDetail = ReportDetail(
-                admisecsgp_mstobj_objek_id = _objectPatrol.id,
-                conditions = categoryText,
-                admisecsgp_mstevent_event_id = category,
-                description = note,
-                image_1 = image1,
-                image_2 = image2,
-                image_3 = image3,
-                is_laporan_kejadian = accident,
-                laporkan_pic = picReport,
-                is_tindakan_cepat = quickAction,
-                note_tindakan_cepat = actionNote,
-                status = 0,
-                created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
-                synced = false,
-                reportId = _report.sync_token
-            )
-            patrolDataViewModel.addReportDetail(dataReportDetail)
+                    val dataReportDetail = ReportDetail(
+                        admisecsgp_mstobj_objek_id = _objectPatrol.id,
+                        conditions = categoryText,
+                        admisecsgp_mstevent_event_id = category,
+                        description = note,
+                        image_1 = image1,
+                        image_2 = image2,
+                        image_3 = image3,
+                        is_laporan_kejadian = accident,
+                        laporkan_pic = picReport,
+                        is_tindakan_cepat = quickAction,
+                        note_tindakan_cepat = actionNote,
+                        created_at = Utils.createdAt("yyyy-MM-dd HH:mm:ss"),
+                        synced = false,
+                        reportId = reportData.sync_token
+                    )
+                    if (quickAction == 1) {
+                        dataReportDetail.status = 0
+                        dataReportDetail.status_temuan = 1
+                        dataReportDetail.is_tindakan_cepat = quickAction
+                        dataReportDetail.note_tindakan_cepat = actionNote
+                    } else {
+                        dataReportDetail.status = 0
+                        dataReportDetail.status_temuan = 0
+                    }
+                    Log.d("ReportDetail", dataReportDetail.toString())
+                    patrolDataViewModel.addReportDetail(_report, dataReportDetail)
+                }
+            }
         }
     }
 
@@ -243,9 +270,11 @@ class ReportingFragment : Fragment(), OnPhotoClickListener {
     private fun setReportSubmitDialogFragmentListener() {
         confirmationSubmitCallback = object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
-                collectData()
-                activity?.onBackPressed()
-                dialog?.dismiss()
+                if (isValid()) {
+                    collectData()
+                    activity?.onBackPressed()
+                    dialog?.dismiss()
+                }
             }
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
@@ -259,7 +288,7 @@ class ReportingFragment : Fragment(), OnPhotoClickListener {
 
     override fun onPhotoDeleteBtnClick(photoReport: PhotoReport) {
         imageList.removeIf {
-            it.photoUri==photoReport.photoUri
+            it.photoUri == photoReport.photoUri
         }
         photoViewAdapter.notifyDataSetChanged()
         if (imageList.size >= 3) {
@@ -286,7 +315,7 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     })
 }
 
-fun EditText.validate(message: String, validator: (String) -> Boolean) {
+fun EditText.isValid(message: String, validator: (String) -> Boolean) {
     this.afterTextChanged {
         this.error = if (validator(it)) null else message
     }

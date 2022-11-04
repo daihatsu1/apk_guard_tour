@@ -116,13 +116,19 @@
         <item name="cardUseCompatPadding">true</item>
         <item name="cardBackgroundColor">@color/bg_card</item>
     </style>
+    <style name="cardItem" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">15dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardPreventCornerOverlap">true</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">@color/bg_card</item>
+    </style>
 
-    <style name="textTitle" parent="@style/TextAppearance.MaterialComponents.Headline2">
+    <style name="textTitle" parent="@style/TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">@color/white</item>
         <item name="drawableTint">@color/white</item>
         <item name="android:textSize">18sp</item>
         <item name="textAllCaps">true</item>
-        <item name="android:textStyle">bold</item>
         <item name="fontFamily">@font/roboto</item>
     </style>
 
@@ -138,6 +144,7 @@
         <item name="android:paddingStart">@dimen/dp_16</item>
         <item name="android:paddingTop">@dimen/dp_8</item>
         <item name="android:paddingBottom">@dimen/dp_8</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
 
 

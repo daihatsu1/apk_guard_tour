@@ -14,6 +14,7 @@ import ai.digital.patrol.R
 import ai.digital.patrol.callback.OnInternetConnected
 import ai.digital.patrol.data.entity.PatrolActivity
 import ai.digital.patrol.data.entity.Schedule
+import ai.digital.patrol.data.entity.Shift
 import ai.digital.patrol.data.entity.Zone
 import ai.digital.patrol.databinding.ActivityMainBinding
 import ai.digital.patrol.helper.AppEvent
@@ -62,8 +63,6 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity(), OnInternetConnected {
-
-
     private var confirmationStartPatrolCallback: DialogCallbackListener? = null
     private var confirmationStartUnscheduledPatrolCallback: DialogCallbackListener? = null
     private lateinit var binding: ActivityMainBinding
@@ -72,6 +71,7 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
     private lateinit var materialAlertDialogBuilder: MaterialAlertDialogBuilder
     private val scheduleAdapter = ScheduleViewAdapter()
     private var schedule: Schedule? = null
+    private var currentShift: Shift? = null
     private var zones: List<Zone>? = null
     private val reportHomeViewAdapter = ReportDetailHomeViewAdapter(null)
     private val listZoneString: ArrayList<String> = ArrayList()
@@ -84,21 +84,31 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
         override fun run() {
             if (schedule != null) {
                 if (schedule!!.jam_pulang != null && schedule!!.jam_masuk != null) {
-                    val isOnPatrolTime =
-                        Utils.isOnPatrolTime(
-                            schedule!!.date,
-                            schedule!!.jam_masuk,
-                            schedule!!.jam_pulang
+                    val isOnSchedule = Utils.isOnPatrolTime(
+                        schedule!!.date, schedule!!.jam_masuk, schedule!!.jam_pulang
+                    )
+                    Log.d("Current Shift", currentShift.toString())
+                    if (currentShift != null) {
+                        val isCurrentShiftPatrolTime = Utils.isOnShiftPatrolTime(
+                            schedule!!.date, currentShift!!.jam_masuk, currentShift!!.jam_pulang
                         )
-                    Log.d("Main-isOnPatrolTime", isOnPatrolTime.toString())
 
-                    if (isOnPatrolTime) {
-                        EventBus.post(AppEvent.PATROL_TIME_ON)
+                        if (isCurrentShiftPatrolTime) {
+                            EventBus.post(AppEvent.PATROL_SHIFT_ON)
+                        } else {
+                            EventBus.post(AppEvent.PATROL_SHIFT_OFF)
+                        }
 
+                        if (isOnSchedule) {
+                            EventBus.post(AppEvent.PATROL_TIME_ON)
+
+                        } else {
+                            EventBus.post(AppEvent.PATROL_TIME_OFF)
+                        }
                     } else {
-                        EventBus.post(AppEvent.PATROL_TIME_OFF)
-
+                        EventBus.post(AppEvent.PATROL_SHIFT_OFF)
                     }
+
                     binding.layoutMain.btnRetryGetDataPatrol.visibility = GONE
                     binding.layoutMain.tvMsgPatroldata.visibility = GONE
                     binding.layoutMain.loadingSpinner.visibility = GONE
@@ -181,16 +191,17 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
             }
         }, intentFilter)
         getAllCheckpoint()
-
     }
 
     override fun onResume() {
         super.onResume()
         getSchedules()
-
         syncViewModel.syncReportData()
         val statePatrol = PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
             .getBoolean(Cons.PATROL_STATE, false)
+        val stateUnschedulePatrol =
+            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
         schedule?.id_jadwal_patroli?.let { getPatrolActivity(it) }
 
         binding.layoutMain.loadingSpinner.visibility = VISIBLE
@@ -200,6 +211,7 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
         btnStartUnscheduledPatrol.visibility = GONE
 
         if (statePatrol) {
+            currentShift = scheduleViewModel.getPatrolShift()
             btnStartUnscheduledPatrol.visibility = GONE
             btnStartPatrol.visibility = VISIBLE
             btnStartPatrol.text = getString(R.string.continue_patrol)
@@ -211,15 +223,35 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
             btnStartPatrol.setOnClickListener {
                 gotoMainForm()
             }
+        } else if (stateUnschedulePatrol) {
+            currentShift = scheduleViewModel.getPatrolShift()
+            btnStartUnscheduledPatrol.visibility = VISIBLE
+            btnStartUnscheduledPatrol.text = getString(R.string.continue_patrol)
+
+            btnStartPatrol.visibility = GONE
+
+            binding.layoutMain.loadingSpinner.visibility = GONE
+            binding.layoutMain.loadingSpinner.pauseAnimation()
+            binding.layoutMain.tvMsgPatroldata.visibility = GONE
+
+            btnStartUnscheduledPatrol.setOnClickListener {
+                gotoMainForm()
+            }
         } else {
+            currentShift = scheduleViewModel.getCurrentShift()
+
             // get data patrol
             when (patrolActivity?.status) {
-                1 -> binding.layoutMain.startPatrol.visibility =
-                    GONE
+                1 -> {
+                    binding.layoutMain.startPatrol.visibility = GONE
+                    getPatrolDataAPI()
+                }
 
-                else -> getZones()
+                else -> getPatrolDataAPI()
             }
             btnStartPatrol.text = getString(R.string.start_patrol)
+            btnStartUnscheduledPatrol.text = getString(R.string.patroli_diluar_jadwal)
+
             // Set click action
             btnStartUnscheduledPatrol.setOnClickListener {
                 dialogConfirmStartUnscheduledPatrol()
@@ -230,96 +262,126 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
             }
         }
 
-        disposable =
-            EventBus.subscribe<AppEvent>()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ appEvent ->
-                    Log.d("EVENTBUS", "event received: $appEvent")
-                    val statePatrolBus =
-                        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                            .getBoolean(Cons.PATROL_STATE, false)
-                    val stateUnschedulePatrolBus =
-                        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                            .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
-                    getZones()
-                    if (zones != null && schedule != null) {
-                        binding.layoutMain.btnRetryGetDataPatrol.visibility = GONE
-                        binding.layoutMain.loadingSpinner.visibility = GONE
-                        binding.layoutMain.tvMsgPatroldata.visibility = GONE
-                        if (appEvent == AppEvent.PATROL_TIME_OFF) {
-                            if (statePatrolBus) {
-                                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
-                                    false
-                                if (binding.layoutMain.startPatrol.isVisible) {
-                                    binding.layoutMain.startPatrol.visibility = GONE
-                                }
+        disposable = EventBus.subscribe<AppEvent>().observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ appEvent ->
+                Log.d("EVENTBUS", "event received: $appEvent")
+                val statePatrolBus =
+                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                        .getBoolean(Cons.PATROL_STATE, false)
+                getZones()
 
-                            } else {
-                                if (binding.layoutMain.startPatrol.isVisible) {
-                                    binding.layoutMain.startPatrol.visibility = GONE
-                                }
-                                if (binding.layoutMain.startUnscheduledPatrol.isGone) binding.layoutMain.startUnscheduledPatrol.visibility =
-                                    VISIBLE
+                binding.layoutMain.btnRetryGetDataPatrol.visibility = GONE
+                binding.layoutMain.loadingSpinner.visibility = GONE
+                binding.layoutMain.tvMsgPatroldata.visibility = GONE
+                if (zones?.isNotEmpty() == true && schedule != null) {
+                    if (appEvent == AppEvent.PATROL_SHIFT_OFF) {
+                        if (statePatrolBus) {
+                            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
+                                false
+                            if (binding.layoutMain.startPatrol.isVisible) {
+                                binding.layoutMain.startPatrol.visibility = GONE
+                            }
+                            if (binding.layoutMain.startUnscheduledPatrol.isVisible) {
+                                binding.layoutMain.startUnscheduledPatrol.visibility = GONE
                             }
                         } else {
-                            schedule?.id_jadwal_patroli?.let { getPatrolActivity(it) }
-                            if (isInternetConnected and statePatrolBus) {
-                                when (patrolActivity?.status) {
-                                    0 -> binding.layoutMain.startPatrol.visibility =
-                                        VISIBLE
-
-                                    1 -> binding.layoutMain.startPatrol.visibility =
-                                        GONE
-
-                                    else -> binding.layoutMain.startPatrol.visibility =
-                                        VISIBLE
-                                }
-
-                            } else if (isInternetConnected and !statePatrolBus) {
-                                binding.layoutMain.startPatrol.visibility = VISIBLE
-                                binding.layoutMain.startUnscheduledPatrol.visibility =
-                                    VISIBLE
-                                when (patrolActivity?.status) {
-                                    0 -> binding.layoutMain.startPatrol.visibility =
-                                        VISIBLE
-
-                                    1 -> binding.layoutMain.startPatrol.visibility =
-                                        GONE
-
-                                    else -> binding.layoutMain.startPatrol.visibility =
-                                        VISIBLE
-                                }
-
-                            } else if (!isInternetConnected and statePatrolBus) {
-                                binding.layoutMain.startUnscheduledPatrol.visibility =
-                                    GONE
-                                when (patrolActivity?.status) {
-                                    0 -> binding.layoutMain.startPatrol.visibility =
-                                        VISIBLE
-
-                                    1 -> binding.layoutMain.startPatrol.visibility =
-                                        GONE
-                                }
-
-                            } else if (!isInternetConnected and !statePatrolBus) {
-                                binding.layoutMain.startPatrol.visibility = GONE
-                                binding.layoutMain.startUnscheduledPatrol.visibility = GONE
-
-                                binding.layoutMain.btnRetryGetDataPatrol.visibility = VISIBLE
-                                binding.layoutMain.tvMsgPatroldata.visibility = VISIBLE
-                            }
+                            binding.layoutMain.loadingSpinner.visibility = GONE
+                            binding.layoutMain.loadingSpinner.pauseAnimation()
+                            btnStartPatrol.visibility = GONE
+                            btnStartUnscheduledPatrol.visibility = GONE
+                            binding.layoutMain.btnRetryGetDataPatrol.visibility = GONE
+                            binding.layoutMain.tvMsgPatroldata.visibility = VISIBLE
+                            binding.layoutMain.tvMsgPatroldata.text =
+                                getString(R.string.transition_patrol_time_shfit)
                         }
-
                     }
-                }, {
-                    Log.e("EVENTBUS", it.message.toString())
-                })
+
+                    if (appEvent == AppEvent.PATROL_TIME_OFF) {
+                        if (statePatrolBus) {
+                            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
+                                false
+                            if (binding.layoutMain.startPatrol.isVisible) {
+                                binding.layoutMain.startPatrol.visibility = GONE
+                            }
+
+                        } else {
+                            if (binding.layoutMain.startPatrol.isVisible) {
+                                binding.layoutMain.startPatrol.visibility = GONE
+                            }
+                            if (binding.layoutMain.startUnscheduledPatrol.isGone) binding.layoutMain.startUnscheduledPatrol.visibility =
+                                VISIBLE
+                        }
+                    } else {
+                        schedule?.id_jadwal_patroli?.let { getPatrolActivity(it) }
+                        if (isInternetConnected and statePatrolBus) {
+                            when (patrolActivity?.status) {
+                                0 -> binding.layoutMain.startPatrol.visibility =
+                                    VISIBLE
+
+                                1 -> binding.layoutMain.startPatrol.visibility =
+                                    GONE
+
+                                else -> binding.layoutMain.startPatrol.visibility =
+                                    VISIBLE
+                            }
+
+                        } else if (isInternetConnected and !statePatrolBus) {
+                            binding.layoutMain.startPatrol.visibility = VISIBLE
+                            binding.layoutMain.startUnscheduledPatrol.visibility =
+                                VISIBLE
+                            when (patrolActivity?.status) {
+                                0 -> binding.layoutMain.startPatrol.visibility =
+                                    VISIBLE
+
+                                1 -> binding.layoutMain.startPatrol.visibility = GONE
+
+                                else -> binding.layoutMain.startPatrol.visibility = VISIBLE
+                            }
+
+                        } else if (!isInternetConnected and statePatrolBus) {
+                            binding.layoutMain.startUnscheduledPatrol.visibility =
+                                GONE
+                            when (patrolActivity?.status) {
+                                0 -> binding.layoutMain.startPatrol.visibility =
+                                    VISIBLE
+
+                                1 -> binding.layoutMain.startPatrol.visibility = GONE
+                            }
+
+                        } else if (!isInternetConnected and !statePatrolBus) {
+                            binding.layoutMain.startPatrol.visibility = GONE
+                            binding.layoutMain.startUnscheduledPatrol.visibility = GONE
+
+                            binding.layoutMain.btnRetryGetDataPatrol.visibility = VISIBLE
+                            binding.layoutMain.tvMsgPatroldata.visibility = VISIBLE
+                        }
+                    }
+                } else {
+                    binding.layoutMain.loadingSpinner.visibility = GONE
+                    binding.layoutMain.loadingSpinner.pauseAnimation()
+
+                    btnStartPatrol.visibility = GONE
+                    btnStartUnscheduledPatrol.visibility = GONE
+
+                    binding.layoutMain.btnRetryGetDataPatrol.visibility = VISIBLE
+                    binding.layoutMain.tvMsgPatroldata.visibility = VISIBLE
+                    binding.layoutMain.tvMsgPatroldata.text =
+                        getString(R.string.gagal_memuat_data_zona_patroli)
+                }
+            }, {
+                Log.e("EVENTBUS", it.message.toString())
+            })
 
     }
 
     override fun onPause() {
         disposable?.dispose()
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        schedule = null
     }
 
     private fun getPatrolActivity(idJadwal: String) {
@@ -338,27 +400,19 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         patrolDataViewModel.getReportDetail()?.observe(this) {
             if (it.isNotEmpty()) {
-                val statePatrol =
-                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                        .getBoolean(Cons.PATROL_STATE, false)
-
                 binding.layoutMain.tvReportingCount.text = it.size.toString()
-                binding.layoutMain.tvReportingNotFound.visibility = GONE
+                binding.layoutMain.layoutNotFound.visibility = GONE
                 binding.layoutMain.recyclerReporting.visibility = VISIBLE
 
                 if (it.size > reportListLimit) {
                     binding.layoutMain.patrolReportingMore.visibility = VISIBLE
                 }
                 reportHomeViewAdapter.setList(it.take(reportListLimit))
-                if (!statePatrol) {
-                    btnStartPatrol.visibility = GONE
-                } else {
-                    btnStartPatrol.visibility = VISIBLE
-                    btnStartPatrol.text = getString(R.string.continue_patrol)
-                }
             } else {
+
                 binding.layoutMain.tvReportingCount.text = "0"
                 binding.layoutMain.patrolReportingMore.visibility = GONE
+                binding.layoutMain.layoutNotFound.visibility = VISIBLE
                 binding.layoutMain.tvReportingNotFound.text =
                     getString(R.string.reporting_not_found)
                 binding.layoutMain.tvReportingNotFound.visibility = VISIBLE
@@ -395,11 +449,18 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                 getPatrolDataAPI()
             }
         }
+    }
 
+    private fun getShift() {
+        scheduleViewModel.getShift()?.observe(this) {
+            if (it.isNotEmpty()) {
+                currentShift = scheduleViewModel.getCurrentShift()
+            }
+        }
     }
 
     private fun getPatrolDataAPI() {
-
+        getShift()
         val restInterface = ServiceGenerator.createService()
         val patrolDataCall = restInterface.getPatrolData()
         patrolDataCall!!.enqueue(object : Callback<List<Zone>> {
@@ -478,6 +539,21 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                 schedule?.id_jadwal_patroli?.let {
                     patrolDataViewModel.setPatrolActivityStart(it)
                 }
+                val statePatrol =
+                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                        .getBoolean(Cons.PATROL_STATE, false)
+                if (!statePatrol) {
+                    PreferenceHelper.appsPrefs(
+                        GuardTourApplication
+                            .applicationContext()
+                    )[Cons.PATROL_STATE] =
+                        true
+                    PreferenceHelper.appsPrefs(
+                        GuardTourApplication
+                            .applicationContext()
+                    )[Cons.RANDOM_ZONE] =
+                        true
+                }
                 dialog?.dismiss()
                 val mainFormActivity = Intent(this@MainActivity, MainFormActivity::class.java)
                 intent.putExtra(SCHEDULE, schedule)
@@ -497,8 +573,28 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
         confirmationStartUnscheduledPatrolCallback = object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
                 dialog?.dismiss()
-                PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.UNSCHEDULE_PATROL_STATE] =
-                    true
+                schedule?.id_jadwal_patroli?.let {
+                    patrolDataViewModel.setPatrolActivityStart(it)
+                }
+
+                currentShift?.shift_id?.let { patrolDataViewModel.setPatrolRunningShift("1") }
+
+                val unScheduleStatePatrol =
+                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                        .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
+                if (!unScheduleStatePatrol) {
+                    PreferenceHelper.appsPrefs(
+                        GuardTourApplication
+                            .applicationContext()
+                    )[Cons.UNSCHEDULE_PATROL_STATE] =
+                        true
+                    PreferenceHelper.appsPrefs(
+                        GuardTourApplication
+                            .applicationContext()
+                    )[Cons.RANDOM_ZONE] =
+                        true
+                    patrolDataViewModel.resetDataReport()
+                }
                 gotoMainForm()
             }
 
@@ -513,7 +609,6 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
     }
 
     fun gotoMainForm() {
-
         val mainFormActivity = Intent(this@MainActivity, MainFormActivity::class.java)
         startActivity(mainFormActivity)
     }

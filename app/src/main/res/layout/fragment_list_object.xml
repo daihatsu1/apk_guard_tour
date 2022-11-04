@@ -45,7 +45,8 @@
                 android:layout_weight="1"
                 android:drawablePadding="@dimen/dp_2"
                 android:gravity="center_vertical"
-                android:text="PILIH OBJECT CHECKPOINT 1"
+                android:padding="@dimen/dp_8"
+                android:text="PILI kjhkj jhka kja Hjhjs dgjhgjgsdjg jsgjsdgjd OBJECT CHECKPOINT 1"
                 app:autoSizeMaxTextSize="@dimen/sp_16"
                 app:autoSizeTextType="uniform"
                 app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
@@ -59,9 +60,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:visibility="gone"
+                android:contentDescription="TODO"
                 android:src="@drawable/ic_round_notification_important_24"
-                android:contentDescription="TODO" />
+                android:visibility="gone" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -86,6 +87,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/main_shape_bk"
         android:maxHeight="200dp"
+        android:visibility="gone"
         android:orientation="vertical"
         android:padding="@dimen/dp_24"
 

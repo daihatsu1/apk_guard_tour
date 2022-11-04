@@ -132,6 +132,25 @@ object Utils {
         calStart.add(Calendar.MINUTE, minute)
         return df.format(calStart.time)
     }
+    fun isOnShiftPatrolTime(datePatrol: String?, jamMasuk: String?, jamPulang: String?): Boolean {
+        if (datePatrol != null && jamMasuk != null && jamPulang != null) {
+            val currentTime = Calendar.getInstance().time
+            val now = createdAt("yyyy-MM-dd")
+            val startTime = timeFormat(jamMasuk, "yyyy-MM-dd HH:mm")
+            var endTime = timeFormat(jamPulang, "yyyy-MM-dd HH:mm")
+
+            if (endTime.before(startTime)) {
+                val c = Calendar.getInstance()
+                c.time = endTime
+                c.add(Calendar.DATE, 1)
+                endTime = c.time
+            }
+            if (currentTime.after(startTime) && currentTime.before(endTime)) {
+                return true
+            }
+        }
+        return false
+    }
 
     fun isOnPatrolTime(datePatrol: String?, jamMasuk: String?, jamPulang: String?): Boolean {
         if (datePatrol != null && jamMasuk != null && jamPulang != null) {
@@ -270,6 +289,12 @@ object Utils {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
+    }
 
+    fun toNull(string: String?): String? {
+        return if(string =="null" || string == null)
+            null
+        else
+            string
     }
 }

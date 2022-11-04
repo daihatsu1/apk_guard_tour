@@ -15,6 +15,7 @@ class DatabaseClient private constructor() {
     private val mCtx: Context = GuardTourApplication.applicationContext()
     val appDatabase: AppDatabase =
         Room.databaseBuilder(mCtx, AppDatabase::class.java, "GuardTourDB")
+            .allowMainThreadQueries()
             .build()
 
     @DelicateCoroutinesApi

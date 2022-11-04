@@ -17,6 +17,7 @@
     app:cardElevation="2dp"
     app:strokeColor="@color/alert"
     app:strokeWidth="@dimen/dp_2"
+    style="@style/cardItem"
     android:layout_height="wrap_content">
 
     <LinearLayout

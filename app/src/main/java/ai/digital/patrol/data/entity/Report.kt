@@ -34,8 +34,9 @@ data class Report(
     @ColumnInfo(name = "date_patroli") @SerializedName("date_patroli") val date_patroli: String? = null,
 
     @ColumnInfo(name = "checkin_checkpoint") @SerializedName("checkin_checkpoint") val checkin_checkpoint: String? = Utils.createdAt(),
-    @ColumnInfo(name = "checkout_checkpoint") @SerializedName("checkout_checkpoint") val checkout_checkpoint: String? = null,
+    @ColumnInfo(name = "checkout_checkpoint") @SerializedName("checkout_checkpoint") var checkout_checkpoint: String? = null,
     @ColumnInfo(name = "status") @SerializedName("status") val status: Int = 1,
+    @ColumnInfo(name = "type_patrol") @SerializedName("type_patrol") var type_patrol: Int = 1,
 
     @ColumnInfo(name = "created_at") @SerializedName("created_at") val created_at: String = Utils.createdAt(),
     @ColumnInfo(name = "synced") var synced: Boolean? = false,

@@ -57,7 +57,7 @@ class ZoneViewAdapter(private val listener: OnZoneClickListener) :
         private val icon: ImageView = itemView.findViewById(R.id.ic_chevron_right)
 
         fun bind(zone: Zone, listener: OnZoneClickListener) {
-            zoneName.text = context.getString(R.string.zone, zone.plant_name, zone.zone_name)
+            zoneName.text = context.getString(R.string.zone, zone.zone_name)
             when (zone.patrol_status) {
                 false -> {
                     zonePatrolStatus.text = context.getString(R.string.status_patrol_done)
@@ -66,6 +66,8 @@ class ZoneViewAdapter(private val listener: OnZoneClickListener) :
                     zoneBg.setCardBackgroundColor(ContextCompat.getColor(context, R.color.info))
                     zoneBg.strokeColor = ContextCompat.getColor(context, R.color.info)
                     icon.visibility = View.GONE
+                    itemView.setOnClickListener{
+                    }
                 }
                 true -> {
                     zonePatrolStatus.text = context.getString(R.string.status_patrol_ongoing)
@@ -79,6 +81,9 @@ class ZoneViewAdapter(private val listener: OnZoneClickListener) :
                 }
                 else -> {
                     zonePatrolStatus.text = context.getString(R.string.status_patrol_pending)
+                    zoneName.setTextColor(ContextCompat.getColor(context, R.color.grey_900))
+                    zonePatrolStatus.setTextColor(ContextCompat.getColor(context, R.color.grey_900))
+                    zoneBg.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
                     zoneBg.strokeColor = ContextCompat.getColor(context, R.color.info)
                     icon.visibility = View.VISIBLE
                     itemView.setOnClickListener{

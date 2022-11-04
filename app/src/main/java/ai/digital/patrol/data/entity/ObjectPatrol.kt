@@ -30,8 +30,7 @@ import kotlinx.parcelize.Parcelize
     )
 @Parcelize
 data class ObjectPatrol(
-    @PrimaryKey(autoGenerate = true) val objectLocalId: Int,
-    @ColumnInfo(name = "id") @SerializedName("id") val id: String,
+    @PrimaryKey(autoGenerate = false)  @ColumnInfo(name = "id") @SerializedName("id") val id: String,
     @ColumnInfo(name = "nama_objek") @SerializedName("nama_objek") val nama_objek: String? = null,
     @ColumnInfo(name = "checkpoint_id") @SerializedName("checkpoint_id") var checkpoint_id: String? = null,
     @ColumnInfo(name = "status_object") @SerializedName("status") var status_object: Int = 0,

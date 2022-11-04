@@ -18,6 +18,7 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
 
     fun syncReportData() {
         Log.d(SYNC_WORKER_NAME, "syncing on proses" )
+        cancelReportDataScheduleSyncWork()
         mWorkManager.pruneWork()
         val workerRequest = OneTimeWorkRequestBuilder<SyncReportWorker>()
             .setBackoffCriteria(
@@ -39,7 +40,7 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         mWorkManager.cancelUniqueWork(SYNC_WORKER_NAME)
     }
 
-    fun cancelReportDataScheduleSyncWork() {
+    private fun cancelReportDataScheduleSyncWork() {
         mWorkManager.cancelUniqueWork(SCHEDULE_SYNC_WORKER_REPORT)
     }
 

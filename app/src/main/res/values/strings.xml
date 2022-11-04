@@ -55,7 +55,7 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="shift">SHIFT %s</string>
-    <string name="zone">%s - ZONE %s</string>
+    <string name="zone">ZONE %s</string>
     <string name="reporting_not_found">Belum Ada temuan</string>
     <string name="status">Status :</string>
     <string name="status_patrol_done">Selesai Dipatroli</string>
@@ -88,5 +88,7 @@
     <string name="start_patrol_unschedule">APAKAH ANDA YAKIN MEMULAI PATROLI DILUAR JADWAL?</string>
     <string name="start_patrol_title">APAKAH ANDA YAKIN MEMULAI PATROLI SEKARANG?</string>
     <string name="selamat_datang_di_n_patroli_digital">SELAMAT DATANG DI \n PATROLI DIGITAL</string>
+    <string name="target_patroli">Target Patroli</string>
+    <string name="transition_patrol_time_shfit">MASA PERGANTIAN SHIFT, PATROLI DI TIADAKAN</string>
 
 </resources>

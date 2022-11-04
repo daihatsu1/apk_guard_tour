@@ -61,6 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:drawablePadding="@dimen/dp_8"
+                        android:textStyle="bold"
                         android:fontFamily="@font/roboto_bold"
                         android:gravity="center_vertical"
                         android:paddingStart="@dimen/dp_16"
@@ -99,10 +100,10 @@
                         android:adjustViewBounds="true"
                         android:cropToPadding="true"
                         android:elevation="4dp"
-                        app:lottie_scale=".5"
                         app:lottie_autoPlay="true"
                         app:lottie_loop="true"
-                        app:lottie_rawRes="@raw/chart" />
+                        app:lottie_rawRes="@raw/chart"
+                        app:lottie_scale=".5" />
 
                     <TextView
                         style="@style/textTitle"
@@ -110,14 +111,15 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:drawablePadding="@dimen/dp_8"
                         android:autoSizeTextType="uniform"
+                        android:drawablePadding="@dimen/dp_8"
                         android:fontFamily="@font/roboto_bold"
+                        android:textStyle="bold"
                         android:paddingStart="@dimen/dp_4"
                         android:paddingTop="@dimen/dp_4"
                         android:paddingEnd="@dimen/dp_16"
                         android:paddingBottom="@dimen/dp_4"
-                        android:text="Target Patroli" />
+                        android:text="@string/target_patroli" />
 
                     <TextView
                         android:id="@+id/tv_reporting_target"
@@ -131,7 +133,7 @@
                         android:minWidth="40dp"
                         android:padding="@dimen/dp_4"
                         android:text="0/0"
-                        android:textColor="@color/primaryAccentColor"
+                        android:textColor="@color/primaryColor"
                         android:textSize="16sp" />
 
                     <TextView
@@ -148,7 +150,7 @@
                         android:minWidth="30dp"
                         android:padding="@dimen/dp_4"
                         android:text="0.0%"
-                        android:textColor="@color/primaryAccentColor"
+                        android:textColor="@color/primaryColor"
                         android:textSize="@dimen/sp_16" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -182,12 +184,13 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:autoSizeTextType="uniform"
                         android:drawablePadding="@dimen/dp_8"
                         android:fontFamily="@font/roboto_bold"
                         android:paddingStart="@dimen/dp_4"
+                        android:textStyle="bold"
                         android:paddingTop="@dimen/dp_4"
                         android:paddingEnd="@dimen/dp_16"
-                        android:autoSizeTextType="uniform"
                         android:paddingBottom="@dimen/dp_4"
                         android:text="Temuan Patroli" />
 
@@ -204,7 +207,7 @@
                         android:minWidth="30dp"
                         android:padding="@dimen/dp_4"
                         android:text="0"
-                        android:textColor="@color/primaryAccentColor"
+                        android:textColor="@color/primaryColor"
                         android:textSize="@dimen/sp_16" />
 
                     <ImageButton
@@ -225,8 +228,8 @@
                     android:id="@+id/recycler_reporting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_24"
-                    android:layout_marginRight="@dimen/dp_24"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
                     android:orientation="vertical"
                     android:overScrollMode="never"
                     android:visibility="gone"
@@ -236,18 +239,39 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-                <TextView
-                    android:id="@+id/tv_reporting_not_found"
+                <LinearLayout
+                    android:id="@+id/layout_not_found"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp_24"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginRight="@dimen/dp_24"
-                    android:fontFamily="@font/roboto_bold"
-                    android:gravity="center"
-                    android:text="@string/reporting_not_found"
-                    android:textSize="@dimen/sp_16" />
+                    android:orientation="vertical">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:scaleType="fitXY"
+                        android:elevation="4dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/not_found" />
+
+                    <TextView
+                        android:id="@+id/tv_reporting_not_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_24"
+                        android:layout_marginRight="@dimen/dp_24"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:text="@string/reporting_not_found"
+                        android:textSize="@dimen/sp_16" />
+
+                </LinearLayout>
+
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/patrol_reporting_more"

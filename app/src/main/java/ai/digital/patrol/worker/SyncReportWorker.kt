@@ -2,7 +2,6 @@ package ai.digital.patrol.worker
 
 import ai.digital.patrol.data.entity.Report
 import ai.digital.patrol.data.repository.PatrolDataRepository
-import ai.digital.patrol.helper.Utils
 import ai.digital.patrol.helper.Utils.toRequestBody
 import ai.digital.patrol.networking.ServiceGenerator
 import android.content.Context
@@ -27,7 +26,6 @@ class SyncReportWorker
  */
     (appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
     private val patrolDataRepository = PatrolDataRepository.getInstance()
-
 
 
     override fun doWork(): Result {
@@ -67,6 +65,7 @@ class SyncReportWorker
             }
 
             map["status"] = toRequestBody(it.status) as RequestBody
+            map["type_patrol"] = toRequestBody(it.type_patrol) as RequestBody
 
             map["sync_token"] = toRequestBody(it.sync_token) as RequestBody
             map["created_at"] = toRequestBody(it.created_at) as RequestBody
@@ -75,6 +74,7 @@ class SyncReportWorker
                     toRequestBody(its.admisecsgp_mstobj_objek_id) as RequestBody
                 map["detail_temuan[$index][conditions]"] =
                     toRequestBody(0) as RequestBody
+
                 if (its.admisecsgp_mstevent_event_id != null) {
                     map["detail_temuan[$index][admisecsgp_mstevent_event_id]"] =
                         toRequestBody(its.admisecsgp_mstevent_event_id) as RequestBody
@@ -96,13 +96,15 @@ class SyncReportWorker
 
                 map["detail_temuan[$index][status]"] =
                     toRequestBody(its.status) as RequestBody
+                map["detail_temuan[$index][status_temuan]"] =
+                    toRequestBody(its.status_temuan) as RequestBody
 
                 map["detail_temuan[$index][created_at]"] =
                     toRequestBody(its.created_at) as RequestBody
                 map["detail_temuan[$index][sync_token]"] =
                     toRequestBody(its.sync_token) as RequestBody
 
-                if (its.image_1 != null && its.image_1 != "null" && !its.image_1.startsWith("http")) {
+                if (its.image_1 != null && its.image_1 != "null" && !its.image_1!!.startsWith("http")) {
                     val uri = Uri.parse(its.image_1)
                     if (uri != null) {
                         val file = uri.path?.let { it1 -> File(it1) }
@@ -115,8 +117,11 @@ class SyncReportWorker
                             map[key] = fileBody
                         }
                     }
+                } else if (its.image_1 != null && its.image_1 != "null" && its.image_1!!.startsWith("http")) {
+                    map["detail_temuan[$index][image_1]"] =
+                        toRequestBody(its.image_1) as RequestBody
                 }
-                if (its.image_2 != null && its.image_2 != "null" && !its.image_2.startsWith("http")) {
+                if (its.image_2 != null && its.image_2 != "null" && !its.image_2!!.startsWith("http")) {
                     val uri = Uri.parse(its.image_2)
                     if (uri != null) {
                         val file = uri.path?.let { it1 -> File(it1) }
@@ -128,8 +133,12 @@ class SyncReportWorker
                         }
 
                     }
+                } else if (its.image_2 != null && its.image_2 != "null" && its.image_2!!.startsWith("http")) {
+                    map["detail_temuan[$index][image_2]"] =
+                        toRequestBody(its.image_2) as RequestBody
                 }
-                if (its.image_3 != null && its.image_3 != "null" && !its.image_3.startsWith("http")) {
+
+                if (its.image_3 != null && its.image_3 != "null" && !its.image_3!!.startsWith("http")) {
                     val uri = Uri.parse(its.image_3)
                     if (uri != null) {
                         val file = uri.path?.let { it1 -> File(it1) }
@@ -141,8 +150,13 @@ class SyncReportWorker
                             map[key] = fileBody
                         }
                     }
+                } else if (its.image_3 != null && its.image_3 != "null" && its.image_3!!.startsWith("http")) {
+                    map["detail_temuan[$index][image_3]"] =
+                        toRequestBody(its.image_3) as RequestBody
                 }
             }
+
+            Log.d("MAP", map.toString())
             val upload = restInterface.postReport(map)
             upload.enqueue(object : Callback<Report> {
                 override fun onResponse(
@@ -156,7 +170,6 @@ class SyncReportWorker
                                 report.synced = true
                                 report.sync_token = it.sync_token
                                 patrolDataRepository?.syncReport(report, report.detailTemuan)
-
                             }
                         }
                     } else {

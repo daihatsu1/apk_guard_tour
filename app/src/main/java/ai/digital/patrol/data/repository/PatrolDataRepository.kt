@@ -18,10 +18,10 @@ import ai.digital.patrol.networking.ServiceGenerator
 import android.util.Log
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
-import okhttp3.internal.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,6 +55,9 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
 
     private val patrolActivityDao: PatrolActivityDao? =
         DatabaseClient.getInstance()?.appDatabase?.patrolActivityDao()
+
+    private val shiftDao: ShiftDao? =
+        DatabaseClient.getInstance()?.appDatabase?.shiftDao()
 
     private val runnerScope: CoroutineScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext =
@@ -140,16 +143,16 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
         return eventDao?.getEventByObjectId(objectId)!!
     }
 
-    fun addReportDetail(dataReportDetail: ReportDetail) {
+    fun addReportDetail(report: Report, dataReportDetail: ReportDetail) {
         runnerScope.launch {
-            patrolDataDao?.insertReportDetail(dataReportDetail)
+            patrolDataDao?.insertReportWithDetail(report, dataReportDetail)
             patrolDataDao?.flagObjectAsTemuan(dataReportDetail.admisecsgp_mstobj_objek_id)
         }
     }
 
-    fun addReportNormalDetail(dataReportDetail: ReportDetail) {
+    fun addReportNormalDetail(report: Report, dataReportDetail: ReportDetail) {
         runnerScope.launch {
-            patrolDataDao?.insertReportDetail(dataReportDetail)
+            patrolDataDao?.insertReportWithDetail(report, dataReportDetail)
             patrolDataDao?.flagObjectAsNormal(dataReportDetail.admisecsgp_mstobj_objek_id)
         }
     }
@@ -187,18 +190,42 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
         return patrolDataDao?.checkReport(checkpointId)
     }
 
-    fun addReport(report: Report) {
-        runnerScope.launch {
-            patrolDataDao?.insertReport(report)
+    suspend fun addReport(report: Report): Report? {
+//        runnerScope.launch {
+        patrolDataDao?.insertReport(report)
+        return patrolDataDao?.getReportBySyncToken(report.sync_token)
 
 //            patrolDataDao?.flagObjectAsTemuan(dataReportDetail.admisecsgp_mstobj_objek_id)
-        }
+//        }
     }
+
+    suspend fun getReportByCheckpointId(checkpointId: String): Report? {
+        return patrolDataDao?.getReportByCheckpointId(checkpointId)
+    }
+
+    suspend fun getReportBySyncToken(sync_token: String): Report? {
+        return patrolDataDao?.getReportBySyncToken(sync_token)
+    }
+
+
+    fun getReport(sync_token: String): LiveData<Report>? {
+        return patrolDataDao?.getReport(sync_token)
+    }
+//    fun addReport(report: Report) {
+//        runnerScope.launch {
+//            patrolDataDao?.insertReport(report)
+//        }
+//    }
 
     fun syncReport(report: Report, reportDetail: List<ReportDetail>?) {
         runnerScope.launch {
             patrolDataDao?.insertDataReport(report, reportDetail)
-//            patrolDataDao?.flagObjectAsTemuan(dataReportDetail.admisecsgp_mstobj_objek_id)
+        }
+    }
+
+    fun resetDataReport() {
+        runnerScope.launch {
+            patrolDataDao?.clearDataReport()
         }
     }
 
@@ -262,6 +289,7 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
 
     fun setPatrolActivityDone(idJadwal: String) {
         runnerScope.launch {
+
             patrolActivityDao?.setActivityDone(idJadwal, Utils.createdAt())
             val patrolActivity: PatrolActivity? =
                 patrolActivityDao?.getPatrolActivityByJadwal(idJadwal)
@@ -271,6 +299,13 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
                 patrolActivity.end_at = Utils.createdAt()
                 setPatrolActivity(patrolActivity)
             }
+        }
+    }
+
+     fun setRunningPatrolShift(status: String){
+        var currentShift = shiftDao?.current
+        if (currentShift != null) {
+            shiftDao?.updateRunningPatrolShift(currentShift.shift_id, status)
         }
     }
 
@@ -326,6 +361,7 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
         })
         return getPatrolActivity(idJadwal)
     }
+
 
     private val patrolDataRequest: LiveData<List<Zone>>
         get() {

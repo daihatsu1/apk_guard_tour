@@ -85,7 +85,10 @@ class CheckpointViewAdapter(private val listener: OnCheckpointClickListener) : R
                 }
                 else -> {
                     checkpointPatrolStatus.text = context.getString(R.string.status_patrol_pending)
+                    checkpointPatrolStatus.setTextColor(ContextCompat.getColor(context, R.color.grey_900))
+                    checkpointName.setTextColor(ContextCompat.getColor(context, R.color.grey_900))
                     checkpointBg.strokeColor =ContextCompat.getColor(context, R.color.info)
+                    checkpointBg.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
                     icon.visibility = VISIBLE
                     itemView.setOnClickListener{
                         listener.onItemClicked(checkpoint)

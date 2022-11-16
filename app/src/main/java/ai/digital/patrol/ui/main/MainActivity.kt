@@ -18,6 +18,7 @@ import ai.digital.patrol.data.entity.Shift
 import ai.digital.patrol.data.entity.Zone
 import ai.digital.patrol.databinding.ActivityMainBinding
 import ai.digital.patrol.helper.AppEvent
+import ai.digital.patrol.helper.ConnectivityChecker
 import ai.digital.patrol.helper.Cons
 import ai.digital.patrol.helper.Cons.PATROL_ACTIVITY
 import ai.digital.patrol.helper.Cons.SCHEDULE
@@ -49,6 +50,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -57,12 +59,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
+import okhttp3.internal.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity(), OnInternetConnected {
+    private lateinit var networkConnection: ConnectivityChecker
     private var confirmationStartPatrolCallback: DialogCallbackListener? = null
     private var confirmationStartUnscheduledPatrolCallback: DialogCallbackListener? = null
     private lateinit var binding: ActivityMainBinding
@@ -79,6 +83,7 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
     private var disposable: Disposable? = null
     private var isInternetConnected: Boolean = false
     private var patrolActivity: PatrolActivity? = null
+    private var patrolShift: Shift? = null
 
     private val runnableCode = object : Runnable {
         override fun run() {
@@ -87,6 +92,16 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                     val isOnSchedule = Utils.isOnPatrolTime(
                         schedule!!.date, schedule!!.jam_masuk, schedule!!.jam_pulang
                     )
+                    val statePatrol =
+                        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                            .getBoolean(Cons.PATROL_STATE, false)
+                    val stateUnschedulePatrol =
+                        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                            .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
+                    if (statePatrol || stateUnschedulePatrol) {
+                        currentShift = patrolShift
+                    }
+
                     Log.d("Current Shift", currentShift.toString())
                     if (currentShift != null) {
                         val isCurrentShiftPatrolTime = Utils.isOnShiftPatrolTime(
@@ -101,14 +116,12 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
 
                         if (isOnSchedule) {
                             EventBus.post(AppEvent.PATROL_TIME_ON)
-
                         } else {
                             EventBus.post(AppEvent.PATROL_TIME_OFF)
                         }
                     } else {
                         EventBus.post(AppEvent.PATROL_SHIFT_OFF)
                     }
-
                     binding.layoutMain.btnRetryGetDataPatrol.visibility = GONE
                     binding.layoutMain.tvMsgPatroldata.visibility = GONE
                     binding.layoutMain.loadingSpinner.visibility = GONE
@@ -152,7 +165,6 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
         getSchedules()
         runnableCode.run()
         setListReport()
-        // set toolbar username
         setUsernameToolBar()
 
         materialAlertDialogBuilder = MaterialAlertDialogBuilder(this)
@@ -178,6 +190,7 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
             binding.layoutMain.loadingSpinner.playAnimation()
             getZones()
         }
+        networkConnection = ConnectivityChecker(applicationContext)
 
         Utils.connectionChecker(
             this, applicationContext, binding.layoutToolbar.viewOnlineStatus, this
@@ -196,6 +209,7 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
     override fun onResume() {
         super.onResume()
         getSchedules()
+        networkConnection = ConnectivityChecker(applicationContext)
         syncViewModel.syncReportData()
         val statePatrol = PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
             .getBoolean(Cons.PATROL_STATE, false)
@@ -211,7 +225,6 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
         btnStartUnscheduledPatrol.visibility = GONE
 
         if (statePatrol) {
-            currentShift = scheduleViewModel.getPatrolShift()
             btnStartUnscheduledPatrol.visibility = GONE
             btnStartPatrol.visibility = VISIBLE
             btnStartPatrol.text = getString(R.string.continue_patrol)
@@ -224,7 +237,6 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                 gotoMainForm()
             }
         } else if (stateUnschedulePatrol) {
-            currentShift = scheduleViewModel.getPatrolShift()
             btnStartUnscheduledPatrol.visibility = VISIBLE
             btnStartUnscheduledPatrol.text = getString(R.string.continue_patrol)
 
@@ -238,7 +250,7 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                 gotoMainForm()
             }
         } else {
-            currentShift = scheduleViewModel.getCurrentShift()
+            getShift();
 
             // get data patrol
             when (patrolActivity?.status) {
@@ -254,14 +266,30 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
 
             // Set click action
             btnStartUnscheduledPatrol.setOnClickListener {
-                dialogConfirmStartUnscheduledPatrol()
+                if (networkConnection.isNetworkConnected()) {
+                    dialogConfirmStartUnscheduledPatrol()
+                }else{
+                    Toast.makeText(this,
+                        "Pastikan Terhubung koneksi internet saat memulai patroli.",
+                        Toast.LENGTH_SHORT).show()
+                }
             }
 
             btnStartPatrol.setOnClickListener {
-                schedule?.let { it1 -> dialogConfirmStartPatrol(it1) }
+                schedule?.let { it1 ->
+                    if (networkConnection.isNetworkConnected()) {
+                        dialogConfirmStartPatrol(it1)
+                    }
+                    else{
+                        Toast.makeText(this,
+                            "Pastikan Terhubung koneksi internet saat memulai patroli.",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
-
+        getPatrolShift()
+        getCurrentShift()
         disposable = EventBus.subscribe<AppEvent>().observeOn(AndroidSchedulers.mainThread())
             .subscribe({ appEvent ->
                 Log.d("EVENTBUS", "event received: $appEvent")
@@ -274,7 +302,7 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                 binding.layoutMain.loadingSpinner.visibility = GONE
                 binding.layoutMain.tvMsgPatroldata.visibility = GONE
                 if (zones?.isNotEmpty() == true && schedule != null) {
-                    if (appEvent == AppEvent.PATROL_SHIFT_OFF) {
+                    if (appEvent == AppEvent.PATROL_SHIFT_OFF && currentShift != null) {
                         if (statePatrolBus) {
                             PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
                                 false
@@ -452,15 +480,23 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
     }
 
     private fun getShift() {
-        scheduleViewModel.getShift()?.observe(this) {
-            if (it.isNotEmpty()) {
-                currentShift = scheduleViewModel.getCurrentShift()
+        val statePatrol = PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+            .getBoolean(Cons.PATROL_STATE, false)
+        val stateUnschedulePatrol =
+            PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
+        if (!statePatrol || !stateUnschedulePatrol) {
+            scheduleViewModel.getShift()?.observe(this) {
+                if (it.isNotEmpty()) {
+                    getCurrentShift()
+                    getPatrolShift()
+                }
             }
         }
+
     }
 
     private fun getPatrolDataAPI() {
-        getShift()
         val restInterface = ServiceGenerator.createService()
         val patrolDataCall = restInterface.getPatrolData()
         patrolDataCall!!.enqueue(object : Callback<List<Zone>> {
@@ -497,6 +533,17 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
         }
     }
 
+    private fun getCurrentShift() {
+        scheduleViewModel.getCurrentShift()?.observe(this) {
+            currentShift = it;
+        }
+    }
+
+    private fun getPatrolShift() {
+        scheduleViewModel.getPatrolShift()?.observe(this) {
+            patrolShift = it;
+        }
+    }
 
     private fun getAllCheckpoint() {
         patrolDataViewModel.getAllCheckpoint()?.observe(this) {
@@ -539,27 +586,35 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                 schedule?.id_jadwal_patroli?.let {
                     patrolDataViewModel.setPatrolActivityStart(it)
                 }
-                val statePatrol =
-                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                        .getBoolean(Cons.PATROL_STATE, false)
-                if (!statePatrol) {
-                    PreferenceHelper.appsPrefs(
-                        GuardTourApplication
-                            .applicationContext()
-                    )[Cons.PATROL_STATE] =
-                        true
-                    PreferenceHelper.appsPrefs(
-                        GuardTourApplication
-                            .applicationContext()
-                    )[Cons.RANDOM_ZONE] =
-                        true
-                }
-                dialog?.dismiss()
-                val mainFormActivity = Intent(this@MainActivity, MainFormActivity::class.java)
-                intent.putExtra(SCHEDULE, schedule)
-                intent.putExtra(PATROL_ACTIVITY, patrolActivity)
+//                schedule?.id_jadwal_patroli?.let {
+//                    patrolDataViewModel.setPatrolActivityStart(it)
+//                }
+                if (currentShift != null) {
+                    patrolDataViewModel.setPatrolRunningShift(currentShift!!)
 
-                startActivity(mainFormActivity)
+                    val statePatrol =
+                        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                            .getBoolean(Cons.PATROL_STATE, false)
+                    if (!statePatrol) {
+                        PreferenceHelper.appsPrefs(
+                            GuardTourApplication
+                                .applicationContext()
+                        )[Cons.PATROL_STATE] =
+                            true
+                        PreferenceHelper.appsPrefs(
+                            GuardTourApplication
+                                .applicationContext()
+                        )[Cons.RANDOM_ZONE] =
+                            true
+                    }
+                    dialog?.dismiss()
+                    val mainFormActivity = Intent(this@MainActivity, MainFormActivity::class.java)
+                    intent.putExtra(SCHEDULE, schedule)
+                    intent.putExtra(PATROL_ACTIVITY, patrolActivity)
+
+                    startActivity(mainFormActivity)
+                }
+
             }
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
@@ -577,25 +632,27 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
                     patrolDataViewModel.setPatrolActivityStart(it)
                 }
 
-                currentShift?.shift_id?.let { patrolDataViewModel.setPatrolRunningShift("1") }
-
-                val unScheduleStatePatrol =
-                    PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
-                        .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
-                if (!unScheduleStatePatrol) {
-                    PreferenceHelper.appsPrefs(
-                        GuardTourApplication
-                            .applicationContext()
-                    )[Cons.UNSCHEDULE_PATROL_STATE] =
-                        true
-                    PreferenceHelper.appsPrefs(
-                        GuardTourApplication
-                            .applicationContext()
-                    )[Cons.RANDOM_ZONE] =
-                        true
+                if (currentShift != null) {
+                    patrolDataViewModel.setPatrolRunningShift(currentShift!!)
                     patrolDataViewModel.resetDataReport()
+
+                    val unScheduleStatePatrol =
+                        PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
+                            .getBoolean(Cons.UNSCHEDULE_PATROL_STATE, false)
+                    if (!unScheduleStatePatrol) {
+                        PreferenceHelper.appsPrefs(
+                            GuardTourApplication
+                                .applicationContext()
+                        )[Cons.UNSCHEDULE_PATROL_STATE] =
+                            true
+                        PreferenceHelper.appsPrefs(
+                            GuardTourApplication
+                                .applicationContext()
+                        )[Cons.RANDOM_ZONE] =
+                            true
+                    }
+                    gotoMainForm()
                 }
-                gotoMainForm()
             }
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
@@ -652,6 +709,10 @@ class MainActivity : AppCompatActivity(), OnInternetConnected {
     override fun onConnected() {
         isInternetConnected = true
         syncViewModel.syncReportData()
+    }
+
+    override fun onDisconnected() {
+        isInternetConnected = false
     }
 
 }

@@ -18,7 +18,6 @@ import ai.digital.patrol.networking.ServiceGenerator
 import android.util.Log
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
@@ -302,10 +301,14 @@ class PatrolDataRepository(val dataSource: DatabaseClient) {
         }
     }
 
-     fun setRunningPatrolShift(status: String){
-        var currentShift = shiftDao?.current
-        if (currentShift != null) {
-            shiftDao?.updateRunningPatrolShift(currentShift.shift_id, status)
+     fun setRunningPatrolShiftActive(currentShift: Shift){
+         runnerScope.launch {
+             shiftDao?.updateRunningPatrolShift(currentShift.shift_id, "1")
+         }
+    }
+    fun setRunningPatrolShiftDeactivate(){
+        runnerScope.launch {
+            shiftDao?.setRunningPatrolShiftDeactivated()
         }
     }
 

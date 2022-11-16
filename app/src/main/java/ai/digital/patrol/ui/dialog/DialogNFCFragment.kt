@@ -93,8 +93,8 @@ class DialogNFCFragment(
      * @param view
      */
     private fun setupView() {
-//        binding!!.dialogIcon.loadDrawable(R.drawable.icon_nfc)
         binding!!.dialogIcon.setOnClickListener {
+            // todo : comment to only nfc enable
             dialogCallbackListener.onPositiveClickListener(it, dialog)
         }
     }

@@ -10,10 +10,10 @@ interface ShiftDao {
     val get: LiveData<Shift>
 
     @get:Query("SELECT * FROM shift where  datetime('now', 'localtime') between jam_masuk and jam_pulang order by shift_id asc;")
-    val current:Shift
+    val current:LiveData<Shift>
 
     @get:Query("SELECT * FROM shift where  datetime('now', 'localtime') between jam_masuk and jam_pulang and status_patrol = 1 order by shift_id asc;")
-    val patrolShift:Shift
+    val patrolShift:LiveData<Shift>
 
     @get:Query("SELECT * FROM shift")
     val all: LiveData<List<Shift>>
@@ -31,7 +31,9 @@ interface ShiftDao {
     fun deleteAll()
 
     @Query("UPDATE shift SET status_patrol=:status WHERE shift_id = :currentShift")
-    fun updateRunningPatrolShift(currentShift: String, status:String)
+    fun updateRunningPatrolShift(currentShift: String, status:String?)
+    @Query("UPDATE shift SET status_patrol=null WHERE status_patrol = '1'")
+    fun setRunningPatrolShiftDeactivated()
 
 
 }

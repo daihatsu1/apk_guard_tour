@@ -129,8 +129,11 @@ class PatrolDataViewModel(application: Application) : AndroidViewModel(applicati
     fun setPatrolActivityStart(idJadwal: String) {
         repository?.setPatrolActivityStart(idJadwal)
     }
-    fun setPatrolRunningShift(status:String) {
-        repository?.setRunningPatrolShift(status)
+    fun setPatrolRunningShift(shift: Shift) {
+        repository?.setRunningPatrolShiftActive(shift)
+    }
+    fun setPatrolRunningShiftDeactivated() {
+        repository?.setRunningPatrolShiftDeactivate()
     }
     fun setPatrolActivityDone(idJadwal: String) {
         repository?.setPatrolActivityDone(idJadwal)

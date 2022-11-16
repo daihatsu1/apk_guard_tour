@@ -54,7 +54,6 @@ class ScheduleRepository(val dataSource: DatabaseClient) {
 
     fun insertShift(shift: List<Shift?>) {
         runnerScope.launch {
-            shiftDao?.deleteAll()
             shiftDao?.insertList(shift)
         }
     }
@@ -72,10 +71,10 @@ class ScheduleRepository(val dataSource: DatabaseClient) {
         return shiftRequest
     }
 
-    fun getCurrentShift(): Shift? {
+    fun getCurrentShift(): LiveData<Shift>? {
         return shiftDao?.current
     }
-    fun getPatrolShift(): Shift? {
+    fun getPatrolShift(): LiveData<Shift>? {
         return shiftDao?.patrolShift
     }
 

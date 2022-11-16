@@ -20,7 +20,13 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         Log.d(SYNC_WORKER_NAME, "syncing on proses" )
         cancelReportDataScheduleSyncWork()
         mWorkManager.pruneWork()
+        val constraints = Constraints.Builder()
+//            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+            .build()
+
         val workerRequest = OneTimeWorkRequestBuilder<SyncReportWorker>()
+            .setConstraints(constraints)
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
                 OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
@@ -46,7 +52,8 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun enqueueScheduleSyncReportDataWork() {
         val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
+//            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
             .build()
 
         val scheduleSurveyDataSyncRequest = PeriodicWorkRequest.Builder(

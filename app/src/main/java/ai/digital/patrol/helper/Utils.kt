@@ -86,7 +86,6 @@ object Utils {
         }
     }
 
-
     fun encoder(filePath: String): String {
         val bytes = File(filePath).readBytes()
         return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT)

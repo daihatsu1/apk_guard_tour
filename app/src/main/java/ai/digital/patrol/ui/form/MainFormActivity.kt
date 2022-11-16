@@ -11,6 +11,7 @@ package ai.digital.patrol.ui.form
 
 import ai.digital.patrol.GuardTourApplication
 import ai.digital.patrol.R
+import ai.digital.patrol.callback.OnInternetConnected
 import ai.digital.patrol.data.entity.NfcData
 import ai.digital.patrol.data.entity.PatrolActivity
 import ai.digital.patrol.data.entity.Schedule
@@ -67,7 +68,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Arrays
 
-class MainFormActivity : AppCompatActivity() {
+class MainFormActivity : AppCompatActivity(), OnInternetConnected {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var _binding: ActivityMainFormBinding? = null
@@ -82,6 +83,7 @@ class MainFormActivity : AppCompatActivity() {
     private var disposable: Disposable? = null
     private var confirmationDoneCallback: DialogCallbackListener? = null
     private var dialogPatrolDoneShowAlready: Boolean = false
+    private var isInternetConnected: Boolean = false
 
     private val patrolDataViewModel by lazy {
         ViewModelProvider(
@@ -298,7 +300,7 @@ class MainFormActivity : AppCompatActivity() {
                 // if you want to receive the event on main thread
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ appEvent ->
-                    Log.d("EVENTBUS", "event received: $appEvent")
+                    Log.d("EVENTBUS", "form event received: $appEvent")
                     if (appEvent == AppEvent.PATROL_TIME_OFF) {
                         val statePatrol =
                             PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())
@@ -311,11 +313,11 @@ class MainFormActivity : AppCompatActivity() {
                                 dialogConfirmDone()
                             }
                         }
-//                        if (stateUnschedulePatrol) {
-//                            if (!dialogPatrolDoneShowAlready) {
-//                                dialogConfirmDone()
-//                            }
-//                        }
+                        if (stateUnschedulePatrol) {
+                            if (!dialogPatrolDoneShowAlready) {
+                                dialogConfirmDone()
+                            }
+                        }
                     }
                     if (appEvent == AppEvent.PATROL_SHIFT_OFF) {
                         val statePatrol =
@@ -365,7 +367,7 @@ class MainFormActivity : AppCompatActivity() {
 
                 schedule.id_jadwal_patroli?.let {
                     patrolDataViewModel.setPatrolActivityDone(it)
-                    patrolDataViewModel.setPatrolRunningShift("0")
+//                    patrolDataViewModel.setPatrolRunningShiftDeactivated()
                 }
                 PreferenceHelper.appsPrefs(GuardTourApplication.applicationContext())[Cons.PATROL_STATE] =
                     false
@@ -380,9 +382,12 @@ class MainFormActivity : AppCompatActivity() {
 
             override fun onNegativeClickListener(v: View, dialog: Dialog?) {
                 dialog?.dismiss()
+
             }
 
             override fun onDismissClickListener(dialog: DialogInterface) {
+                dialogPatrolDoneShowAlready = false
+
             }
 
         }
@@ -415,6 +420,15 @@ class MainFormActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         disposable?.dispose()
+
+    }
+
+    override fun onConnected() {
+        isInternetConnected = true
+    }
+
+    override fun onDisconnected() {
+       isInternetConnected = false
 
     }
 }

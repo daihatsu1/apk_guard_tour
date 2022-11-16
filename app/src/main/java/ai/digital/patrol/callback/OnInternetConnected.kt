@@ -12,4 +12,5 @@ package ai.digital.patrol.callback
 interface OnInternetConnected
 {
     fun onConnected()
+    fun onDisconnected()
 }

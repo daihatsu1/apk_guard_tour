@@ -36,10 +36,10 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return repository!!.getShiftAPI()
     }
 
-    fun getCurrentShift(): Shift? {
+    fun getCurrentShift(): LiveData<Shift>? {
         return repository!!.getCurrentShift()
     }
-    fun getPatrolShift(): Shift? {
+    fun getPatrolShift(): LiveData<Shift>? {
         return repository!!.getPatrolShift()
     }
 

@@ -10,10 +10,12 @@
 package ai.digital.patrol.ui.form
 
 import ai.digital.patrol.GuardTourApplication
+import ai.digital.patrol.callback.OnInternetConnected
 import ai.digital.patrol.data.entity.PatrolActivity
 import ai.digital.patrol.data.entity.Schedule
 import ai.digital.patrol.databinding.FragmentListZoneBinding
 import ai.digital.patrol.data.entity.Zone
+import ai.digital.patrol.helper.ConnectivityChecker
 import ai.digital.patrol.helper.Cons
 import ai.digital.patrol.helper.PreferenceHelper
 import ai.digital.patrol.helper.PreferenceHelper.set
@@ -34,27 +36,31 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import java.util.*
+import kotlin.math.log
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class ListZoneFragment : Fragment(), OnZoneClickListener {
+class ListZoneFragment : Fragment(), OnZoneClickListener, OnInternetConnected {
 
+    private lateinit var networkConnection: ConnectivityChecker
     private var _binding: FragmentListZoneBinding? = null
     private val zoneViewAdapter = ZoneViewAdapter(this)
     private var confirmationPatrolDoneCallback: DialogCallbackListener? = null
     private lateinit var schedule: Schedule
-
     private val scheduleViewModel by lazy {
         ViewModelProvider(
             this,
             ScheduleViewModel.Factory(Application())
         )[ScheduleViewModel::class.java]
     }
+
+    private var isInternetConnected: Boolean = false
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -74,12 +80,20 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
         _binding = FragmentListZoneBinding.inflate(inflater, container, false)
         setPatrolDoneDialogFragmentListener()
         _binding!!.fabPatrolDone.setOnClickListener {
-            dialogConfirmPatrolDone()
+            if (networkConnection.isNetworkConnected()){
+                dialogConfirmPatrolDone()
+            }else{
+                Toast.makeText(this.requireContext(),
+                    "Pastikan Terhubung koneksi internet saat menyelesaikan patroli.",
+                    Toast.LENGTH_SHORT).show()
+            }
         }
         val recyclerView = binding.recyclerZone
         recyclerView.adapter = zoneViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
         getZones()
+
+        networkConnection = ConnectivityChecker(this.requireContext())
 
         return binding.root
 
@@ -93,6 +107,7 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
             }
         }
     }
+
     private fun getAllCheckpoint() {
         patrolDataViewModel.getAllCheckpoint()?.observe(this) {
             if (it.isNotEmpty()) {
@@ -101,16 +116,17 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
                 }
                 val total = it.size
                 val totalCheckpointDone = checkpointDone.size
-               if(total == totalCheckpointDone){
-                   _binding!!.bottomLayout.visibility = VISIBLE
-               }else{
-                   _binding!!.bottomLayout.visibility = GONE
-               }
+                if (total == totalCheckpointDone) {
+                    _binding!!.bottomLayout.visibility = VISIBLE
+                } else {
+                    _binding!!.bottomLayout.visibility = GONE
+                }
             } else {
                 Log.d("TEMUAN", "NOT FOUND TEMUAN")
             }
         }
     }
+
     private fun getPatrolActivity(idJadwal: String) {
         patrolDataViewModel.getPatrolActivity(idJadwal)?.observe(this) {
             if (it != null) {
@@ -122,7 +138,7 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
 
     private fun dialogConfirmPatrolDone() {
         val title = "APAKAH ANDA YAKIN TELAH SELESAI MELAKUKAN PATROLI?"
-        val subTitle = ""
+        val subTitle = "PASTIKAN TERHUBUNG KE INTERNET SAAT KLIK SELESAI PATROLI."
         val positiveText = "SELESAI PATROLI"
         val negativeText = "CEK KEMBALI"
 
@@ -140,6 +156,7 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
         confirmationPatrolDoneCallback = object : DialogCallbackListener {
             override fun onPositiveClickListener(v: View, dialog: Dialog?) {
                 schedule.id_jadwal_patroli?.let { patrolDataViewModel.setPatrolActivityDone(it) }
+                patrolDataViewModel.setPatrolRunningShiftDeactivated()
                 PreferenceHelper.appsPrefs(
                     GuardTourApplication
                         .applicationContext()
@@ -209,5 +226,15 @@ class ListZoneFragment : Fragment(), OnZoneClickListener {
         patrolDataViewModel.setZoneOnPatrol(_zone.id)
         val action = ListZoneFragmentDirections.actionZoneFragmentToCheckpointFragment(_zone)
         findNavController().navigate(action)
+    }
+
+    override fun onConnected() {
+        Log.d("Internet","Internet is connected ")
+        isInternetConnected = true
+    }
+
+    override fun onDisconnected() {
+        Log.d("Internet", "is disconnected ")
+        isInternetConnected = false
     }
 }

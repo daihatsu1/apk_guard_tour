@@ -205,7 +205,7 @@ class ListCheckpointFragment : Fragment(), OnCheckpointClickListener {
         GlobalScope.launch(Dispatchers.IO) {
             reportData = patrolDataViewModel.getReportByCheckpointId(_checkpoint.id)
             if (reportData == null) {
-                val syncToken = UUID.randomUUID().toString()
+                val syncToken = UUID.randomUUID().toString() +"-"+ System.currentTimeMillis().toString()
                 val newReport = Report(
                     sync_token = syncToken,
                     admisecsgp_mstckp_checkpoint_id = _checkpoint.id,

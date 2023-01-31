@@ -16,6 +16,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
+//var timeStamp = System.currentTimeMillis().toString()
 @Entity(
     tableName = "report_detail",
 //    foreignKeys = [
@@ -37,7 +38,7 @@ import java.util.*
 )
 data class ReportDetail(
     @PrimaryKey @SerializedName("sync_token") @ColumnInfo(name = "sync_token") var sync_token: String = UUID.randomUUID()
-        .toString(),
+        .toString()+ "-" + System.currentTimeMillis().toString(),
     @ColumnInfo(name = "trans_detail_id") @SerializedName("trans_detail_id") val trans_detail_id: Int? = null,
     @ColumnInfo(name = "admisecsgp_trans_headers_trans_headers_id") @SerializedName("admisecsgp_trans_headers_trans_headers_id") var admisecsgp_trans_headers_trans_headers_id: Int? = null,
     @ColumnInfo(name = "admisecsgp_mstobj_objek_id") @SerializedName("admisecsgp_mstobj_objek_id") val admisecsgp_mstobj_objek_id: String? = null,

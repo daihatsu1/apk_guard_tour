@@ -10,8 +10,9 @@
 package ai.digital.patrol.networking
 
 object APIUrl {
-//    const val BASE_URL: String = "http://10.0.2.2:8080/api/"
+//        const val BASE_URL: String = "http://10.0.2.2:8080/guard_tour/api/"
 //    const val BASE_URL: String = "http://103.183.74.54/guard_tour/api/"
-//    const val BASE_URL: String = "http://103.63.25.164/guard_tour/api/"
-    const val BASE_URL: String = "http://10.59.253.173/isecurity/api/"
+    const val BASE_URL: String = "http://103.63.25.164/guard_tour/api/"
+//    const val BASE_URL: String = "http://10.59.253.173/isecurity/api/"
+//    const val BASE_URL: String = "http://103.189.234.208/isecurity/api/"
 }

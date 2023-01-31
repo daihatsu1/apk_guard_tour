@@ -18,14 +18,15 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.util.UUID
 
-@Entity(tableName = "report",
+@Entity(
+    tableName = "report",
     indices = [androidx.room.Index("admisecsgp_mstckp_checkpoint_id", unique = true)],
 )
 @Parcelize
 data class Report(
-    @PrimaryKey @SerializedName("sync_token") @ColumnInfo(name = "sync_token") var sync_token: String = UUID.randomUUID().toString(),
+    @PrimaryKey @SerializedName("sync_token") @ColumnInfo(name = "sync_token") var sync_token: String = UUID.randomUUID().toString() + "-" + System.currentTimeMillis().toString(),
     @ColumnInfo(name = "trans_header_id") @SerializedName("trans_header_id") val trans_header_id: Int? = null,
     @ColumnInfo(name = "admisecsgp_mstusr_npk") @SerializedName("admisecsgp_mstusr_npk") val admisecsgp_mstusr_npk: String?,
     @ColumnInfo(name = "admisecsgp_mstshift_shift_id") @SerializedName("admisecsgp_mstshift_shift_id") val admisecsgp_mstshift_shift_id: String,
